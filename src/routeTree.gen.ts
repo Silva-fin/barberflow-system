@@ -20,6 +20,7 @@ import { Route as AuthenticatedAppConfiguracoesRouteImport } from './routes/_aut
 import { Route as AuthenticatedAppClientesRouteImport } from './routes/_authenticated.app.clientes'
 import { Route as AuthenticatedAppBarbeirosRouteImport } from './routes/_authenticated.app.barbeiros'
 import { Route as AuthenticatedAppAgendaRouteImport } from './routes/_authenticated.app.agenda'
+import { Route as BSlugConfirmacaoIdRouteImport } from './routes/b.$slug.confirmacao.$id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -80,11 +81,16 @@ const AuthenticatedAppAgendaRoute = AuthenticatedAppAgendaRouteImport.update({
   path: '/app/agenda',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const BSlugConfirmacaoIdRoute = BSlugConfirmacaoIdRouteImport.update({
+  id: '/confirmacao/$id',
+  path: '/confirmacao/$id',
+  getParentRoute: () => BSlugRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/b/$slug': typeof BSlugRoute
+  '/b/$slug': typeof BSlugRouteWithChildren
   '/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/app/clientes': typeof AuthenticatedAppClientesRoute
@@ -92,11 +98,12 @@ export interface FileRoutesByFullPath {
   '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app/': typeof AuthenticatedAppIndexRoute
+  '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/b/$slug': typeof BSlugRoute
+  '/b/$slug': typeof BSlugRouteWithChildren
   '/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/app/clientes': typeof AuthenticatedAppClientesRoute
@@ -104,13 +111,14 @@ export interface FileRoutesByTo {
   '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app': typeof AuthenticatedAppIndexRoute
+  '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
-  '/b/$slug': typeof BSlugRoute
+  '/b/$slug': typeof BSlugRouteWithChildren
   '/_authenticated/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/_authenticated/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/_authenticated/app/clientes': typeof AuthenticatedAppClientesRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/_authenticated/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/app/financeiro'
     | '/app/servicos'
     | '/app/'
+    | '/b/$slug/confirmacao/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
     | '/app/financeiro'
     | '/app/servicos'
     | '/app'
+    | '/b/$slug/confirmacao/$id'
   id:
     | '__root__'
     | '/'
@@ -157,13 +168,14 @@ export interface FileRouteTypes {
     | '/_authenticated/app/financeiro'
     | '/_authenticated/app/servicos'
     | '/_authenticated/app/'
+    | '/b/$slug/confirmacao/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
-  BSlugRoute: typeof BSlugRoute
+  BSlugRoute: typeof BSlugRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -245,6 +257,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAgendaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/b/$slug/confirmacao/$id': {
+      id: '/b/$slug/confirmacao/$id'
+      path: '/confirmacao/$id'
+      fullPath: '/b/$slug/confirmacao/$id'
+      preLoaderRoute: typeof BSlugConfirmacaoIdRouteImport
+      parentRoute: typeof BSlugRoute
+    }
   }
 }
 
@@ -272,11 +291,21 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface BSlugRouteChildren {
+  BSlugConfirmacaoIdRoute: typeof BSlugConfirmacaoIdRoute
+}
+
+const BSlugRouteChildren: BSlugRouteChildren = {
+  BSlugConfirmacaoIdRoute: BSlugConfirmacaoIdRoute,
+}
+
+const BSlugRouteWithChildren = BSlugRoute._addFileChildren(BSlugRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
-  BSlugRoute: BSlugRoute,
+  BSlugRoute: BSlugRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
