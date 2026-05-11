@@ -14,6 +14,8 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
 import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated.app.servicos'
+import { Route as AuthenticatedAppFinanceiroRouteImport } from './routes/_authenticated.app.financeiro'
+import { Route as AuthenticatedAppConfiguracoesRouteImport } from './routes/_authenticated.app.configuracoes'
 import { Route as AuthenticatedAppClientesRouteImport } from './routes/_authenticated.app.clientes'
 import { Route as AuthenticatedAppBarbeirosRouteImport } from './routes/_authenticated.app.barbeiros'
 import { Route as AuthenticatedAppAgendaRouteImport } from './routes/_authenticated.app.agenda'
@@ -43,6 +45,18 @@ const AuthenticatedAppServicosRoute =
     path: '/app/servicos',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAppFinanceiroRoute =
+  AuthenticatedAppFinanceiroRouteImport.update({
+    id: '/app/financeiro',
+    path: '/app/financeiro',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAppConfiguracoesRoute =
+  AuthenticatedAppConfiguracoesRouteImport.update({
+    id: '/app/configuracoes',
+    path: '/app/configuracoes',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAppClientesRoute =
   AuthenticatedAppClientesRouteImport.update({
     id: '/app/clientes',
@@ -67,6 +81,8 @@ export interface FileRoutesByFullPath {
   '/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/app/clientes': typeof AuthenticatedAppClientesRoute
+  '/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
+  '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app/': typeof AuthenticatedAppIndexRoute
 }
@@ -76,6 +92,8 @@ export interface FileRoutesByTo {
   '/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/app/clientes': typeof AuthenticatedAppClientesRoute
+  '/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
+  '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app': typeof AuthenticatedAppIndexRoute
 }
@@ -87,6 +105,8 @@ export interface FileRoutesById {
   '/_authenticated/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/_authenticated/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/_authenticated/app/clientes': typeof AuthenticatedAppClientesRoute
+  '/_authenticated/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
+  '/_authenticated/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
 }
@@ -98,6 +118,8 @@ export interface FileRouteTypes {
     | '/app/agenda'
     | '/app/barbeiros'
     | '/app/clientes'
+    | '/app/configuracoes'
+    | '/app/financeiro'
     | '/app/servicos'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
@@ -107,6 +129,8 @@ export interface FileRouteTypes {
     | '/app/agenda'
     | '/app/barbeiros'
     | '/app/clientes'
+    | '/app/configuracoes'
+    | '/app/financeiro'
     | '/app/servicos'
     | '/app'
   id:
@@ -117,6 +141,8 @@ export interface FileRouteTypes {
     | '/_authenticated/app/agenda'
     | '/_authenticated/app/barbeiros'
     | '/_authenticated/app/clientes'
+    | '/_authenticated/app/configuracoes'
+    | '/_authenticated/app/financeiro'
     | '/_authenticated/app/servicos'
     | '/_authenticated/app/'
   fileRoutesById: FileRoutesById
@@ -164,6 +190,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppServicosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/app/financeiro': {
+      id: '/_authenticated/app/financeiro'
+      path: '/app/financeiro'
+      fullPath: '/app/financeiro'
+      preLoaderRoute: typeof AuthenticatedAppFinanceiroRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/app/configuracoes': {
+      id: '/_authenticated/app/configuracoes'
+      path: '/app/configuracoes'
+      fullPath: '/app/configuracoes'
+      preLoaderRoute: typeof AuthenticatedAppConfiguracoesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/app/clientes': {
       id: '/_authenticated/app/clientes'
       path: '/app/clientes'
@@ -192,6 +232,8 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAppAgendaRoute: typeof AuthenticatedAppAgendaRoute
   AuthenticatedAppBarbeirosRoute: typeof AuthenticatedAppBarbeirosRoute
   AuthenticatedAppClientesRoute: typeof AuthenticatedAppClientesRoute
+  AuthenticatedAppConfiguracoesRoute: typeof AuthenticatedAppConfiguracoesRoute
+  AuthenticatedAppFinanceiroRoute: typeof AuthenticatedAppFinanceiroRoute
   AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
 }
@@ -200,6 +242,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppAgendaRoute: AuthenticatedAppAgendaRoute,
   AuthenticatedAppBarbeirosRoute: AuthenticatedAppBarbeirosRoute,
   AuthenticatedAppClientesRoute: AuthenticatedAppClientesRoute,
+  AuthenticatedAppConfiguracoesRoute: AuthenticatedAppConfiguracoesRoute,
+  AuthenticatedAppFinanceiroRoute: AuthenticatedAppFinanceiroRoute,
   AuthenticatedAppServicosRoute: AuthenticatedAppServicosRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
 }
