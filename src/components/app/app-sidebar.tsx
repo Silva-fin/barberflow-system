@@ -1,11 +1,12 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarDays, Users, UserCog, Scissors, DollarSign, Settings, LogOut, Sparkles } from "lucide-react";
+import { LayoutDashboard, CalendarDays, Users, UserCog, Scissors, DollarSign, Settings, LogOut, Sparkles, Moon, Sun } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent,
   SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/lib/auth";
 import { useNavigate } from "@tanstack/react-router";
+import { useTheme } from "@/lib/theme";
 
 type NavItem = { title: string; url: string; icon: typeof LayoutDashboard; exact?: boolean };
 const items: NavItem[] = [
@@ -24,6 +25,7 @@ export function AppSidebar() {
   const path = useRouterState({ select: (r) => r.location.pathname });
   const { logout, user } = useAuth();
   const navigate = useNavigate();
+  const { theme, toggle } = useTheme();
 
   const isActive = (url: string, exact?: boolean) =>
     exact ? path === url : path === url || path.startsWith(url + "/");
@@ -64,6 +66,12 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={toggle} tooltip={theme === "dark" ? "Tema claro" : "Tema escuro"}>
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              {!collapsed && <span className="text-xs">{theme === "dark" ? "Tema claro" : "Tema escuro"}</span>}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={() => { logout(); navigate({ to: "/login" }); }}
