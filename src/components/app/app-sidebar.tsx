@@ -7,7 +7,8 @@ import {
 import { useAuth } from "@/lib/auth";
 import { useNavigate } from "@tanstack/react-router";
 
-const items = [
+type NavItem = { title: string; url: string; icon: typeof LayoutDashboard; exact?: boolean };
+const items: NavItem[] = [
   { title: "Dashboard", url: "/app", icon: LayoutDashboard, exact: true },
   { title: "Agenda", url: "/app/agenda", icon: CalendarDays },
   { title: "Clientes", url: "/app/clientes", icon: Users },
@@ -15,7 +16,7 @@ const items = [
   { title: "Serviços", url: "/app/servicos", icon: Scissors },
   { title: "Financeiro", url: "/app/financeiro", icon: DollarSign },
   { title: "Configurações", url: "/app/configuracoes", icon: Settings },
-] as const;
+];
 
 export function AppSidebar() {
   const { state } = useSidebar();
