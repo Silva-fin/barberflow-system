@@ -4,6 +4,7 @@ import { useState } from "react";
 import { addDays, format, isSameDay, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ArrowLeft, ArrowRight, Check, Clock, MapPin, Phone, Scissors, Sparkles, User } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -102,7 +103,7 @@ function BookingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border">
-        <div className="mx-auto max-w-3xl px-6 py-6">
+        <div className="mx-auto max-w-3xl px-6 py-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-md bg-primary text-primary-foreground">
               <Sparkles className="h-5 w-5" />
@@ -115,6 +116,7 @@ function BookingPage() {
               </p>
             </div>
           </div>
+          <ThemeToggle />
         </div>
       </header>
 
