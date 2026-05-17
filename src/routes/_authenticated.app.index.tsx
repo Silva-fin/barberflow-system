@@ -23,7 +23,7 @@ function Dashboard() {
   const now = new Date();
   const todayAppts = appts.filter(a => isToday(new Date(a.start)));
   const completed = todayAppts.filter(a => a.status === "completed").length;
-  const waiting = todayAppts.filter(a => a.status === "scheduled" || a.status === "confirmed").length;
+  const waiting = todayAppts.filter(a => a.status === "scheduled").length;
   const todayRevenue = todayAppts.filter(a => a.status !== "cancelled").reduce((s, a) => s + a.priceCents, 0);
   const completedAll = appts.filter(a => a.status === "completed");
   const ticketAvg = completedAll.length ? completedAll.reduce((s,a)=>s+a.priceCents,0)/completedAll.length : 0;
