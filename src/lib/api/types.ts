@@ -8,6 +8,10 @@ export interface Barbershop {
   phone: string;
   description?: string;
   logoUrl?: string;
+  rating?: number;
+  reviewsCount?: number;
+  photos?: string[];
+  hours?: { weekday: number; open: string; close: string }[];
 }
 
 export interface Barber {
