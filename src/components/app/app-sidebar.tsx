@@ -1,7 +1,7 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   LayoutDashboard, CalendarDays, Users, UserCog, Scissors, DollarSign,
-  Settings, LogOut, Crown, Moon, Sun, ChevronDown,
+  Settings, LogOut, Moon, Sun, ChevronDown,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent,
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/lib/auth";
 import { useTheme } from "@/lib/theme";
+import paladinoWordmark from "@/assets/paladino-wordmark.png";
 
 type NavItem = { title: string; url: string; icon: typeof LayoutDashboard; exact?: boolean };
 const items: NavItem[] = [
@@ -35,15 +36,15 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader className="pt-5 pb-3">
-        <Link to="/app" className="flex items-center gap-3 px-3 py-1">
-          <Crown className="h-7 w-7 text-primary" strokeWidth={1.25} />
-          {!collapsed && (
-            <div className="flex flex-col leading-none">
-              <span className="font-display text-2xl tracking-tight">Navalha</span>
-              <span className="mt-1 text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
-                Painel · Est. 2018
-              </span>
-            </div>
+        <Link to="/app" className="flex items-center justify-center px-3 py-1">
+          {collapsed ? (
+            <span className="font-display text-2xl text-primary leading-none">P</span>
+          ) : (
+            <img
+              src={paladinoWordmark}
+              alt="Paladino"
+              className="h-7 w-auto"
+            />
           )}
         </Link>
         {!collapsed && <div className="mx-3 mt-4 h-px bg-sidebar-border" />}

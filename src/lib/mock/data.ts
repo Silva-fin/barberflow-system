@@ -9,6 +9,24 @@ export const mockBarbershop: Barbershop = {
   address: "Rua Augusta, 1500 — São Paulo, SP",
   phone: "(11) 99876-5432",
   description: "Tradição e estilo desde 1998. Cortes clássicos e modernos.",
+  rating: 4.9,
+  reviewsCount: 218,
+  photos: [
+    "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1200&q=80",
+    "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&q=80",
+    "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=800&q=80",
+    "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=800&q=80",
+    "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=800&q=80",
+    "https://images.unsplash.com/photo-1517832606299-7ae9b720a186?w=800&q=80",
+  ],
+  hours: [
+    { weekday: 1, open: "09:00", close: "19:00" },
+    { weekday: 2, open: "09:00", close: "19:00" },
+    { weekday: 3, open: "09:00", close: "19:00" },
+    { weekday: 4, open: "09:00", close: "20:00" },
+    { weekday: 5, open: "09:00", close: "20:00" },
+    { weekday: 6, open: "09:00", close: "18:00" },
+  ],
 };
 
 export const mockBarbers: Barber[] = [
