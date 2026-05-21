@@ -1,32 +1,31 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { addDays, format, isSameDay, startOfDay } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { ArrowLeft, ArrowRight, Check, Clock, MapPin, Phone, Scissors, Sparkles, User } from "lucide-react";
+import {
+  Clock, MapPin, Phone, Scissors, Star, CreditCard,
+  Instagram, Facebook, MessageCircle, ChevronRight,
+} from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatBRL } from "@/lib/format";
-import { toast } from "sonner";
+import paladinoWordmark from "@/assets/paladino-wordmark.png";
 
 export const Route = createFileRoute("/b/$slug")({
   head: ({ params }) => ({
     meta: [
-      { title: `Agendar — ${params.slug}` },
-      { name: "description", content: "Agende seu horário online em poucos passos." },
+      { title: `${params.slug} — Agendar pela Paladino` },
+      { name: "description", content: "Conheça a barbearia, escolha o serviço e agende online em segundos." },
     ],
   }),
-  component: BookingPage,
+  component: ShopProfilePage,
 });
 
-type Step = 1 | 2 | 3 | 4;
+const WEEKDAY_LABELS = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 
-function BookingPage() {
+function ShopProfilePage() {
   const { slug } = Route.useParams();
   const navigate = useNavigate();
 
@@ -36,23 +35,6 @@ function BookingPage() {
   });
   const { data: barbers = [] } = useQuery({
     queryKey: ["barbers-pub", shop?.id], queryFn: () => api.listBarbers(shop!.id), enabled: !!shop,
-  });
-
-  const [step, setStep] = useState<Step>(1);
-  const [serviceId, setServiceId] = useState<string | null>(null);
-  const [barberId, setBarberId] = useState<string | "any" | null>(null);
-  const [date, setDate] = useState<Date>(startOfDay(new Date()));
-  const [slot, setSlot] = useState<string | null>(null);
-  const [client, setClient] = useState({ name: "", phone: "", email: "" });
-  const [submitting, setSubmitting] = useState(false);
-
-  const service = services.find(s => s.id === serviceId);
-  const eligibleBarbers = service ? barbers.filter(b => service.barberIds.includes(b.id)) : [];
-
-  const { data: slots = [] } = useQuery({
-    queryKey: ["slots", shop?.id, serviceId, barberId, date.toISOString()],
-    queryFn: () => api.getAvailableSlots({ barbershopId: shop!.id, serviceId: serviceId!, barberId: barberId!, date }),
-    enabled: !!shop && !!serviceId && !!barberId,
   });
 
   if (isLoading) {
@@ -69,234 +51,236 @@ function BookingPage() {
     );
   }
 
-  const days = Array.from({ length: 14 }, (_, i) => addDays(startOfDay(new Date()), i));
+  const photos = shop.photos ?? [];
+  const hero = photos[0];
+  const thumbs = photos.slice(1, 4);
+  const extraPhotos = Math.max(0, photos.length - 4);
+  const todayWeekday = new Date().getDay();
 
-  async function confirmBooking() {
-    if (!service || !slot || !shop) return;
-    setSubmitting(true);
-    try {
-      const start = new Date(slot);
-      const end = new Date(start.getTime() + service.durationMin*60000);
-      // For "any", pick first eligible barber with that slot free (mock simplification: pick first)
-      const finalBarberId = barberId === "any" ? eligibleBarbers[0].id : barberId!;
-      // Reuse a mock client id (in real app would create or match)
-      const a = await api.createAppointment({
-        barbershopId: shop.id,
-        barberId: finalBarberId,
-        serviceId: service.id,
-        clientId: "c-1",
-        start: start.toISOString(),
-        end: end.toISOString(),
-        status: "scheduled",
-        priceCents: service.priceCents,
-        notes: `${client.name} · ${client.phone}`,
-      });
-      toast.success("Agendamento confirmado!");
-      navigate({ to: "/b/$slug/confirmacao/$id", params: { slug, id: a.id } });
-    } catch {
-      toast.error("Erro ao confirmar.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
+  const bookService = (serviceId: string) =>
+    navigate({ to: "/b/$slug/agendar", params: { slug }, search: { service: serviceId } });
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* Top bar */}
       <header className="border-b border-border">
-        <div className="mx-auto max-w-3xl px-6 py-6 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <div>
-              <h1 className="font-display text-2xl tracking-wide">{shop.name}</h1>
-              <p className="text-xs text-muted-foreground flex items-center gap-3 mt-0.5">
-                <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" /> {shop.address}</span>
-                <span className="inline-flex items-center gap-1"><Phone className="h-3 w-3" /> {shop.phone}</span>
-              </p>
-            </div>
-          </div>
+        <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center">
+            <img src={paladinoWordmark} alt="Paladino" className="h-5 w-auto" />
+          </Link>
           <ThemeToggle />
         </div>
       </header>
 
-      <div className="mx-auto max-w-3xl px-6 py-8">
-        <Stepper step={step} />
-
-        <div className="mt-8">
-          {step === 1 && (
-            <div>
-              <h2 className="font-display text-2xl tracking-wide">Escolha o serviço</h2>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                {services.map(s => (
-                  <button
-                    key={s.id}
-                    onClick={() => { setServiceId(s.id); setBarberId(null); setSlot(null); setStep(2); }}
-                    className={`text-left rounded-lg border p-4 transition-all hover:border-primary ${serviceId === s.id ? "border-primary bg-primary/5" : "border-border"}`}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="font-semibold">{s.name}</p>
-                        {s.description && <p className="text-xs text-muted-foreground mt-1">{s.description}</p>}
-                      </div>
-                      <Scissors className="h-4 w-4 text-primary" />
-                    </div>
-                    <div className="mt-3 flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
-                        <Clock className="h-3 w-3" /> {s.durationMin} min
-                      </span>
-                      <span className="font-display text-lg text-primary">{formatBRL(s.priceCents)}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
+      <div className="mx-auto max-w-6xl px-6 py-10 grid gap-10 lg:grid-cols-[1fr_320px]">
+        {/* MAIN COLUMN */}
+        <main className="space-y-10">
+          {/* Hero */}
+          <section className="flex flex-col gap-6 sm:flex-row sm:items-start">
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 text-primary font-display text-3xl">
+              {shop.name.split(" ").map(n => n[0]).slice(0, 2).join("")}
             </div>
-          )}
+            <div className="flex-1">
+              <h1 className="font-display text-4xl tracking-wide leading-tight">{shop.name}</h1>
+              {shop.rating && (
+                <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+                  <Star className="h-4 w-4 fill-primary text-primary" />
+                  <span className="font-medium text-foreground">{shop.rating.toFixed(1)}</span>
+                  {shop.reviewsCount && <span>· {shop.reviewsCount} avaliações</span>}
+                </div>
+              )}
+              {shop.description && (
+                <p className="mt-3 max-w-prose text-sm text-muted-foreground">{shop.description}</p>
+              )}
+              <Button
+                size="lg"
+                className="mt-5"
+                onClick={() => navigate({ to: "/b/$slug/agendar", params: { slug }, search: {} })}
+              >
+                Agendar agora
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </Button>
+            </div>
+          </section>
 
-          {step === 2 && service && (
-            <div>
-              <h2 className="font-display text-2xl tracking-wide">Escolha o barbeiro</h2>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <button
-                  onClick={() => { setBarberId("any"); setSlot(null); setStep(3); }}
-                  className={`text-left rounded-lg border p-4 transition-all hover:border-primary ${barberId === "any" ? "border-primary bg-primary/5" : "border-border"}`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 text-primary">
-                      <User className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="font-semibold">Qualquer disponível</p>
-                      <p className="text-xs text-muted-foreground">Escolhe o primeiro horário livre</p>
-                    </div>
+          {/* Gallery */}
+          {hero && (
+            <section className="grid grid-cols-1 gap-3 sm:grid-cols-[2fr_1fr]">
+              <img
+                src={hero}
+                alt={`${shop.name} — ambiente`}
+                className="h-80 w-full rounded-lg object-cover border border-border"
+                loading="lazy"
+              />
+              <div className="grid grid-cols-3 gap-3 sm:grid-cols-1">
+                {thumbs.map((src, i) => (
+                  <img
+                    key={src}
+                    src={src}
+                    alt={`${shop.name} — ambiente ${i + 2}`}
+                    className="h-24 sm:h-[calc((20rem-1.5rem)/3)] w-full rounded-lg object-cover border border-border"
+                    loading="lazy"
+                  />
+                ))}
+                {extraPhotos > 0 && (
+                  <div className="hidden sm:flex h-[calc((20rem-1.5rem)/3)] items-center justify-center rounded-lg border border-dashed border-border text-xs uppercase tracking-widest text-muted-foreground">
+                    +{extraPhotos} fotos
                   </div>
-                </button>
-                {eligibleBarbers.map(b => (
-                  <button
-                    key={b.id}
-                    onClick={() => { setBarberId(b.id); setSlot(null); setStep(3); }}
-                    className={`text-left rounded-lg border p-4 transition-all hover:border-primary ${barberId === b.id ? "border-primary bg-primary/5" : "border-border"}`}
+                )}
+              </div>
+            </section>
+          )}
+
+          {/* Tabs */}
+          <Tabs defaultValue="services" className="w-full">
+            <TabsList>
+              <TabsTrigger value="services">Serviços</TabsTrigger>
+              <TabsTrigger value="barbers">Profissionais</TabsTrigger>
+              <TabsTrigger value="reviews">Avaliações</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="services" className="mt-6">
+              <div className="grid gap-3">
+                {services.map(s => (
+                  <article
+                    key={s.id}
+                    className="rounded-lg border border-border bg-card p-5 flex items-center gap-4 transition-colors hover:border-primary/60"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
-                        {b.name.split(" ").map(n=>n[0]).slice(0,2).join("")}
-                      </div>
-                      <div>
-                        <p className="font-semibold">{b.name}</p>
-                        <p className="text-xs text-muted-foreground">{b.specialties.join(" · ")}</p>
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+                      <Scissors className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold">{s.name}</h3>
+                      {s.description && (
+                        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{s.description}</p>
+                      )}
+                      <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                        <span className="inline-flex items-center gap-1">
+                          <Clock className="h-3 w-3" /> {s.durationMin} min
+                        </span>
                       </div>
                     </div>
-                  </button>
+                    <div className="flex flex-col items-end gap-2">
+                      <span className="font-display text-lg text-primary">{formatBRL(s.priceCents)}</span>
+                      <Button size="sm" onClick={() => bookService(s.id)}>Agendar</Button>
+                    </div>
+                  </article>
                 ))}
               </div>
-            </div>
+            </TabsContent>
+
+            <TabsContent value="barbers" className="mt-6">
+              <div className="grid gap-3 sm:grid-cols-2">
+                {barbers.map(b => (
+                  <article key={b.id} className="rounded-lg border border-border bg-card p-4 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary">
+                      {b.name.split(" ").map(n => n[0]).slice(0, 2).join("")}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold">{b.name}</p>
+                      <p className="text-xs text-muted-foreground">{b.specialties.join(" · ")}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="reviews" className="mt-6">
+              <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+                Avaliações em breve.
+              </div>
+            </TabsContent>
+          </Tabs>
+        </main>
+
+        {/* SIDE COLUMN */}
+        <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start">
+          <InfoCard title="Localização">
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(shop.address)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-start gap-2 text-sm hover:text-primary transition-colors"
+            >
+              <MapPin className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
+              <span>{shop.address}</span>
+            </a>
+          </InfoCard>
+
+          {shop.hours && shop.hours.length > 0 && (
+            <InfoCard title="Horário de atendimento">
+              <ul className="space-y-1.5 text-sm">
+                {shop.hours.map(h => {
+                  const today = h.weekday === todayWeekday;
+                  return (
+                    <li key={h.weekday} className="flex items-center justify-between">
+                      <span className={`${today ? "text-foreground font-medium" : "text-muted-foreground"}`}>
+                        {WEEKDAY_LABELS[h.weekday]}
+                        {today && (
+                          <Badge variant="outline" className="ml-2 border-primary/50 text-[9px] text-primary px-1 py-0">
+                            Hoje
+                          </Badge>
+                        )}
+                      </span>
+                      <span className="font-mono text-xs text-muted-foreground">{h.open} – {h.close}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </InfoCard>
           )}
 
-          {step === 3 && (
-            <div className="space-y-6">
-              <div>
-                <h2 className="font-display text-2xl tracking-wide">Escolha o dia</h2>
-                <div className="mt-4 grid grid-cols-4 sm:grid-cols-7 gap-2">
-                  {days.map(d => {
-                    const active = isSameDay(d, date);
-                    return (
-                      <button
-                        key={d.toISOString()}
-                        onClick={() => { setDate(d); setSlot(null); }}
-                        className={`flex flex-col items-center rounded-lg border p-3 ${active ? "border-primary bg-primary/10" : "border-border hover:bg-accent"}`}
-                      >
-                        <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{format(d, "EEE", { locale: ptBR })}</span>
-                        <span className="font-display text-2xl">{format(d, "d")}</span>
-                        <span className="text-[10px] text-muted-foreground">{format(d, "MMM", { locale: ptBR })}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div>
-                <h3 className="font-semibold">Horários disponíveis</h3>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {slots.length === 0 && (
-                    <p className="text-sm text-muted-foreground">Nenhum horário disponível neste dia.</p>
-                  )}
-                  {slots.map(s => {
-                    const active = slot === s;
-                    return (
-                      <button
-                        key={s}
-                        onClick={() => setSlot(s)}
-                        className={`rounded-md border px-4 py-2 font-mono text-sm ${active ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-accent"}`}
-                      >
-                        {format(new Date(s), "HH:mm")}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="flex justify-between pt-4">
-                <Button variant="ghost" onClick={() => setStep(2)}><ArrowLeft className="mr-1 h-4 w-4" /> Voltar</Button>
-                <Button disabled={!slot} onClick={() => setStep(4)}>Continuar <ArrowRight className="ml-1 h-4 w-4" /></Button>
-              </div>
+          <InfoCard title="Formas de pagamento">
+            <div className="flex flex-wrap gap-2">
+              {["Dinheiro", "Pix", "Crédito", "Débito"].map(p => (
+                <span
+                  key={p}
+                  className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/30 px-2.5 py-1 text-xs text-muted-foreground"
+                >
+                  <CreditCard className="h-3 w-3" /> {p}
+                </span>
+              ))}
             </div>
-          )}
+          </InfoCard>
 
-          {step === 4 && service && slot && (
-            <div className="space-y-6">
-              <h2 className="font-display text-2xl tracking-wide">Seus dados</h2>
+          <InfoCard title="Contato">
+            <a href={`tel:${shop.phone.replace(/\D/g, "")}`} className="flex items-center gap-2 text-sm hover:text-primary transition-colors">
+              <Phone className="h-4 w-4 text-primary" />
+              {shop.phone}
+            </a>
+          </InfoCard>
 
-              <Card className="p-4">
-                <div className="grid gap-2 text-sm">
-                  <div className="flex justify-between"><span className="text-muted-foreground">Serviço</span><span className="font-medium">{service.name}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Barbeiro</span><span className="font-medium">{barberId === "any" ? "Qualquer disponível" : barbers.find(b=>b.id===barberId)?.name}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Quando</span><span className="font-medium">{format(new Date(slot), "EEEE, d MMM 'às' HH:mm", { locale: ptBR })}</span></div>
-                  <div className="flex justify-between border-t border-border pt-2 mt-1"><span className="text-muted-foreground">Total</span><Badge variant="outline" className="font-display text-base">{formatBRL(service.priceCents)}</Badge></div>
-                </div>
-              </Card>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2 sm:col-span-2"><Label>Nome completo</Label><Input value={client.name} onChange={(e)=>setClient({...client, name: e.target.value})} placeholder="Seu nome" /></div>
-                <div className="space-y-2"><Label>Telefone</Label><Input value={client.phone} onChange={(e)=>setClient({...client, phone: e.target.value})} placeholder="(11) 90000-0000" /></div>
-                <div className="space-y-2"><Label>E-mail (opcional)</Label><Input type="email" value={client.email} onChange={(e)=>setClient({...client, email: e.target.value})} placeholder="seu@email.com" /></div>
-              </div>
-
-              <div className="flex justify-between pt-2">
-                <Button variant="ghost" onClick={() => setStep(3)}><ArrowLeft className="mr-1 h-4 w-4" /> Voltar</Button>
-                <Button onClick={confirmBooking} disabled={!client.name || !client.phone || submitting}>
-                  {submitting ? "Confirmando..." : <>Confirmar agendamento <Check className="ml-1 h-4 w-4" /></>}
-                </Button>
-              </div>
+          <InfoCard title="Redes sociais">
+            <div className="flex gap-3">
+              {[Instagram, Facebook, MessageCircle].map((Icon, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  className="flex h-9 w-9 items-center justify-center rounded-md border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                  aria-label="Rede social"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
             </div>
-          )}
-        </div>
-
-        <div className="mt-12 text-center text-xs text-muted-foreground">
-          Powered by <Link to="/" className="text-primary hover:underline">Navalha</Link>
-        </div>
+          </InfoCard>
+        </aside>
       </div>
+
+      <footer className="border-t border-border mt-10 py-6">
+        <div className="mx-auto max-w-6xl px-6 text-center text-xs text-muted-foreground">
+          Powered by <Link to="/" className="text-primary hover:underline">Paladino</Link>
+        </div>
+      </footer>
     </div>
   );
 }
 
-function Stepper({ step }: { step: number }) {
-  const labels = ["Serviço", "Barbeiro", "Horário", "Confirmar"];
+function InfoCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2">
-      {labels.map((l, i) => {
-        const n = i + 1;
-        const done = step > n;
-        const current = step === n;
-        return (
-          <div key={l} className="flex flex-1 items-center gap-2">
-            <div className={`flex h-7 w-7 items-center justify-center rounded-full border text-xs font-medium ${done ? "border-primary bg-primary text-primary-foreground" : current ? "border-primary text-primary" : "border-border text-muted-foreground"}`}>
-              {done ? <Check className="h-3 w-3" /> : n}
-            </div>
-            <span className={`hidden sm:block text-xs ${current ? "text-foreground" : "text-muted-foreground"}`}>{l}</span>
-            {n < labels.length && <div className={`h-px flex-1 ${done ? "bg-primary" : "bg-border"}`} />}
-          </div>
-        );
-      })}
-    </div>
+    <section className="rounded-lg border border-border bg-card p-4">
+      <h2 className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-3">{title}</h2>
+      {children}
+    </section>
   );
 }
