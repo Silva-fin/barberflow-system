@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as BSlugRouteImport } from './routes/b.$slug'
+import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
 import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated.app.servicos'
@@ -37,9 +37,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BSlugRoute = BSlugRouteImport.update({
-  id: '/b/$slug',
-  path: '/b/$slug',
+const BSlugIndexRoute = BSlugIndexRouteImport.update({
+  id: '/b/$slug/',
+  path: '/b/$slug/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
@@ -96,7 +96,6 @@ const BSlugConfirmacaoIdRoute = BSlugConfirmacaoIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/b/$slug': typeof BSlugRouteWithChildren
   '/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/app/clientes': typeof AuthenticatedAppClientesRoute
@@ -105,12 +104,12 @@ export interface FileRoutesByFullPath {
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/app/': typeof AuthenticatedAppIndexRoute
+  '/b/$slug/': typeof BSlugIndexRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/b/$slug': typeof BSlugRouteWithChildren
   '/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/app/clientes': typeof AuthenticatedAppClientesRoute
@@ -119,6 +118,7 @@ export interface FileRoutesByTo {
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/app': typeof AuthenticatedAppIndexRoute
+  '/b/$slug': typeof BSlugIndexRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
 export interface FileRoutesById {
@@ -126,7 +126,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
-  '/b/$slug': typeof BSlugRouteWithChildren
   '/_authenticated/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/_authenticated/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/_authenticated/app/clientes': typeof AuthenticatedAppClientesRoute
@@ -135,6 +134,7 @@ export interface FileRoutesById {
   '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/b/$slug/': typeof BSlugIndexRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
 export interface FileRouteTypes {
@@ -142,7 +142,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
-    | '/b/$slug'
     | '/app/agenda'
     | '/app/barbeiros'
     | '/app/clientes'
@@ -151,12 +150,12 @@ export interface FileRouteTypes {
     | '/app/servicos'
     | '/b/$slug/agendar'
     | '/app/'
+    | '/b/$slug/'
     | '/b/$slug/confirmacao/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
-    | '/b/$slug'
     | '/app/agenda'
     | '/app/barbeiros'
     | '/app/clientes'
@@ -165,13 +164,13 @@ export interface FileRouteTypes {
     | '/app/servicos'
     | '/b/$slug/agendar'
     | '/app'
+    | '/b/$slug'
     | '/b/$slug/confirmacao/$id'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/login'
-    | '/b/$slug'
     | '/_authenticated/app/agenda'
     | '/_authenticated/app/barbeiros'
     | '/_authenticated/app/clientes'
@@ -180,6 +179,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/servicos'
     | '/b/$slug/agendar'
     | '/_authenticated/app/'
+    | '/b/$slug/'
     | '/b/$slug/confirmacao/$id'
   fileRoutesById: FileRoutesById
 }
@@ -187,7 +187,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
-  BSlugRoute: typeof BSlugRouteWithChildren
+  BSlugIndexRoute: typeof BSlugIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -213,11 +213,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/b/$slug': {
-      id: '/b/$slug'
+    '/b/$slug/': {
+      id: '/b/$slug/'
       path: '/b/$slug'
-      fullPath: '/b/$slug'
-      preLoaderRoute: typeof BSlugRouteImport
+      fullPath: '/b/$slug/'
+      preLoaderRoute: typeof BSlugIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/app/': {
@@ -310,24 +310,22 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
-interface BSlugRouteChildren {
-  BSlugAgendarRoute: typeof BSlugAgendarRoute
-  BSlugConfirmacaoIdRoute: typeof BSlugConfirmacaoIdRoute
-}
-
-const BSlugRouteChildren: BSlugRouteChildren = {
-  BSlugAgendarRoute: BSlugAgendarRoute,
-  BSlugConfirmacaoIdRoute: BSlugConfirmacaoIdRoute,
-}
-
-const BSlugRouteWithChildren = BSlugRoute._addFileChildren(BSlugRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
-  BSlugRoute: BSlugRouteWithChildren,
+  BSlugIndexRoute: BSlugIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

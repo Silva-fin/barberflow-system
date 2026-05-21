@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatBRL } from "@/lib/format";
 import paladinoWordmark from "@/assets/paladino-wordmark.png";
 
-export const Route = createFileRoute("/b/$slug")({
+export const Route = createFileRoute("/b/$slug/")({
   head: ({ params }) => ({
     meta: [
       { title: `${params.slug} — Agendar pela Paladino` },
