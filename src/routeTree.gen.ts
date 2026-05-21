@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BSlugRouteImport } from './routes/b.$slug'
 import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
@@ -37,10 +38,15 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BSlugIndexRoute = BSlugIndexRouteImport.update({
-  id: '/b/$slug/',
-  path: '/b/$slug/',
+const BSlugRoute = BSlugRouteImport.update({
+  id: '/b/$slug',
+  path: '/b/$slug',
   getParentRoute: () => rootRouteImport,
+} as any)
+const BSlugIndexRoute = BSlugIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BSlugRoute,
 } as any)
 const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   id: '/app/',
@@ -96,6 +102,7 @@ const BSlugConfirmacaoIdRoute = BSlugConfirmacaoIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/b/$slug': typeof BSlugRouteWithChildren
   '/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/app/clientes': typeof AuthenticatedAppClientesRoute
@@ -126,6 +133,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/b/$slug': typeof BSlugRouteWithChildren
   '/_authenticated/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/_authenticated/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/_authenticated/app/clientes': typeof AuthenticatedAppClientesRoute
@@ -142,6 +150,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/b/$slug'
     | '/app/agenda'
     | '/app/barbeiros'
     | '/app/clientes'
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/login'
+    | '/b/$slug'
     | '/_authenticated/app/agenda'
     | '/_authenticated/app/barbeiros'
     | '/_authenticated/app/clientes'
@@ -187,7 +197,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
-  BSlugIndexRoute: typeof BSlugIndexRoute
+  BSlugRoute: typeof BSlugRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -213,12 +223,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/b/$slug': {
+      id: '/b/$slug'
+      path: '/b/$slug'
+      fullPath: '/b/$slug'
+      preLoaderRoute: typeof BSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/b/$slug/': {
       id: '/b/$slug/'
-      path: '/b/$slug'
+      path: '/'
       fullPath: '/b/$slug/'
       preLoaderRoute: typeof BSlugIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof BSlugRoute
     }
     '/_authenticated/app/': {
       id: '/_authenticated/app/'
@@ -310,11 +327,25 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface BSlugRouteChildren {
+  BSlugAgendarRoute: typeof BSlugAgendarRoute
+  BSlugIndexRoute: typeof BSlugIndexRoute
+  BSlugConfirmacaoIdRoute: typeof BSlugConfirmacaoIdRoute
+}
+
+const BSlugRouteChildren: BSlugRouteChildren = {
+  BSlugAgendarRoute: BSlugAgendarRoute,
+  BSlugIndexRoute: BSlugIndexRoute,
+  BSlugConfirmacaoIdRoute: BSlugConfirmacaoIdRoute,
+}
+
+const BSlugRouteWithChildren = BSlugRoute._addFileChildren(BSlugRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
-  BSlugIndexRoute: BSlugIndexRoute,
+  BSlugRoute: BSlugRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
