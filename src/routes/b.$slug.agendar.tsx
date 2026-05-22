@@ -124,7 +124,7 @@ function BookingPage() {
             <ArrowLeft className="h-4 w-4" /> {shop.name}
           </Link>
           <div className="flex items-center gap-3">
-            <img src={paladinoWordmark} alt="Paladino" className="h-4 w-auto" />
+            <img src={paladinoWordmark} alt="Paladino" className="h-8 w-auto" />
             <ThemeToggle />
           </div>
         </div>
