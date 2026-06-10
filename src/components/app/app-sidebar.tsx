@@ -35,15 +35,15 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
-      <SidebarHeader className="pt-6 pb-4">
-        <Link to="/app" className="flex items-center justify-center px-2 py-1">
+      <SidebarHeader className="pt-8 pb-5">
+        <Link to="/app" className="flex items-center justify-center px-3 py-1">
           {collapsed ? (
-            <span className="font-display text-2xl text-primary leading-none">P</span>
+            <span className="font-display text-3xl text-primary leading-none">P</span>
           ) : (
             <img
               src={paladinoWordmark}
               alt="Paladino"
-              className="h-14 w-auto max-w-full object-contain"
+              className="h-16 md:h-20 w-full object-contain brightness-110 contrast-110 drop-shadow-sm"
             />
           )}
         </Link>
