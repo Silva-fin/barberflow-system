@@ -65,7 +65,11 @@ function ShopProfilePage() {
       <header className="border-b border-border">
         <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center">
-            <img src={paladinoWordmark} alt="Paladino" className="h-8 w-auto" />
+            <img
+              src={paladinoWordmark}
+              alt="Paladino"
+              className="h-12 md:h-14 w-auto object-contain brightness-110 contrast-110 drop-shadow-sm"
+            />
           </Link>
           <ThemeToggle />
         </div>
