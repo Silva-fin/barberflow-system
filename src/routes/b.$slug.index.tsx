@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatBRL } from "@/lib/format";
-import paladinoWordmark from "@/assets/paladino-wordmark.png";
+import paladinoWordmark from "@/assets/paladino-wordmark-tight.png";
 
 export const Route = createFileRoute("/b/$slug/")({
   head: ({ params }) => ({
