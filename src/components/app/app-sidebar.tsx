@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/lib/auth";
 import { useTheme } from "@/lib/theme";
-import paladinoWordmark from "@/assets/paladino-wordmark.png";
+import paladinoWordmark from "@/assets/paladino-wordmark-tight.png";
 
 type NavItem = { title: string; url: string; icon: typeof LayoutDashboard; exact?: boolean };
 const items: NavItem[] = [
@@ -43,7 +43,7 @@ export function AppSidebar() {
             <img
               src={paladinoWordmark}
               alt="Paladino"
-              className="h-16 md:h-20 w-full object-contain brightness-110 contrast-110 drop-shadow-sm"
+              className="h-12 md:h-14 w-full object-contain brightness-110 contrast-110 drop-shadow-sm"
             />
           )}
         </Link>

@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
-import paladinoWordmark from "@/assets/paladino-wordmark.png";
+import paladinoWordmark from "@/assets/paladino-wordmark-tight.png";
 
 type BookingSearch = { service?: string; barber?: string };
 
