@@ -1,11 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import paladinoWordmark from "@/assets/paladino-wordmark-tight.png";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -41,12 +41,13 @@ function LoginPage() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="hidden flex-col justify-between bg-sidebar p-12 lg:flex">
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <Sparkles className="h-4 w-4" />
-          </div>
-          <span className="font-display text-2xl tracking-wider">NAVALHA</span>
-        </div>
+        <Link to="/" className="inline-flex">
+          <img
+            src={paladinoWordmark}
+            alt="Paladino"
+            className="h-10 w-auto object-contain brightness-110 contrast-110 drop-shadow-sm md:h-12"
+          />
+        </Link>
         <div>
           <h2 className="font-display text-5xl leading-tight">
             Sua agenda,<br />sua equipe,<br />seu caixa.
@@ -60,6 +61,13 @@ function LoginPage() {
 
       <div className="flex items-center justify-center p-6">
         <form onSubmit={onSubmit} className="w-full max-w-sm space-y-6">
+          <div className="flex justify-center lg:hidden">
+            <img
+              src={paladinoWordmark}
+              alt="Paladino"
+              className="h-10 w-auto object-contain brightness-110 contrast-110 drop-shadow-sm"
+            />
+          </div>
           <div>
             <h1 className="font-display text-3xl tracking-wide">Entrar no painel</h1>
             <p className="mt-2 text-sm text-muted-foreground">
