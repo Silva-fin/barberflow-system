@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calendar, ChartBar, Scissors, Sparkles, Users } from "lucide-react";
+import { Calendar, ChartBar, Scissors, Users } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import paladinoWordmark from "@/assets/paladino-wordmark-tight.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -18,24 +19,25 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <Sparkles className="h-4 w-4" />
-            </div>
-            <span className="font-display text-2xl tracking-wider">NAVALHA</span>
-          </div>
-          <nav className="flex items-center gap-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-4">
+          <Link to="/" className="flex min-w-0 items-center">
+            <img
+              src={paladinoWordmark}
+              alt="Paladino"
+              className="h-8 w-auto object-contain brightness-110 contrast-110 drop-shadow-sm sm:h-10"
+            />
+          </Link>
+          <nav className="flex shrink-0 items-center gap-2 sm:gap-4">
             <Link
               to="/b/$slug" params={{ slug: "barbearia-do-zeca" }}
-              className="text-sm text-muted-foreground hover:text-foreground"
+              className="hidden text-sm text-muted-foreground hover:text-foreground sm:inline"
             >
               Ver demo de agendamento
             </Link>
             <ThemeToggle />
             <Link
               to="/login"
-              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+              className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 sm:px-4"
             >
               Entrar
             </Link>
