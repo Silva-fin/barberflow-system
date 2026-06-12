@@ -1,25 +1,31 @@
-## Diagnóstico
+## Objetivo
 
-A imagem `src/assets/paladino-wordmark.png` já tem resolução grande (1536×1024). O motivo de parecer pequena e apagada é que o PNG tem muito espaço transparente em volta do letreiro — então, ao aplicar `object-contain`, o wordmark encolhe dentro da caixa, deixando margens vazias.
+Substituir o bloco `[ícone Sparkles] + texto "NAVALHA"` pela imagem `paladino-wordmark-tight.png` na tela de login e na landing page, garantindo que a logo se adapte bem em mobile, tablet e desktop.
 
-Aumentar o arquivo em pixels não resolve. O caminho certo é **recortar as bordas transparentes** (trim) e/ou **regenerar a arte com mais peso visual**, para que ocupe toda a caixa do sidebar e do header.
+## Mudanças
 
-## Plano
+### 1. `src/routes/login.tsx`
+A logo aparece em dois lugares:
 
-### 1. Trim das margens transparentes (rápido, sem perder qualidade)
-- Gerar `src/assets/paladino-wordmark-tight.png` a partir do PNG atual, removendo todo o padding transparente ao redor do letreiro (ImageMagick `-trim`).
-- Trocar o import em:
-  - `src/components/app/app-sidebar.tsx`
-  - `src/routes/b.$slug.index.tsx`
-  - `src/routes/b.$slug.agendar.tsx`
-- Resultado: o wordmark passa a ocupar 100% da caixa, ficando visivelmente maior sem alterar nenhum tamanho CSS.
+- **Painel lateral esquerdo** (visível apenas em `lg:`): hoje é `Sparkles` + "NAVALHA". Trocar por `<img src={paladinoWordmark} />` com altura responsiva `h-10 md:h-12` e `w-auto object-contain brightness-110 contrast-110 drop-shadow-sm`.
+- **Formulário (mobile)**: hoje não há logo visível em telas menores que `lg`, ou seja, no celular o usuário não vê nenhuma identidade visual. Adicionar a logo acima do título "Entrar no painel", visível apenas em `<lg` (`lg:hidden`), centralizada, com `h-10 w-auto`.
 
-### 2. Reverter os ajustes de CSS exagerados do painel
-- No `app-sidebar.tsx`, voltar a logo para uma altura mais sóbria (ex.: `h-12 md:h-14`) já que, depois do trim, ela ocupará todo o espaço.
-- Manter `brightness-110 contrast-110 drop-shadow-sm` para destaque em fundos escuros.
+### 2. `src/routes/index.tsx` (landing)
+No `<header>`, trocar `[Sparkles + "NAVALHA"]` por `<img src={paladinoWordmark} />`:
 
-### 3. (Opcional) Versão regenerada com mais presença
-- Caso o trim ainda não dê o peso visual desejado, gerar uma nova arte do wordmark "PALADINO" em alta resolução, com traços mais grossos e contraste maior, salvando como `src/assets/paladino-wordmark.png` (sobrescreve). Faria isso apenas se você confirmar que prefere essa rota.
+- Altura responsiva: `h-8 sm:h-10` (header compacto).
+- `w-auto object-contain brightness-110 contrast-110 drop-shadow-sm`.
+- Manter o `<Link to="/">` envolvendo a logo.
+- Aplicar padrão responsivo do header: garantir `min-w-0` no container da logo e `shrink-0` nos itens da navegação para que em telas estreitas nada estoure.
 
-## Resultado esperado
-Logo nitidamente maior e mais presente no sidebar e no header público, sem precisar inflar as caixas do layout — o ganho vem do recorte do espaço vazio do PNG.
+### 3. Responsividade do header da landing
+O header atual usa `flex items-center justify-between` com nav contendo 3 itens (link demo, theme toggle, botão Entrar). Em viewports muito estreitos (~360px) isso pode quebrar feio. Ajustes:
+
+- Esconder o link "Ver demo de agendamento" em mobile (`hidden sm:inline`), mantendo só `ThemeToggle` + botão "Entrar".
+- Reduzir padding do header em mobile (`py-3 sm:py-4`, `px-4 sm:px-6`).
+
+## Arquivos tocados
+- `src/routes/login.tsx`
+- `src/routes/index.tsx`
+
+Sem mudanças em lógica, dados ou rotas — somente apresentação.
