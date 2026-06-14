@@ -1,36 +1,48 @@
-import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { BrandingProvider } from "@/lib/branding";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app/app-sidebar";
+import { AppHeader } from "@/components/app/app-header";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthLayout,
 });
 
 function AuthLayout() {
-  const auth = useAuth();
+  const { isAuthenticated, hydrated, role } = useAuth();
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (r) => r.location.pathname });
 
+  // Não-autenticado → / (preservando guard de hydrated)
   useEffect(() => {
-    if (!auth.isAuthenticated) navigate({ to: "/login" });
-  }, [auth.isAuthenticated, navigate]);
+    if (hydrated && !isAuthenticated) navigate({ to: "/" });
+  }, [hydrated, isAuthenticated, navigate]);
 
-  if (!auth.isAuthenticated) return null;
+  // PROFESSIONAL em /financeiro/* → /dashboard
+  useEffect(() => {
+    if (!hydrated) return;
+    if (role === "PROFESSIONAL" && pathname.startsWith("/financeiro")) {
+      navigate({ to: "/dashboard" });
+    }
+  }, [hydrated, role, pathname, navigate]);
+
+  if (!hydrated || !isAuthenticated) return null;
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-background">
-        <AppSidebar />
-        <div className="flex flex-1 flex-col">
-          <header className="sticky top-0 z-10 flex h-12 items-center gap-3 bg-background/60 px-4 backdrop-blur md:hidden">
-            <SidebarTrigger />
-          </header>
-          <main className="flex-1 px-8 py-8 md:px-12 md:py-10">
-            <Outlet />
-          </main>
+    <BrandingProvider>
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full bg-background">
+          <AppSidebar />
+          <div className="flex min-w-0 flex-1 flex-col">
+            <AppHeader />
+            <main className="flex-1 px-4 py-6 md:px-8 md:py-8">
+              <Outlet />
+            </main>
+          </div>
         </div>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+    </BrandingProvider>
   );
 }
