@@ -17,7 +17,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as OwnerIndexRouteImport } from './routes/owner.index'
 import { Route as BSlugRouteImport } from './routes/b.$slug'
+import { Route as AuthenticatedInboxRouteImport } from './routes/_authenticated.inbox'
+import { Route as AuthenticatedFilaRouteImport } from './routes/_authenticated.fila'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated.crm'
 import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
@@ -71,9 +74,24 @@ const BSlugRoute = BSlugRouteImport.update({
   path: '/b/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedInboxRoute = AuthenticatedInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedFilaRoute = AuthenticatedFilaRouteImport.update({
+  id: '/fila',
+  path: '/fila',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCrmRoute = AuthenticatedCrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const BSlugIndexRoute = BSlugIndexRouteImport.update({
@@ -154,7 +172,10 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/owner': typeof OwnerRouteWithChildren
   '/portal': typeof PortalRouteWithChildren
+  '/crm': typeof AuthenticatedCrmRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/fila': typeof AuthenticatedFilaRoute
+  '/inbox': typeof AuthenticatedInboxRoute
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -175,7 +196,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/crm': typeof AuthenticatedCrmRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/fila': typeof AuthenticatedFilaRoute
+  '/inbox': typeof AuthenticatedInboxRoute
   '/owner': typeof OwnerIndexRoute
   '/portal': typeof PortalIndexRoute
   '/app/agenda': typeof AuthenticatedAppAgendaRoute
@@ -199,7 +223,10 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/owner': typeof OwnerRouteWithChildren
   '/portal': typeof PortalRouteWithChildren
+  '/_authenticated/crm': typeof AuthenticatedCrmRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/fila': typeof AuthenticatedFilaRoute
+  '/_authenticated/inbox': typeof AuthenticatedInboxRoute
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -224,7 +251,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/owner'
     | '/portal'
+    | '/crm'
     | '/dashboard'
+    | '/fila'
+    | '/inbox'
     | '/b/$slug'
     | '/owner/'
     | '/portal/'
@@ -245,7 +275,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/crm'
     | '/dashboard'
+    | '/fila'
+    | '/inbox'
     | '/owner'
     | '/portal'
     | '/app/agenda'
@@ -268,7 +301,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/owner'
     | '/portal'
+    | '/_authenticated/crm'
     | '/_authenticated/dashboard'
+    | '/_authenticated/fila'
+    | '/_authenticated/inbox'
     | '/b/$slug'
     | '/owner/'
     | '/portal/'
@@ -354,11 +390,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/inbox': {
+      id: '/_authenticated/inbox'
+      path: '/inbox'
+      fullPath: '/inbox'
+      preLoaderRoute: typeof AuthenticatedInboxRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/fila': {
+      id: '/_authenticated/fila'
+      path: '/fila'
+      fullPath: '/fila'
+      preLoaderRoute: typeof AuthenticatedFilaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/crm': {
+      id: '/_authenticated/crm'
+      path: '/crm'
+      fullPath: '/crm'
+      preLoaderRoute: typeof AuthenticatedCrmRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/b/$slug/': {
@@ -456,7 +513,10 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedFilaRoute: typeof AuthenticatedFilaRoute
+  AuthenticatedInboxRoute: typeof AuthenticatedInboxRoute
   AuthenticatedAppAgendaRoute: typeof AuthenticatedAppAgendaRoute
   AuthenticatedAppBarbeirosRoute: typeof AuthenticatedAppBarbeirosRoute
   AuthenticatedAppClientesRoute: typeof AuthenticatedAppClientesRoute
@@ -470,7 +530,10 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedCrmRoute: AuthenticatedCrmRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedFilaRoute: AuthenticatedFilaRoute,
+  AuthenticatedInboxRoute: AuthenticatedInboxRoute,
   AuthenticatedAppAgendaRoute: AuthenticatedAppAgendaRoute,
   AuthenticatedAppBarbeirosRoute: AuthenticatedAppBarbeirosRoute,
   AuthenticatedAppClientesRoute: AuthenticatedAppClientesRoute,
