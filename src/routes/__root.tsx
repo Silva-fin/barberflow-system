@@ -71,10 +71,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Navalha — Gestão para barbearias" },
-      { name: "description", content: "Painel completo para gerenciar sua barbearia e link de agendamento online para seus clientes." },
-      { property: "og:title", content: "Navalha — Gestão para barbearias" },
-      { property: "og:description", content: "Painel completo + agendamento online para sua barbearia." },
+      { title: "Paladino — Gestão para negócios de serviço" },
+      { name: "description", content: "Plataforma multi-tenant para gestão de negócios de serviço. Agenda, equipe, caixa e operação em um só painel." },
+      { property: "og:title", content: "Paladino — Gestão para negócios de serviço" },
+      { property: "og:description", content: "Plataforma multi-tenant para gestão de negócios de serviço." },
       { property: "og:type", content: "website" },
     ],
     links: [
