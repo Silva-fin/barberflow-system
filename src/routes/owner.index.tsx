@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_owner/")({
+export const Route = createFileRoute("/owner/")({
   head: () => ({ meta: [{ title: "Plataforma — Paladino" }] }),
   component: OwnerHome,
 });

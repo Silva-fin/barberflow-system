@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 
-export const Route = createFileRoute("/_owner")({
+export const Route = createFileRoute("/owner")({
   component: OwnerLayout,
 });
 
