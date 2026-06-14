@@ -22,10 +22,13 @@ import { Route as AuthenticatedFilaRouteImport } from './routes/_authenticated.f
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated.crm'
 import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
+import { Route as AuthenticatedPagamentosIndexRouteImport } from './routes/_authenticated.pagamentos.index'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
+import { Route as AuthenticatedPagamentosIdRouteImport } from './routes/_authenticated.pagamentos.$id'
 import { Route as AuthenticatedOperacoesIdRouteImport } from './routes/_authenticated.operacoes.$id'
+import { Route as AuthenticatedConfiguracoesFinanceiroRouteImport } from './routes/_authenticated.configuracoes.financeiro'
 import { Route as AuthenticatedClientesIdRouteImport } from './routes/_authenticated.clientes.$id'
 import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated.app.servicos'
 import { Route as AuthenticatedAppFinanceiroRouteImport } from './routes/_authenticated.app.financeiro'
@@ -99,6 +102,12 @@ const BSlugIndexRoute = BSlugIndexRouteImport.update({
   path: '/',
   getParentRoute: () => BSlugRoute,
 } as any)
+const AuthenticatedPagamentosIndexRoute =
+  AuthenticatedPagamentosIndexRouteImport.update({
+    id: '/pagamentos/',
+    path: '/pagamentos/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedClientesIndexRoute =
   AuthenticatedClientesIndexRouteImport.update({
     id: '/clientes/',
@@ -115,10 +124,22 @@ const BSlugAgendarRoute = BSlugAgendarRouteImport.update({
   path: '/agendar',
   getParentRoute: () => BSlugRoute,
 } as any)
+const AuthenticatedPagamentosIdRoute =
+  AuthenticatedPagamentosIdRouteImport.update({
+    id: '/pagamentos/$id',
+    path: '/pagamentos/$id',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedOperacoesIdRoute =
   AuthenticatedOperacoesIdRouteImport.update({
     id: '/operacoes/$id',
     path: '/operacoes/$id',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedConfiguracoesFinanceiroRoute =
+  AuthenticatedConfiguracoesFinanceiroRouteImport.update({
+    id: '/configuracoes/financeiro',
+    path: '/configuracoes/financeiro',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedClientesIdRoute = AuthenticatedClientesIdRouteImport.update({
@@ -186,10 +207,13 @@ export interface FileRoutesByFullPath {
   '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
+  '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
+  '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
+  '/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
   '/b/$slug/': typeof BSlugIndexRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
@@ -209,10 +233,13 @@ export interface FileRoutesByTo {
   '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
+  '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
+  '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
+  '/pagamentos': typeof AuthenticatedPagamentosIndexRoute
   '/b/$slug': typeof BSlugIndexRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
@@ -237,10 +264,13 @@ export interface FileRoutesById {
   '/_authenticated/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
   '/_authenticated/clientes/$id': typeof AuthenticatedClientesIdRoute
+  '/_authenticated/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/_authenticated/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
+  '/_authenticated/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
+  '/_authenticated/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
   '/b/$slug/': typeof BSlugIndexRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
@@ -265,10 +295,13 @@ export interface FileRouteTypes {
     | '/app/financeiro'
     | '/app/servicos'
     | '/clientes/$id'
+    | '/configuracoes/financeiro'
     | '/operacoes/$id'
+    | '/pagamentos/$id'
     | '/b/$slug/agendar'
     | '/app/'
     | '/clientes/'
+    | '/pagamentos/'
     | '/b/$slug/'
     | '/b/$slug/confirmacao/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -288,10 +321,13 @@ export interface FileRouteTypes {
     | '/app/financeiro'
     | '/app/servicos'
     | '/clientes/$id'
+    | '/configuracoes/financeiro'
     | '/operacoes/$id'
+    | '/pagamentos/$id'
     | '/b/$slug/agendar'
     | '/app'
     | '/clientes'
+    | '/pagamentos'
     | '/b/$slug'
     | '/b/$slug/confirmacao/$id'
   id:
@@ -315,10 +351,13 @@ export interface FileRouteTypes {
     | '/_authenticated/app/financeiro'
     | '/_authenticated/app/servicos'
     | '/_authenticated/clientes/$id'
+    | '/_authenticated/configuracoes/financeiro'
     | '/_authenticated/operacoes/$id'
+    | '/_authenticated/pagamentos/$id'
     | '/b/$slug/agendar'
     | '/_authenticated/app/'
     | '/_authenticated/clientes/'
+    | '/_authenticated/pagamentos/'
     | '/b/$slug/'
     | '/b/$slug/confirmacao/$id'
   fileRoutesById: FileRoutesById
@@ -425,6 +464,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BSlugIndexRouteImport
       parentRoute: typeof BSlugRoute
     }
+    '/_authenticated/pagamentos/': {
+      id: '/_authenticated/pagamentos/'
+      path: '/pagamentos'
+      fullPath: '/pagamentos/'
+      preLoaderRoute: typeof AuthenticatedPagamentosIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/clientes/': {
       id: '/_authenticated/clientes/'
       path: '/clientes'
@@ -446,11 +492,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BSlugAgendarRouteImport
       parentRoute: typeof BSlugRoute
     }
+    '/_authenticated/pagamentos/$id': {
+      id: '/_authenticated/pagamentos/$id'
+      path: '/pagamentos/$id'
+      fullPath: '/pagamentos/$id'
+      preLoaderRoute: typeof AuthenticatedPagamentosIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/operacoes/$id': {
       id: '/_authenticated/operacoes/$id'
       path: '/operacoes/$id'
       fullPath: '/operacoes/$id'
       preLoaderRoute: typeof AuthenticatedOperacoesIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/configuracoes/financeiro': {
+      id: '/_authenticated/configuracoes/financeiro'
+      path: '/configuracoes/financeiro'
+      fullPath: '/configuracoes/financeiro'
+      preLoaderRoute: typeof AuthenticatedConfiguracoesFinanceiroRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/clientes/$id': {
@@ -524,9 +584,12 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAppFinanceiroRoute: typeof AuthenticatedAppFinanceiroRoute
   AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRoute
   AuthenticatedClientesIdRoute: typeof AuthenticatedClientesIdRoute
+  AuthenticatedConfiguracoesFinanceiroRoute: typeof AuthenticatedConfiguracoesFinanceiroRoute
   AuthenticatedOperacoesIdRoute: typeof AuthenticatedOperacoesIdRoute
+  AuthenticatedPagamentosIdRoute: typeof AuthenticatedPagamentosIdRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
   AuthenticatedClientesIndexRoute: typeof AuthenticatedClientesIndexRoute
+  AuthenticatedPagamentosIndexRoute: typeof AuthenticatedPagamentosIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -541,9 +604,13 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppFinanceiroRoute: AuthenticatedAppFinanceiroRoute,
   AuthenticatedAppServicosRoute: AuthenticatedAppServicosRoute,
   AuthenticatedClientesIdRoute: AuthenticatedClientesIdRoute,
+  AuthenticatedConfiguracoesFinanceiroRoute:
+    AuthenticatedConfiguracoesFinanceiroRoute,
   AuthenticatedOperacoesIdRoute: AuthenticatedOperacoesIdRoute,
+  AuthenticatedPagamentosIdRoute: AuthenticatedPagamentosIdRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
   AuthenticatedClientesIndexRoute: AuthenticatedClientesIndexRoute,
+  AuthenticatedPagamentosIndexRoute: AuthenticatedPagamentosIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

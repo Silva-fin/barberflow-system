@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Calendar, ClipboardList, ListOrdered, MessageSquare,
-  Users, MessageCircle, Scissors, Package, Tags, Boxes,
+  Users, MessageCircle, HeartHandshake, Scissors, Package, Tags, Boxes,
   Wallet, Landmark, Receipt, Warehouse, HandCoins, FileSpreadsheet, Percent,
   UserCircle, ShieldCheck, Settings, BarChart3, ScrollText,
   ChevronRight, type LucideIcon,
@@ -43,6 +43,7 @@ const NAV: NavGroup[] = [
     label: "Relacionamento",
     items: [
       { title: "Clientes / CRM", url: "/clientes", icon: Users, roles: ALL },
+      { title: "CRM", url: "/crm", icon: HeartHandshake, roles: ["OWNER", "ADMIN"] },
       { title: "Comunicação", url: "/comunicacao", icon: MessageCircle, roles: ["OWNER", "ADMIN"] },
     ],
   },
