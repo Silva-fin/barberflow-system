@@ -7,7 +7,7 @@ const ThemeCtx = createContext<{ theme: Theme; toggle: () => void; setTheme: (t:
   setTheme: () => {},
 });
 
-const STORAGE_KEY = "navalha-theme";
+const STORAGE_KEY = "paladino-theme";
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("dark");
