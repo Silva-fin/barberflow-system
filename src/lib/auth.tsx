@@ -1,7 +1,23 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { AuthUser } from "@/lib/api/types";
 
-const STORAGE_KEY = "barbershop_auth";
+const STORAGE_KEY = "paladino_auth";
+const ROLE_STORAGE_KEY = "dev_role";
+
+export type Role =
+  | "OWNER"
+  | "ADMIN"
+  | "OPERATOR"
+  | "PROFESSIONAL"
+  | "PLATFORM_OWNER";
+
+export const ROLE_LABELS: Record<Role, string> = {
+  OWNER: "Proprietário",
+  ADMIN: "Administrador",
+  OPERATOR: "Operador",
+  PROFESSIONAL: "Profissional",
+  PLATFORM_OWNER: "Plataforma",
+};
 
 const MOCK_USER: AuthUser = {
   id: "u-1",
@@ -11,9 +27,12 @@ const MOCK_USER: AuthUser = {
 };
 
 export interface AuthState {
+  hydrated: boolean;
   isAuthenticated: boolean;
   user: AuthUser | null;
-  login: (email: string, password: string) => Promise<void>;
+  role: Role;
+  setRole: (role: Role) => void;
+  login: (email: string, password: string, role?: Role) => Promise<void>;
   logout: () => void;
 }
 
@@ -21,33 +40,46 @@ const AuthContext = createContext<AuthState | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [ready, setReady] = useState(false);
+  const [role, setRoleState] = useState<Role>("OWNER");
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) setUser(JSON.parse(raw));
+      const r = localStorage.getItem(ROLE_STORAGE_KEY) as Role | null;
+      if (r && ["OWNER","ADMIN","OPERATOR","PROFESSIONAL","PLATFORM_OWNER"].includes(r)) {
+        setRoleState(r);
+      }
     } catch {}
-    setReady(true);
+    setHydrated(true);
   }, []);
 
+  const setRole = (r: Role) => {
+    setRoleState(r);
+    try { localStorage.setItem(ROLE_STORAGE_KEY, r); } catch {}
+  };
+
   const value: AuthState = {
+    hydrated,
     isAuthenticated: !!user,
     user,
-    async login(email: string, _password: string) {
-      await new Promise(r => setTimeout(r, 400));
+    role,
+    setRole,
+    async login(email, _password, asRole) {
+      await new Promise((r) => setTimeout(r, 250));
       const u = { ...MOCK_USER, email };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(u)); } catch {}
       setUser(u);
+      if (asRole) setRole(asRole);
     },
     logout() {
-      localStorage.removeItem(STORAGE_KEY);
+      try { localStorage.removeItem(STORAGE_KEY); } catch {}
       setUser(null);
     },
   };
 
-  if (!ready) return null;
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

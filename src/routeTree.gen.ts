@@ -9,10 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PortalRouteImport } from './routes/portal'
+import { Route as OwnerRouteImport } from './routes/owner'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PortalIndexRouteImport } from './routes/portal.index'
+import { Route as OwnerIndexRouteImport } from './routes/owner.index'
 import { Route as BSlugRouteImport } from './routes/b.$slug'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
@@ -24,6 +29,16 @@ import { Route as AuthenticatedAppBarbeirosRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppAgendaRouteImport } from './routes/_authenticated.app.agenda'
 import { Route as BSlugConfirmacaoIdRouteImport } from './routes/b.$slug.confirmacao.$id'
 
+const PortalRoute = PortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OwnerRoute = OwnerRouteImport.update({
+  id: '/owner',
+  path: '/owner',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -38,10 +53,25 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortalIndexRoute = PortalIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PortalRoute,
+} as any)
+const OwnerIndexRoute = OwnerIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => OwnerRoute,
+} as any)
 const BSlugRoute = BSlugRouteImport.update({
   id: '/b/$slug',
   path: '/b/$slug',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 const BSlugIndexRoute = BSlugIndexRouteImport.update({
   id: '/',
@@ -102,7 +132,12 @@ const BSlugConfirmacaoIdRoute = BSlugConfirmacaoIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/owner': typeof OwnerRouteWithChildren
+  '/portal': typeof PortalRouteWithChildren
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/b/$slug': typeof BSlugRouteWithChildren
+  '/owner/': typeof OwnerIndexRoute
+  '/portal/': typeof PortalIndexRoute
   '/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/app/clientes': typeof AuthenticatedAppClientesRoute
@@ -117,6 +152,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/owner': typeof OwnerIndexRoute
+  '/portal': typeof PortalIndexRoute
   '/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/app/clientes': typeof AuthenticatedAppClientesRoute
@@ -133,7 +171,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/owner': typeof OwnerRouteWithChildren
+  '/portal': typeof PortalRouteWithChildren
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/b/$slug': typeof BSlugRouteWithChildren
+  '/owner/': typeof OwnerIndexRoute
+  '/portal/': typeof PortalIndexRoute
   '/_authenticated/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/_authenticated/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/_authenticated/app/clientes': typeof AuthenticatedAppClientesRoute
@@ -150,7 +193,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/owner'
+    | '/portal'
+    | '/dashboard'
     | '/b/$slug'
+    | '/owner/'
+    | '/portal/'
     | '/app/agenda'
     | '/app/barbeiros'
     | '/app/clientes'
@@ -165,6 +213,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/dashboard'
+    | '/owner'
+    | '/portal'
     | '/app/agenda'
     | '/app/barbeiros'
     | '/app/clientes'
@@ -180,7 +231,12 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/login'
+    | '/owner'
+    | '/portal'
+    | '/_authenticated/dashboard'
     | '/b/$slug'
+    | '/owner/'
+    | '/portal/'
     | '/_authenticated/app/agenda'
     | '/_authenticated/app/barbeiros'
     | '/_authenticated/app/clientes'
@@ -197,11 +253,27 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
+  OwnerRoute: typeof OwnerRouteWithChildren
+  PortalRoute: typeof PortalRouteWithChildren
   BSlugRoute: typeof BSlugRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/portal': {
+      id: '/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof PortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/owner': {
+      id: '/owner'
+      path: '/owner'
+      fullPath: '/owner'
+      preLoaderRoute: typeof OwnerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -223,12 +295,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portal/': {
+      id: '/portal/'
+      path: '/'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof PortalIndexRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/owner/': {
+      id: '/owner/'
+      path: '/'
+      fullPath: '/owner/'
+      preLoaderRoute: typeof OwnerIndexRouteImport
+      parentRoute: typeof OwnerRoute
+    }
     '/b/$slug': {
       id: '/b/$slug'
       path: '/b/$slug'
       fullPath: '/b/$slug'
       preLoaderRoute: typeof BSlugRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/b/$slug/': {
       id: '/b/$slug/'
@@ -304,6 +397,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedAppAgendaRoute: typeof AuthenticatedAppAgendaRoute
   AuthenticatedAppBarbeirosRoute: typeof AuthenticatedAppBarbeirosRoute
   AuthenticatedAppClientesRoute: typeof AuthenticatedAppClientesRoute
@@ -314,6 +408,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedAppAgendaRoute: AuthenticatedAppAgendaRoute,
   AuthenticatedAppBarbeirosRoute: AuthenticatedAppBarbeirosRoute,
   AuthenticatedAppClientesRoute: AuthenticatedAppClientesRoute,
@@ -326,6 +421,27 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
+
+interface OwnerRouteChildren {
+  OwnerIndexRoute: typeof OwnerIndexRoute
+}
+
+const OwnerRouteChildren: OwnerRouteChildren = {
+  OwnerIndexRoute: OwnerIndexRoute,
+}
+
+const OwnerRouteWithChildren = OwnerRoute._addFileChildren(OwnerRouteChildren)
+
+interface PortalRouteChildren {
+  PortalIndexRoute: typeof PortalIndexRoute
+}
+
+const PortalRouteChildren: PortalRouteChildren = {
+  PortalIndexRoute: PortalIndexRoute,
+}
+
+const PortalRouteWithChildren =
+  PortalRoute._addFileChildren(PortalRouteChildren)
 
 interface BSlugRouteChildren {
   BSlugAgendarRoute: typeof BSlugAgendarRoute
@@ -345,18 +461,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
+  OwnerRoute: OwnerRouteWithChildren,
+  PortalRoute: PortalRouteWithChildren,
   BSlugRoute: BSlugRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
