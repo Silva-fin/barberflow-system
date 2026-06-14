@@ -1,107 +1,183 @@
 
-# Usar o backend como base do design
+# Fase 0 — Shell do Paladino
 
-## Resposta direta
+Implementar apenas o **shell visual e estrutural** da plataforma multi-tenant. Sem CRUDs, sem formulários, sem chamadas reais de API. Stack: TanStack Start (equivalente ao App Router do brief) + shadcn/ui + Tailwind + Lucide + Cormorant/Inter.
 
-Sim, é totalmente viável — e é, na verdade, o melhor caminho. Como você tem OpenAPI/Swagger, conseguimos extrair entidades, campos, enums, roles e fluxos direto da spec e usar isso como contrato para desenhar todas as telas. Como você prefere esperar o backend ficar pronto para plugar de verdade, o trabalho de design fica em cima de **mocks tipados que espelham 1:1 o contrato da API**. Quando a API subir, a troca é mecânica: substituir a camada de fetch, sem mexer em telas.
-
-## Como vai funcionar
+## Mapeamento Next.js → TanStack
 
 ```text
-OpenAPI (sua spec)
-        │
-        ▼
-Tipos TS + camada de API (gerados / espelhados)
-        │
-        ▼
-Mocks fiéis ao contrato  ──►  Telas, rotas, permissões
-                                       │
-                  (quando o backend subir)
-                                       ▼
-                         Camada de fetch real (sem mudar telas)
+(dashboard)/layout.tsx     →  src/routes/_authenticated.tsx
+(dashboard)/dashboard/page →  src/routes/_authenticated.dashboard.tsx
+(owner)/layout.tsx         →  src/routes/_owner.tsx
+(owner)/index              →  src/routes/_owner.index.tsx (placeholder)
+(portal)/layout.tsx        →  src/routes/_portal.tsx
+(auth) login               →  src/routes/login.tsx (já existe, rebrand)
+NEXT_PUBLIC_DEV_MODE       →  import.meta.env.DEV
 ```
 
-## O que eu preciso de você
+As rotas existentes do app de barbearia (`_authenticated.app.*`) ficam temporariamente acessíveis até a Fase 1 redesenhar as telas — não são removidas agora.
 
-1. **OpenAPI/Swagger** (arquivo `.json`/`.yaml` ou URL pública). Sem isso o design vira chute.
-2. **Mapa de roles por painel**, mesmo que provisório:
-   - Plataforma: admin, dono, suporte
-   - Barbearia: dono, admin, barbeiro, operador/recepcionista
-   - Cliente final: cliente
-3. **Matriz de permissões** (o que cada role vê/faz). Posso propor uma matriz inicial a partir da spec e você corrige.
+## 1. Rebrand Navalha → Paladino
 
-## Escopo de design
+- `src/routes/__root.tsx`: title, meta description, OG.
+- `src/lib/theme.tsx`: storage key `paladino-theme`.
+- `src/lib/auth.tsx`: storage key `paladino_auth`.
+- Wordmark Cormorant Garamond renderizado em CSS puro (texto "PALADINO" tracking largo, brass), substituindo `paladino-wordmark-tight.png` no sidebar e no header. Sem nova imagem nesta fase.
+- Login: copy + wordmark.
 
-### 1. Painel da Plataforma (`/admin/*`)
-Gestão de barbearias, planos, financeiro da plataforma, suporte, métricas globais, gestão de usuários internos. Sub-roles: admin, dono, suporte.
+## 2. Tokens & tipografia
 
-### 2. Painel da Barbearia (`/app/*` — já existe, será refeito)
-Agenda, barbeiros, serviços, clientes, financeiro, configurações. Sub-roles: dono, admin, barbeiro, operador/recepcionista — com navegação e ações condicionadas à role.
+`src/styles.css` já tem petrol + brass + Cormorant + Inter. Ajustes:
+- Confirmar `--font-display: "Cormorant Garamond"` aplicado em `h1/h2/h3` via `@layer base`.
+- Confirmar `--background: #faf9f5`, `--primary: #16242c`, `--sidebar-primary: #c79a5a` (mapear se nomes divergirem).
+- Adicionar utilitário `.nav-active-marker` se preciso (sufixo ◆ accent).
 
-### 3. Painel do Cliente Final (`/me/*`)
-Meus agendamentos, histórico, barbearias favoritas, perfil, métodos de pagamento.
+## 3. Auth + Role (sem backend)
 
-### 4. Páginas públicas da barbearia (`/b/:slug/*` — já existe)
-Vitrine, agendamento, confirmação. Refinar consistência com o novo sistema visual.
+`src/lib/auth.tsx` ganha:
+- `role: "OWNER" | "ADMIN" | "OPERATOR" | "PROFESSIONAL" | "PLATFORM_OWNER"`
+- `setRole(role)` para o seletor dev
+- `ROLE_LABELS` exportado
+- Estado inicial: `OWNER`, persistido em `localStorage("dev_role")` quando em dev
+- `useAuth()` continua expondo `user`, `login`, `logout`
 
-### 5. Landing + Auth
-Landing institucional (a criar) e telas de login/cadastro por público (barbearia, cliente, plataforma).
+Tipos centralizados em `src/lib/auth.tsx` (sem nova camada de API — explícito no brief: "Não implemente chamadas de API").
 
-## Plano de execução (em etapas)
+## 4. Branding via CSS vars
 
-**Etapa 0 — Spec e tipos** (faço ao receber o OpenAPI)
-- Salvar a spec em `docs/openapi.yaml`.
-- Gerar/espelhar tipos em `src/lib/api/types.ts` a partir da spec.
-- Refatorar `src/lib/api/index.ts` para um cliente fetch tipado com:
-  - implementação atual = mocks (mantém preview funcionando)
-  - flag/env para futura troca pelo cliente HTTP real
-- Definir enums de roles e helper `can(role, action)`.
+`src/lib/branding.tsx` — provider client-only que:
+- Lê branding mock hardcoded: `{ primary: "#16242c", accent: "#c79a5a", logoText: "PALADINO", fontDisplay: "Cormorant Garamond" }`
+- Injeta como CSS vars em `:root` via `useEffect` (não bloqueia render)
+- Exposto para a Fase 1 trocar pela leitura real de `/tenant/branding`
 
-**Etapa 1 — IA / arquitetura de rotas e roles**
-- Nova estrutura de rotas no TanStack Router:
-  - `/_authenticated/admin/*` (Plataforma)
-  - `/_authenticated/app/*` (Barbearia)
-  - `/_authenticated/me/*` (Cliente)
-  - `/b/$slug/*` (público)
-  - `/`, `/login`, `/cadastro`
-- Guards por role em `beforeLoad`.
-- Layouts/sidebars dedicadas por painel.
+Montado dentro de `_authenticated.tsx`.
 
-**Etapa 2 — Sistema visual**
-- Consolidar tokens em `src/styles.css` (já temos petrol + brass).
-- Componentes base: AppShell, PageHeader, DataTable, EmptyState, StatCard, FilterBar, RoleBadge.
-- Padronizar densidade, tipografia e estados (loading/empty/error) em todas as telas.
+## 5. Sidebar role-aware
 
-**Etapa 3 — Telas por painel**
-- Barbearia: redesenho das telas existentes + variações por role.
-- Plataforma: telas novas (barbearias, planos, suporte, métricas).
-- Cliente: telas novas (meus agendamentos, perfil).
-- Públicas: refino visual.
-- Landing: hero, features, planos, depoimentos, CTA.
+Reescrever `src/components/app/app-sidebar.tsx`:
 
-**Etapa 4 — Plug do backend real** (quando você liberar)
-- Trocar a implementação de `src/lib/api/index.ts` por chamadas HTTP reais.
-- Configurar `VITE_API_BASE_URL` e auth (JWT/cookie — depende da sua spec).
-- Tratar CORS, refresh de token e erros padronizados.
-- Manter mocks como fallback de dev (`VITE_USE_MOCKS=true`).
+**Estrutura**:
+- Mantém `collapsible="icon"` (w-60 ↔ w-16, transição, persistido) e drawer no mobile (já existe via `SidebarProvider`).
+- Wordmark "PALADINO" em Cormorant brass quando expandido, "P" quando colapsado.
+- Grupos com header `text-[10px] uppercase tracking-[0.25em] text-muted-foreground` (some no collapsed).
+- Item ativo: `italic` + sufixo `◆` em `text-sidebar-primary`.
+- Ícones Lucide `size={16}` `strokeWidth={1.5}`.
 
-## Riscos / pontos de atenção
+**Filtro por role** — definição declarativa:
 
-- **Sem OpenAPI, tudo vira suposição** — telas terão que ser refeitas quando o contrato real chegar.
-- **Roles ainda em definição**: vou propor uma matriz inicial; mudanças depois custam pouco se a camada `can()` estiver centralizada.
-- **Auth**: precisamos saber se o backend usa JWT, cookie de sessão, OAuth, etc. — afeta login e guards.
-- **Multi-tenant**: como a API identifica a barbearia atual (subdomínio, header, path)? Isso muda rotas e cliente HTTP.
+```ts
+type NavItem = { title: string; url: string; icon: Icon; roles: Role[] };
+type NavGroup = { label: string; items: NavItem[] };
+const NAV: NavGroup[] = [
+  { label: "Operação", items: [
+      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, roles: ALL },
+      { title: "Agenda", url: "/agenda", icon: Calendar, roles: ALL },
+      { title: "Operações", url: "/operacoes", icon: ClipboardList, roles: ALL },
+      { title: "Fila", url: "/fila", icon: ListOrdered, roles: ["OWNER","ADMIN","OPERATOR"] },
+      { title: "Atendimento humano", url: "/inbox", icon: MessageSquare, roles: ["OWNER","ADMIN","OPERATOR"] },
+  ]},
+  { label: "Relacionamento", items: [...] },
+  { label: "Comercial", items: [...] },
+  { label: "Financeiro", items: [...] },
+  { label: "Administração", items: [...] },
+];
+```
+
+Aplicado: OWNER/ADMIN veem tudo; OPERATOR vê Operação + Clientes + Catálogo (view) + Pagamentos + Caixa; PROFESSIONAL vê Dashboard + Agenda + Operações + Clientes (view) + Extrato comissões. Grupos vazios após o filtro não renderizam.
+
+Submenus (Catálogo, Gestão Financeira) renderizados via `Collapsible` do shadcn dentro do `SidebarMenuItem`.
+
+## 6. Header
+
+`src/components/app/app-header.tsx` (novo), montado em `_authenticated.tsx`:
+
+```text
+[hamburguer mobile · SidebarTrigger desktop]  [Wordmark Paladino]  [Tenant: "Barbearia do Zeca"]   ········   [tema] [avatar+role] [sair]
+                                                                                                              [RoleDevSelector — só em dev, abaixo do avatar]
+```
+
+- Tenant: hardcoded `"Barbearia do Zeca"` por enquanto.
+- Avatar = iniciais do `user.name` em pill petrol + brass; label role via `ROLE_LABELS[role]`.
+- Tema: usa `ThemeToggle` existente.
+- Sair: `useAuth().logout()` → `navigate({ to: "/login" })`.
+- Breadcrumbs derivados do `pathname` (mapa estático título-por-segmento) numa linha abaixo do header.
+
+## 7. RoleDevSelector
+
+`src/components/app/role-dev-selector.tsx`:
+- Renderizado apenas quando `import.meta.env.DEV === true`.
+- Select shadcn minimalista (`text-xs`), label "Role:" em `text-muted-foreground`.
+- Opções: OWNER · ADMIN · OPERATOR · PROFESSIONAL.
+- `onValueChange` → `setRole()` → persiste em `localStorage("dev_role")` → sidebar e dashboard reagem via context (sem reload).
+
+## 8. Guards
+
+`_authenticated.tsx` (já existe, ajustar):
+- Aguarda `hydrated` antes de checar `isAuthenticated` (evita loop login↔dashboard).
+- Não autenticado → `redirect({ to: "/login" })`.
+- `beforeLoad` para PROFESSIONAL em `/financeiro/*` → redirect `/dashboard`.
+
+`_owner.tsx` (novo):
+- `beforeLoad` exige `role === "PLATFORM_OWNER"`; senão redirect `/dashboard`.
+- Shell vazio com `<Outlet />`.
+
+`_portal.tsx` (novo):
+- Shell sem sidebar tenant, só `<Outlet />` + header mínimo.
+
+## 9. Dashboard role-aware (mockado)
+
+`src/routes/_authenticated.dashboard.tsx`:
+
+Renderiza variantes condicionadas a `role`. Dados **hardcoded inline** no componente (sem camada mock).
+
+**OWNER/ADMIN**:
+- KPI strip: 3 cards (Agendamentos hoje · Faturamento mês · Ocupação %).
+- Gráfico Receita × Despesa × Margem: barras CSS estáticas (sem lib de chart nesta fase).
+- Alertas (lista): "3 pagamentos a confirmar", "2 itens com estoque baixo", "Promoção XPTO expira em 2 dias".
+- Pendências: "2 payables vencendo", "Conciliação de caixa pendente".
+- CRM clientes em risco: 3 nomes mockados.
+
+**OPERATOR**:
+- Agenda do dia (lista mock), Fila (mock), Atendimento humano (badge), Cobranças pendentes, Caixa do dia.
+
+**PROFESSIONAL**:
+- Próximos atendimentos próprios, ações rápidas (Iniciar atendimento, Marcar pausa), Extrato de comissões próprias.
+
+Todos os blocos usam `Card`, `formatBRL`, `formatDateTime` (já existem em `src/lib/format.ts`), ícones Lucide.
+
+## 10. Login
+
+Atualizar `src/routes/login.tsx`:
+- Wordmark Paladino + copy nova.
+- Mantém o fluxo mock atual (`auth.login(email, password)` → `/dashboard`).
+- Em dev, atalhos para entrar como cada role (botões discretos abaixo do form).
 
 ## Detalhes técnicos
 
-- Tipos gerados via `openapi-typescript` (preferido) ou escritos à mão a partir da spec.
-- Cliente HTTP em `src/lib/api/http.ts` com `fetch` tipado + interceptors para auth e erros.
-- Mocks vivem em `src/lib/mock/*` e implementam a mesma interface do cliente real, permitindo troca via flag.
-- Roles num enum `AppRole` + helper `can()`; nunca checar role espalhado pelas telas.
-- Rotas protegidas via `beforeLoad` lendo contexto de auth (já é o padrão do template).
+- **Sem nova lib**. Tudo com pacotes já instalados (shadcn, lucide-react, tailwind).
+- Brand colors injetados via `useEffect` (não SSR) para evitar mismatch.
+- `import.meta.env.DEV` no lugar de `process.env.NODE_ENV === "development"`.
+- Storage keys padronizadas (`paladino_*`, `dev_role`).
+- Nenhum arquivo gerado (`routeTree.gen.ts`) é editado manualmente — o plugin regenera.
+- Rotas legadas `_authenticated.app.*` ficam intocadas; o brief é só Fase 0.
 
-## Próximos passos
+## Arquivos
 
-1. Você me manda o OpenAPI (cola aqui ou anexa o arquivo).
-2. Eu confirmo a matriz de roles/permissões inicial.
-3. Implemento a Etapa 0 + Etapa 1 e te mostro a nova arquitetura antes de começar o redesign das telas.
+**Novos**: `_authenticated.dashboard.tsx`, `_owner.tsx`, `_owner.index.tsx`, `_portal.tsx`, `app-header.tsx`, `role-dev-selector.tsx`, `branding.tsx`.
+
+**Editados**: `__root.tsx` (meta), `_authenticated.tsx` (header + branding + guards), `app-sidebar.tsx` (rebrand + grupos + roles + submenus), `auth.tsx` (role + setRole + ROLE_LABELS), `theme.tsx` (storage key), `login.tsx` (rebrand + atalhos de role em dev), `styles.css` (verificar tokens).
+
+## O que NÃO entra nesta fase
+
+- Camada `src/lib/api/*` ou mocks tipados (explícito no brief).
+- CRUDs, formulários, telas internas de Agenda, Clientes, Catálogo, Financeiro.
+- Wordmark como imagem nova (texto Cormorant resolve).
+- Integração real com `/tenant/branding` ou `/companies/me`.
+- Mudanças nas rotas públicas `b.$slug.*`.
+
+## Próximos passos após aprovar
+
+1. Confirmo plano → entro em build.
+2. Implemento arquivos em paralelo.
+3. Valido visualmente as 4 roles via seletor dev.
+4. Reporto e aguardo Fase 1 (camada de API tipada quando OpenAPI chegar).
