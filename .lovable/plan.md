@@ -1,183 +1,102 @@
+## Fase 1 — 9 telas operacionais (mock)
 
-# Fase 0 — Shell do Paladino
+Conteúdo de páginas apenas (shell, sidebar, header, branding e tokens da Fase 0 ficam intactos). Tudo em React + TanStack Router (template Lovable já está em TanStack, equivalente ao App Router do Next).
 
-Implementar apenas o **shell visual e estrutural** da plataforma multi-tenant. Sem CRUDs, sem formulários, sem chamadas reais de API. Stack: TanStack Start (equivalente ao App Router do brief) + shadcn/ui + Tailwind + Lucide + Cormorant/Inter.
+### Mapa de rotas (alinhado ao sidebar PT já existente)
 
-## Mapeamento Next.js → TanStack
+A spec usa caminhos `/appointments/[id]`, `/customers`, `/financeiro/pagamentos`, `/settings/financial` etc. O sidebar da Fase 0 já aponta para `/clientes`, `/fila`, `/inbox`, `/pagamentos`, `/configuracoes`. Para não reimplementar nem quebrar o sidebar, as rotas serão criadas em PT, mapeando 1:1 ao conteúdo da spec:
 
-```text
-(dashboard)/layout.tsx     →  src/routes/_authenticated.tsx
-(dashboard)/dashboard/page →  src/routes/_authenticated.dashboard.tsx
-(owner)/layout.tsx         →  src/routes/_owner.tsx
-(owner)/index              →  src/routes/_owner.index.tsx (placeholder)
-(portal)/layout.tsx        →  src/routes/_portal.tsx
-(auth) login               →  src/routes/login.tsx (já existe, rebrand)
-NEXT_PUBLIC_DEV_MODE       →  import.meta.env.DEV
-```
+| Spec                              | Arquivo TanStack                                              | URL                       |
+|-----------------------------------|---------------------------------------------------------------|---------------------------|
+| /appointments/[id]                | `_authenticated.operacoes.$id.tsx`                            | /operacoes/:id            |
+| /customers                        | `_authenticated.clientes.index.tsx`                           | /clientes                 |
+| /customers/[id]                   | `_authenticated.clientes.$id.tsx`                             | /clientes/:id             |
+| /crm                              | `_authenticated.crm.tsx` (+ entrada no sidebar group CRM)     | /crm                      |
+| /inbox                            | `_authenticated.inbox.tsx`                                    | /inbox                    |
+| /fila                             | `_authenticated.fila.tsx`                                     | /fila                     |
+| /financeiro/pagamentos            | `_authenticated.pagamentos.index.tsx`                         | /pagamentos               |
+| /financeiro/pagamentos/[id]       | `_authenticated.pagamentos.$id.tsx`                           | /pagamentos/:id           |
+| /settings/financial (DepositPol.) | `_authenticated.configuracoes.financeiro.tsx`                 | /configuracoes/financeiro |
 
-As rotas existentes do app de barbearia (`_authenticated.app.*`) ficam temporariamente acessíveis até a Fase 1 redesenhar as telas — não são removidas agora.
+Única edição no sidebar: adicionar item "CRM" no grupo Relacionamento (OWNER/ADMIN) apontando para `/crm`. Nenhum outro item é tocado.
 
-## 1. Rebrand Navalha → Paladino
+### Mocks e utilitários compartilhados
 
-- `src/routes/__root.tsx`: title, meta description, OG.
-- `src/lib/theme.tsx`: storage key `paladino-theme`.
-- `src/lib/auth.tsx`: storage key `paladino_auth`.
-- Wordmark Cormorant Garamond renderizado em CSS puro (texto "PALADINO" tracking largo, brass), substituindo `paladino-wordmark-tight.png` no sidebar e no header. Sem nova imagem nesta fase.
-- Login: copy + wordmark.
+`src/lib/mock/fase1.ts` — datasets isolados (sem mexer em `mock/data.ts` da Fase 0):
+- `mockAppointments` (10) com FSM, sinal/depósito opcional, histórico de transições
+- `mockCustomers` (24) com classificação, cotas, consentimentos, histórico
+- `mockConversations` (8) com mensagens por sender_type, escaladas/resolvidas
+- `mockQueueEntries` (12) + `mockQueueConfig`
+- `mockPayments` (30) PENDING/CONFIRMED/REFUNDED com método/submétodo
+- `mockDepositPolicies` (4)
+- `mockCrmInsights`
 
-## 2. Tokens & tipografia
+`src/lib/format.ts` — estender com:
+- `formatBRLFromDecimal(s: string)` (API devolve "38.50")
+- `formatDateTime(d, { timeZone: "America/Sao_Paulo" })`
+- `Empty` componente `<span class="text-xs text-muted-foreground opacity-50">Em breve</span>`
 
-`src/styles.css` já tem petrol + brass + Cormorant + Inter. Ajustes:
-- Confirmar `--font-display: "Cormorant Garamond"` aplicado em `h1/h2/h3` via `@layer base`.
-- Confirmar `--background: #faf9f5`, `--primary: #16242c`, `--sidebar-primary: #c79a5a` (mapear se nomes divergirem).
-- Adicionar utilitário `.nav-active-marker` se preciso (sufixo ◆ accent).
+`src/components/app/fsm-badge.tsx` — `<AppointmentBadge status>`, `<PaymentBadge status>`, `<CrmBadge classification>` com mapeamento de cor via tokens (`bg-primary`, `bg-destructive`, `text-sidebar-primary` para VIP brass, `bg-muted` para neutro, âmbar via classe utilitária `bg-amber-500/15 text-amber-700`).
 
-## 3. Auth + Role (sem backend)
+`src/components/app/page-header.tsx` — título `font-display text-3xl tracking-wide` + descrição + ações.
 
-`src/lib/auth.tsx` ganha:
-- `role: "OWNER" | "ADMIN" | "OPERATOR" | "PROFESSIONAL" | "PLATFORM_OWNER"`
-- `setRole(role)` para o seletor dev
-- `ROLE_LABELS` exportado
-- Estado inicial: `OWNER`, persistido em `localStorage("dev_role")` quando em dev
-- `useAuth()` continua expondo `user`, `login`, `logout`
+`src/components/app/empty-state.tsx`, `error-state.tsx` (com retry), skeletons reutilizáveis para tabela.
 
-Tipos centralizados em `src/lib/auth.tsx` (sem nova camada de API — explícito no brief: "Não implemente chamadas de API").
+### Padrões aplicados em todas as telas
 
-## 4. Branding via CSS vars
+- Cabeçalho `<PageHeader>` + container `space-y-6`.
+- 4 estados: loading (Skeleton), erro (retry), vazio (texto guiado), dados.
+- Toast (`sonner`) em toda ação; Dialog de confirmação em destrutivas.
+- Reason obrigatório nos forms: manual-discount, grant-cota, refund.
+- Ação sem endpoint → Button `disabled` + Tooltip "Em breve".
+- RBAC via `useAuth().role`: OWNER-only oculta para ADMIN/OPERATOR; PROFESSIONAL em rotas de pagamento → cards somente leitura (sem botões de ação).
+- Tabelas: shadcn `Table` + `Pagination` cliente (10/pg). Detalhe de operação simula paginação server-side só estado visual.
 
-`src/lib/branding.tsx` — provider client-only que:
-- Lê branding mock hardcoded: `{ primary: "#16242c", accent: "#c79a5a", logoText: "PALADINO", fontDisplay: "Cormorant Garamond" }`
-- Injeta como CSS vars em `:root` via `useEffect` (não bloqueia render)
-- Exposto para a Fase 1 trocar pela leitura real de `/tenant/branding`
+### Conteúdo por tela
 
-Montado dentro de `_authenticated.tsx`.
+**1. /operacoes/:id (Detalhe de operação)**
+Grid `lg:grid-cols-3`. Coluna principal (2): `<AppointmentBadge>` + cliente + horário; Card "Serviço(s)" Table; Card "Profissional"; Card "Valores" (subtotal/desconto/total). Aside: Card Sinal/Depósito condicional (`deposit?` → "Sinal pago R$X" + saldo pendente; senão oculto) + Card "Histórico de transições" (timeline simples).
+Ações: `Concluir`, `Cancelar` (Dialog com Textarea reason opcional), `Remarcar` (Dialog com DatePicker + Select horário). `Iniciar` e `NO_SHOW` disabled + Tooltip "Em breve". PROFESSIONAL: vê tudo; sem botões financeiros.
 
-## 5. Sidebar role-aware
+**2. /clientes (Lista CRM)**
+Filtros: Select classificação · Input "sem visita há ≥ N dias". Table colunas conforme spec; "Última visita" e "Ticket médio" como `<Empty>`. Cotas ativas = Badge contador. Linha clicável → `/clientes/:id`. Pagination cliente.
 
-Reescrever `src/components/app/app-sidebar.tsx`:
+**3. /clientes/:id (Ficha)**
+Header: Avatar (iniciais via fallback), nome `font-display text-2xl`, telefone, `<CrmBadge>`. Tabs (`Resumo | Histórico | Cotas | Consentimentos`).
+- Resumo: cards de dados + classificação + insights (cada insight em Card; oculto se ausente).
+- Histórico: Table appointments passados com `<AppointmentBadge>`, paginada.
+- Cotas: grid de Cards (tipo, remaining/total, validade ou "sem validade", status). Botão "Conceder cota" (Dialog: Input total>0, DatePicker opcional, Textarea reason obrigatório). Botão "Revogar" por cota (Dialog confirm).
+- Consentimentos: Lista (COMMUNICATION/MARKETING/DATA_PROCESSING) com Badge GRANTED/REVOKED e botão grant/revoke.
 
-**Estrutura**:
-- Mantém `collapsible="icon"` (w-60 ↔ w-16, transição, persistido) e drawer no mobile (já existe via `SidebarProvider`).
-- Wordmark "PALADINO" em Cormorant brass quando expandido, "P" quando colapsado.
-- Grupos com header `text-[10px] uppercase tracking-[0.25em] text-muted-foreground` (some no collapsed).
-- Item ativo: `italic` + sufixo `◆` em `text-sidebar-primary`.
-- Ícones Lucide `size={16}` `strokeWidth={1.5}`.
+**4. /crm (Dashboard CRM, OWNER/ADMIN)**
+Guard: outras roles → Empty "Sem acesso". 4 Cards KPI (Em risco/Novos no mês/VIP/Recuperados na semana). Section: Lista Top 10 em risco (Table: nome · dias sem visita · ação Abrir ficha). Section: Sugestões de ação (Cards "Remarcar X" / "Enviar pacote Y"). Vazio → "Tudo em dia".
 
-**Filtro por role** — definição declarativa:
+**5. /inbox (Master-detail)**
+Layout `grid lg:grid-cols-[320px_1fr]`. Coluna esquerda: Tabs `Escaladas | Resolvidas` + lista (cliente, msg truncada, "esperando há Xm" desde `escalated_at`, Badge "Em atendimento"). Coluna direita: thread de bolhas (CLIENT esquerda muted; BOT/AGENT direita com rótulo small) em `ScrollArea`; Textarea reply + botão Enviar (toast). Botão "Resolver conversa" (Dialog → toast "Bot reassumiu o atendimento", move p/ Resolvidas). Enviar em conversa resolvida → toast erro "Conversa não está em atendimento humano". Vazio → "Nenhuma conversa em atendimento".
 
-```ts
-type NavItem = { title: string; url: string; icon: Icon; roles: Role[] };
-type NavGroup = { label: string; items: NavItem[] };
-const NAV: NavGroup[] = [
-  { label: "Operação", items: [
-      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, roles: ALL },
-      { title: "Agenda", url: "/agenda", icon: Calendar, roles: ALL },
-      { title: "Operações", url: "/operacoes", icon: ClipboardList, roles: ALL },
-      { title: "Fila", url: "/fila", icon: ListOrdered, roles: ["OWNER","ADMIN","OPERATOR"] },
-      { title: "Atendimento humano", url: "/inbox", icon: MessageSquare, roles: ["OWNER","ADMIN","OPERATOR"] },
-  ]},
-  { label: "Relacionamento", items: [...] },
-  { label: "Comercial", items: [...] },
-  { label: "Financeiro", items: [...] },
-  { label: "Administração", items: [...] },
-];
-```
+**6. /fila (Tabs Entradas | Configuração)**
+Entradas: Filtros Select status/escopo. Table: cliente · Badge escopo (SERVICE/PROFESSIONAL/PRODUCT + alvo) · prioridade · "na fila há Xm" · status · ações. Remover (Dialog → toast). "Notificar manualmente" disabled + Tooltip "Em breve". Vazio → "Fila vazia".
+Configuração (OWNER/ADMIN): Switch enabled · Select priority_mode (FIFO/PRIORITY) · Input number notification_window_hours · Botão Salvar (toast).
 
-Aplicado: OWNER/ADMIN veem tudo; OPERATOR vê Operação + Clientes + Catálogo (view) + Pagamentos + Caixa; PROFESSIONAL vê Dashboard + Agenda + Operações + Clientes (view) + Extrato comissões. Grupos vazios após o filtro não renderizam.
+**7. /pagamentos (Lista)**
+Filtros client-side: Select status, Select método, DateRange período. Table: Data · Cliente · Valor (`formatBRLFromDecimal(net)`) · Método (label glossário map) · `<PaymentBadge>` · ação. Linha → `/pagamentos/:id`. Ação rápida "Confirmar" (só PENDING) → Dialog → toast. Se mock flag `tenant.feeNotConfigured` → Alert banner no topo.
 
-Submenus (Catálogo, Gestão Financeira) renderizados via `Collapsible` do shadcn dentro do `SidebarMenuItem`.
+**8. /pagamentos/:id (Detalhe)**
+Cards: Valores (bruto/desconto/líquido/taxa), Origem (método/submétodo, provider, link appointment, cupom), Datas. Ações (OWNER/ADMIN):
+- Confirmar (Dialog) se PENDING.
+- Estornar (Dialog: Select RefundReason obrigatório + Checkbox `force_local` só OWNER) se CONFIRMED.
+- Aplicar desconto manual (Dialog: Input valor>0 + Textarea reason obrigatório) se PENDING.
+OPERATOR: view-only (Cards sem botões).
 
-## 6. Header
+**9. /configuracoes/financeiro (aba Deposit Policies)**
+Tabs no topo da página (única aba implementada: "Políticas de sinal"; outras tabs como stubs disabled). Table: Serviço (nome ou "Global") · Tipo · Valor (R$ ou %) · Janela cancelamento (h) · Retain NO_SHOW Badge sim/não · ações. Botão "Nova política" (Dialog form: Select serviço/Global, Select tipo, Input valor, Input h, Switch refund_on_tenant_fault, Switch retain_on_no_show, Switch commission_on_retained_deposit). Editar reaproveita o Dialog. Excluir (Dialog confirm) → toast. Vazio → "Nenhuma política".
 
-`src/components/app/app-header.tsx` (novo), montado em `_authenticated.tsx`:
+### Fora de escopo (confirmado)
+Catálogo, Pacotes, Promoções, NPS, Estoque, Despesas, Owner, Portal, Comissões, Caixa, DRE — nada criado nesta sessão. Botões/itens já existentes no sidebar permanecem como estão (rotas inexistentes → 404 default do TanStack; não é tarefa desta fase resolver).
 
-```text
-[hamburguer mobile · SidebarTrigger desktop]  [Wordmark Paladino]  [Tenant: "Barbearia do Zeca"]   ········   [tema] [avatar+role] [sair]
-                                                                                                              [RoleDevSelector — só em dev, abaixo do avatar]
-```
-
-- Tenant: hardcoded `"Barbearia do Zeca"` por enquanto.
-- Avatar = iniciais do `user.name` em pill petrol + brass; label role via `ROLE_LABELS[role]`.
-- Tema: usa `ThemeToggle` existente.
-- Sair: `useAuth().logout()` → `navigate({ to: "/login" })`.
-- Breadcrumbs derivados do `pathname` (mapa estático título-por-segmento) numa linha abaixo do header.
-
-## 7. RoleDevSelector
-
-`src/components/app/role-dev-selector.tsx`:
-- Renderizado apenas quando `import.meta.env.DEV === true`.
-- Select shadcn minimalista (`text-xs`), label "Role:" em `text-muted-foreground`.
-- Opções: OWNER · ADMIN · OPERATOR · PROFESSIONAL.
-- `onValueChange` → `setRole()` → persiste em `localStorage("dev_role")` → sidebar e dashboard reagem via context (sem reload).
-
-## 8. Guards
-
-`_authenticated.tsx` (já existe, ajustar):
-- Aguarda `hydrated` antes de checar `isAuthenticated` (evita loop login↔dashboard).
-- Não autenticado → `redirect({ to: "/login" })`.
-- `beforeLoad` para PROFESSIONAL em `/financeiro/*` → redirect `/dashboard`.
-
-`_owner.tsx` (novo):
-- `beforeLoad` exige `role === "PLATFORM_OWNER"`; senão redirect `/dashboard`.
-- Shell vazio com `<Outlet />`.
-
-`_portal.tsx` (novo):
-- Shell sem sidebar tenant, só `<Outlet />` + header mínimo.
-
-## 9. Dashboard role-aware (mockado)
-
-`src/routes/_authenticated.dashboard.tsx`:
-
-Renderiza variantes condicionadas a `role`. Dados **hardcoded inline** no componente (sem camada mock).
-
-**OWNER/ADMIN**:
-- KPI strip: 3 cards (Agendamentos hoje · Faturamento mês · Ocupação %).
-- Gráfico Receita × Despesa × Margem: barras CSS estáticas (sem lib de chart nesta fase).
-- Alertas (lista): "3 pagamentos a confirmar", "2 itens com estoque baixo", "Promoção XPTO expira em 2 dias".
-- Pendências: "2 payables vencendo", "Conciliação de caixa pendente".
-- CRM clientes em risco: 3 nomes mockados.
-
-**OPERATOR**:
-- Agenda do dia (lista mock), Fila (mock), Atendimento humano (badge), Cobranças pendentes, Caixa do dia.
-
-**PROFESSIONAL**:
-- Próximos atendimentos próprios, ações rápidas (Iniciar atendimento, Marcar pausa), Extrato de comissões próprias.
-
-Todos os blocos usam `Card`, `formatBRL`, `formatDateTime` (já existem em `src/lib/format.ts`), ícones Lucide.
-
-## 10. Login
-
-Atualizar `src/routes/login.tsx`:
-- Wordmark Paladino + copy nova.
-- Mantém o fluxo mock atual (`auth.login(email, password)` → `/dashboard`).
-- Em dev, atalhos para entrar como cada role (botões discretos abaixo do form).
-
-## Detalhes técnicos
-
-- **Sem nova lib**. Tudo com pacotes já instalados (shadcn, lucide-react, tailwind).
-- Brand colors injetados via `useEffect` (não SSR) para evitar mismatch.
-- `import.meta.env.DEV` no lugar de `process.env.NODE_ENV === "development"`.
-- Storage keys padronizadas (`paladino_*`, `dev_role`).
-- Nenhum arquivo gerado (`routeTree.gen.ts`) é editado manualmente — o plugin regenera.
-- Rotas legadas `_authenticated.app.*` ficam intocadas; o brief é só Fase 0.
-
-## Arquivos
-
-**Novos**: `_authenticated.dashboard.tsx`, `_owner.tsx`, `_owner.index.tsx`, `_portal.tsx`, `app-header.tsx`, `role-dev-selector.tsx`, `branding.tsx`.
-
-**Editados**: `__root.tsx` (meta), `_authenticated.tsx` (header + branding + guards), `app-sidebar.tsx` (rebrand + grupos + roles + submenus), `auth.tsx` (role + setRole + ROLE_LABELS), `theme.tsx` (storage key), `login.tsx` (rebrand + atalhos de role em dev), `styles.css` (verificar tokens).
-
-## O que NÃO entra nesta fase
-
-- Camada `src/lib/api/*` ou mocks tipados (explícito no brief).
-- CRUDs, formulários, telas internas de Agenda, Clientes, Catálogo, Financeiro.
-- Wordmark como imagem nova (texto Cormorant resolve).
-- Integração real com `/tenant/branding` ou `/companies/me`.
-- Mudanças nas rotas públicas `b.$slug.*`.
-
-## Próximos passos após aprovar
-
-1. Confirmo plano → entro em build.
-2. Implemento arquivos em paralelo.
-3. Valido visualmente as 4 roles via seletor dev.
-4. Reporto e aguardo Fase 1 (camada de API tipada quando OpenAPI chegar).
+### Entregáveis
+- 9 arquivos de rota novos em `src/routes/`
+- `src/lib/mock/fase1.ts`
+- `src/lib/format.ts` estendido
+- `src/components/app/{fsm-badge,page-header,empty-state,error-state,empty-field}.tsx`
+- Patch mínimo no `app-sidebar.tsx` adicionando item "CRM" no grupo Relacionamento (OWNER/ADMIN)
