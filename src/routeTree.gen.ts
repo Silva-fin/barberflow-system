@@ -19,6 +19,7 @@ import { Route as OwnerIndexRouteImport } from './routes/owner.index'
 import { Route as BSlugRouteImport } from './routes/b.$slug'
 import { Route as AuthenticatedInboxRouteImport } from './routes/_authenticated.inbox'
 import { Route as AuthenticatedFilaRouteImport } from './routes/_authenticated.fila'
+import { Route as AuthenticatedDespesasRouteImport } from './routes/_authenticated.despesas'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated.crm'
 import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
@@ -95,6 +96,11 @@ const AuthenticatedInboxRoute = AuthenticatedInboxRouteImport.update({
 const AuthenticatedFilaRoute = AuthenticatedFilaRouteImport.update({
   id: '/fila',
   path: '/fila',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedDespesasRoute = AuthenticatedDespesasRouteImport.update({
+  id: '/despesas',
+  path: '/despesas',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -265,6 +271,7 @@ export interface FileRoutesByFullPath {
   '/portal': typeof PortalRouteWithChildren
   '/crm': typeof AuthenticatedCrmRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/despesas': typeof AuthenticatedDespesasRoute
   '/fila': typeof AuthenticatedFilaRoute
   '/inbox': typeof AuthenticatedInboxRoute
   '/b/$slug': typeof BSlugRouteWithChildren
@@ -302,6 +309,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/despesas': typeof AuthenticatedDespesasRoute
   '/fila': typeof AuthenticatedFilaRoute
   '/inbox': typeof AuthenticatedInboxRoute
   '/owner': typeof OwnerIndexRoute
@@ -342,6 +350,7 @@ export interface FileRoutesById {
   '/portal': typeof PortalRouteWithChildren
   '/_authenticated/crm': typeof AuthenticatedCrmRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/despesas': typeof AuthenticatedDespesasRoute
   '/_authenticated/fila': typeof AuthenticatedFilaRoute
   '/_authenticated/inbox': typeof AuthenticatedInboxRoute
   '/b/$slug': typeof BSlugRouteWithChildren
@@ -383,6 +392,7 @@ export interface FileRouteTypes {
     | '/portal'
     | '/crm'
     | '/dashboard'
+    | '/despesas'
     | '/fila'
     | '/inbox'
     | '/b/$slug'
@@ -420,6 +430,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/crm'
     | '/dashboard'
+    | '/despesas'
     | '/fila'
     | '/inbox'
     | '/owner'
@@ -459,6 +470,7 @@ export interface FileRouteTypes {
     | '/portal'
     | '/_authenticated/crm'
     | '/_authenticated/dashboard'
+    | '/_authenticated/despesas'
     | '/_authenticated/fila'
     | '/_authenticated/inbox'
     | '/b/$slug'
@@ -571,6 +583,13 @@ declare module '@tanstack/react-router' {
       path: '/fila'
       fullPath: '/fila'
       preLoaderRoute: typeof AuthenticatedFilaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/despesas': {
+      id: '/_authenticated/despesas'
+      path: '/despesas'
+      fullPath: '/despesas'
+      preLoaderRoute: typeof AuthenticatedDespesasRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/dashboard': {
@@ -775,6 +794,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteChildren {
   AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDespesasRoute: typeof AuthenticatedDespesasRoute
   AuthenticatedFilaRoute: typeof AuthenticatedFilaRoute
   AuthenticatedInboxRoute: typeof AuthenticatedInboxRoute
   AuthenticatedAppAgendaRoute: typeof AuthenticatedAppAgendaRoute
@@ -805,6 +825,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCrmRoute: AuthenticatedCrmRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDespesasRoute: AuthenticatedDespesasRoute,
   AuthenticatedFilaRoute: AuthenticatedFilaRoute,
   AuthenticatedInboxRoute: AuthenticatedInboxRoute,
   AuthenticatedAppAgendaRoute: AuthenticatedAppAgendaRoute,
