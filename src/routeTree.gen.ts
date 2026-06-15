@@ -37,6 +37,7 @@ import { Route as AuthenticatedProfissionaisIdRouteImport } from './routes/_auth
 import { Route as AuthenticatedPagamentosIdRouteImport } from './routes/_authenticated.pagamentos.$id'
 import { Route as AuthenticatedPacotesComprasRouteImport } from './routes/_authenticated.pacotes.compras'
 import { Route as AuthenticatedOperacoesIdRouteImport } from './routes/_authenticated.operacoes.$id'
+import { Route as AuthenticatedNpsConfigRouteImport } from './routes/_authenticated.nps.config'
 import { Route as AuthenticatedFinanceiroExtratoRouteImport } from './routes/_authenticated.financeiro.extrato'
 import { Route as AuthenticatedFinanceiroDreRouteImport } from './routes/_authenticated.financeiro.dre'
 import { Route as AuthenticatedFinanceiroContasRouteImport } from './routes/_authenticated.financeiro.contas'
@@ -207,6 +208,11 @@ const AuthenticatedOperacoesIdRoute =
     path: '/operacoes/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedNpsConfigRoute = AuthenticatedNpsConfigRouteImport.update({
+  id: '/nps/config',
+  path: '/nps/config',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedFinanceiroExtratoRoute =
   AuthenticatedFinanceiroExtratoRouteImport.update({
     id: '/financeiro/extrato',
@@ -351,6 +357,7 @@ export interface FileRoutesByFullPath {
   '/financeiro/contas': typeof AuthenticatedFinanceiroContasRoute
   '/financeiro/dre': typeof AuthenticatedFinanceiroDreRoute
   '/financeiro/extrato': typeof AuthenticatedFinanceiroExtratoRoute
+  '/nps/config': typeof AuthenticatedNpsConfigRoute
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
@@ -396,6 +403,7 @@ export interface FileRoutesByTo {
   '/financeiro/contas': typeof AuthenticatedFinanceiroContasRoute
   '/financeiro/dre': typeof AuthenticatedFinanceiroDreRoute
   '/financeiro/extrato': typeof AuthenticatedFinanceiroExtratoRoute
+  '/nps/config': typeof AuthenticatedNpsConfigRoute
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
@@ -446,6 +454,7 @@ export interface FileRoutesById {
   '/_authenticated/financeiro/contas': typeof AuthenticatedFinanceiroContasRoute
   '/_authenticated/financeiro/dre': typeof AuthenticatedFinanceiroDreRoute
   '/_authenticated/financeiro/extrato': typeof AuthenticatedFinanceiroExtratoRoute
+  '/_authenticated/nps/config': typeof AuthenticatedNpsConfigRoute
   '/_authenticated/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/_authenticated/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/_authenticated/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
@@ -496,6 +505,7 @@ export interface FileRouteTypes {
     | '/financeiro/contas'
     | '/financeiro/dre'
     | '/financeiro/extrato'
+    | '/nps/config'
     | '/operacoes/$id'
     | '/pacotes/compras'
     | '/pagamentos/$id'
@@ -541,6 +551,7 @@ export interface FileRouteTypes {
     | '/financeiro/contas'
     | '/financeiro/dre'
     | '/financeiro/extrato'
+    | '/nps/config'
     | '/operacoes/$id'
     | '/pacotes/compras'
     | '/pagamentos/$id'
@@ -590,6 +601,7 @@ export interface FileRouteTypes {
     | '/_authenticated/financeiro/contas'
     | '/_authenticated/financeiro/dre'
     | '/_authenticated/financeiro/extrato'
+    | '/_authenticated/nps/config'
     | '/_authenticated/operacoes/$id'
     | '/_authenticated/pacotes/compras'
     | '/_authenticated/pagamentos/$id'
@@ -814,6 +826,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOperacoesIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/nps/config': {
+      id: '/_authenticated/nps/config'
+      path: '/nps/config'
+      fullPath: '/nps/config'
+      preLoaderRoute: typeof AuthenticatedNpsConfigRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/financeiro/extrato': {
       id: '/_authenticated/financeiro/extrato'
       path: '/financeiro/extrato'
@@ -975,6 +994,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFinanceiroContasRoute: typeof AuthenticatedFinanceiroContasRoute
   AuthenticatedFinanceiroDreRoute: typeof AuthenticatedFinanceiroDreRoute
   AuthenticatedFinanceiroExtratoRoute: typeof AuthenticatedFinanceiroExtratoRoute
+  AuthenticatedNpsConfigRoute: typeof AuthenticatedNpsConfigRoute
   AuthenticatedOperacoesIdRoute: typeof AuthenticatedOperacoesIdRoute
   AuthenticatedPacotesComprasRoute: typeof AuthenticatedPacotesComprasRoute
   AuthenticatedPagamentosIdRoute: typeof AuthenticatedPagamentosIdRoute
@@ -1017,6 +1037,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFinanceiroContasRoute: AuthenticatedFinanceiroContasRoute,
   AuthenticatedFinanceiroDreRoute: AuthenticatedFinanceiroDreRoute,
   AuthenticatedFinanceiroExtratoRoute: AuthenticatedFinanceiroExtratoRoute,
+  AuthenticatedNpsConfigRoute: AuthenticatedNpsConfigRoute,
   AuthenticatedOperacoesIdRoute: AuthenticatedOperacoesIdRoute,
   AuthenticatedPacotesComprasRoute: AuthenticatedPacotesComprasRoute,
   AuthenticatedPagamentosIdRoute: AuthenticatedPagamentosIdRoute,
