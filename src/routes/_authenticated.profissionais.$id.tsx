@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Pencil, Plus, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/app/page-header";
 import { EmptyField } from "@/components/app/empty-field";
@@ -39,9 +39,6 @@ function ProfessionalPage() {
 
   return (
     <div className="space-y-6">
-      <Button asChild variant="ghost" size="sm" className="-ml-2">
-        <Link to="/profissionais"><ArrowLeft size={16} strokeWidth={1.5} />Profissionais</Link>
-      </Button>
       <PageHeader
         eyebrow={pro.role_title}
         title={pro.name}
@@ -169,7 +166,7 @@ function PricingDialog({
   const [price, setPrice] = useState(initial?.price_override ?? "");
   const [duration, setDuration] = useState(initial?.duration_override_min?.toString() ?? "");
 
-  useMemo(() => {
+  useEffect(() => {
     setServiceId(initial?.service_id ?? "");
     setPrice(initial?.price_override ?? "");
     setDuration(initial?.duration_override_min?.toString() ?? "");

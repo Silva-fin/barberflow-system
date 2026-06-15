@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { ImagePlus, Loader2, Pencil, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
@@ -104,20 +104,19 @@ function ProductDialog({
   initial: Product | null;
   onSubmit: (p: { name: string; sku: string; price: string; image_url: string | null }) => void;
 }) {
-  const [name, setName] = useState("");
-  const [sku, setSku] = useState("");
-  const [price, setPrice] = useState("");
-  const [slots, setSlots] = useState<(string | null)[]>([null, null, null, null, null]);
+  const [name, setName] = useState(initial?.name ?? "");
+  const [sku, setSku] = useState(initial?.sku ?? "");
+  const [price, setPrice] = useState(initial?.price ?? "");
+  const [slots, setSlots] = useState<(string | null)[]>([initial?.image_url ?? null, null, null, null, null]);
   const [loadingSlot, setLoadingSlot] = useState<number | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // sync initial
-  useState(() => {
+  useEffect(() => {
     setName(initial?.name ?? "");
     setSku(initial?.sku ?? "");
     setPrice(initial?.price ?? "");
     setSlots([initial?.image_url ?? null, null, null, null, null]);
-  });
+  }, [initial]);
 
   const handleUpload = async (file: File) => {
     setLoadingSlot(0);

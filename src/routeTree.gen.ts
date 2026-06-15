@@ -26,10 +26,13 @@ import { Route as AuthenticatedPagamentosIndexRouteImport } from './routes/_auth
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
+import { Route as AuthenticatedProfissionaisIdRouteImport } from './routes/_authenticated.profissionais.$id'
 import { Route as AuthenticatedPagamentosIdRouteImport } from './routes/_authenticated.pagamentos.$id'
 import { Route as AuthenticatedOperacoesIdRouteImport } from './routes/_authenticated.operacoes.$id'
 import { Route as AuthenticatedConfiguracoesFinanceiroRouteImport } from './routes/_authenticated.configuracoes.financeiro'
 import { Route as AuthenticatedClientesIdRouteImport } from './routes/_authenticated.clientes.$id'
+import { Route as AuthenticatedCatalogoServicosRouteImport } from './routes/_authenticated.catalogo.servicos'
+import { Route as AuthenticatedCatalogoProdutosRouteImport } from './routes/_authenticated.catalogo.produtos'
 import { Route as AuthenticatedCatalogoCategoriasRouteImport } from './routes/_authenticated.catalogo.categorias'
 import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated.app.servicos'
 import { Route as AuthenticatedAppFinanceiroRouteImport } from './routes/_authenticated.app.financeiro'
@@ -125,6 +128,12 @@ const BSlugAgendarRoute = BSlugAgendarRouteImport.update({
   path: '/agendar',
   getParentRoute: () => BSlugRoute,
 } as any)
+const AuthenticatedProfissionaisIdRoute =
+  AuthenticatedProfissionaisIdRouteImport.update({
+    id: '/profissionais/$id',
+    path: '/profissionais/$id',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPagamentosIdRoute =
   AuthenticatedPagamentosIdRouteImport.update({
     id: '/pagamentos/$id',
@@ -148,6 +157,18 @@ const AuthenticatedClientesIdRoute = AuthenticatedClientesIdRouteImport.update({
   path: '/clientes/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedCatalogoServicosRoute =
+  AuthenticatedCatalogoServicosRouteImport.update({
+    id: '/catalogo/servicos',
+    path: '/catalogo/servicos',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedCatalogoProdutosRoute =
+  AuthenticatedCatalogoProdutosRouteImport.update({
+    id: '/catalogo/produtos',
+    path: '/catalogo/produtos',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedCatalogoCategoriasRoute =
   AuthenticatedCatalogoCategoriasRouteImport.update({
     id: '/catalogo/categorias',
@@ -214,10 +235,13 @@ export interface FileRoutesByFullPath {
   '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
+  '/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
+  '/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
+  '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
@@ -241,10 +265,13 @@ export interface FileRoutesByTo {
   '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
+  '/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
+  '/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
+  '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
@@ -273,10 +300,13 @@ export interface FileRoutesById {
   '/_authenticated/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
   '/_authenticated/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
+  '/_authenticated/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
+  '/_authenticated/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/_authenticated/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/_authenticated/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/_authenticated/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/_authenticated/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
+  '/_authenticated/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
@@ -305,10 +335,13 @@ export interface FileRouteTypes {
     | '/app/financeiro'
     | '/app/servicos'
     | '/catalogo/categorias'
+    | '/catalogo/produtos'
+    | '/catalogo/servicos'
     | '/clientes/$id'
     | '/configuracoes/financeiro'
     | '/operacoes/$id'
     | '/pagamentos/$id'
+    | '/profissionais/$id'
     | '/b/$slug/agendar'
     | '/app/'
     | '/clientes/'
@@ -332,10 +365,13 @@ export interface FileRouteTypes {
     | '/app/financeiro'
     | '/app/servicos'
     | '/catalogo/categorias'
+    | '/catalogo/produtos'
+    | '/catalogo/servicos'
     | '/clientes/$id'
     | '/configuracoes/financeiro'
     | '/operacoes/$id'
     | '/pagamentos/$id'
+    | '/profissionais/$id'
     | '/b/$slug/agendar'
     | '/app'
     | '/clientes'
@@ -363,10 +399,13 @@ export interface FileRouteTypes {
     | '/_authenticated/app/financeiro'
     | '/_authenticated/app/servicos'
     | '/_authenticated/catalogo/categorias'
+    | '/_authenticated/catalogo/produtos'
+    | '/_authenticated/catalogo/servicos'
     | '/_authenticated/clientes/$id'
     | '/_authenticated/configuracoes/financeiro'
     | '/_authenticated/operacoes/$id'
     | '/_authenticated/pagamentos/$id'
+    | '/_authenticated/profissionais/$id'
     | '/b/$slug/agendar'
     | '/_authenticated/app/'
     | '/_authenticated/clientes/'
@@ -505,6 +544,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BSlugAgendarRouteImport
       parentRoute: typeof BSlugRoute
     }
+    '/_authenticated/profissionais/$id': {
+      id: '/_authenticated/profissionais/$id'
+      path: '/profissionais/$id'
+      fullPath: '/profissionais/$id'
+      preLoaderRoute: typeof AuthenticatedProfissionaisIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/pagamentos/$id': {
       id: '/_authenticated/pagamentos/$id'
       path: '/pagamentos/$id'
@@ -531,6 +577,20 @@ declare module '@tanstack/react-router' {
       path: '/clientes/$id'
       fullPath: '/clientes/$id'
       preLoaderRoute: typeof AuthenticatedClientesIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/catalogo/servicos': {
+      id: '/_authenticated/catalogo/servicos'
+      path: '/catalogo/servicos'
+      fullPath: '/catalogo/servicos'
+      preLoaderRoute: typeof AuthenticatedCatalogoServicosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/catalogo/produtos': {
+      id: '/_authenticated/catalogo/produtos'
+      path: '/catalogo/produtos'
+      fullPath: '/catalogo/produtos'
+      preLoaderRoute: typeof AuthenticatedCatalogoProdutosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/catalogo/categorias': {
@@ -604,10 +664,13 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAppFinanceiroRoute: typeof AuthenticatedAppFinanceiroRoute
   AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRoute
   AuthenticatedCatalogoCategoriasRoute: typeof AuthenticatedCatalogoCategoriasRoute
+  AuthenticatedCatalogoProdutosRoute: typeof AuthenticatedCatalogoProdutosRoute
+  AuthenticatedCatalogoServicosRoute: typeof AuthenticatedCatalogoServicosRoute
   AuthenticatedClientesIdRoute: typeof AuthenticatedClientesIdRoute
   AuthenticatedConfiguracoesFinanceiroRoute: typeof AuthenticatedConfiguracoesFinanceiroRoute
   AuthenticatedOperacoesIdRoute: typeof AuthenticatedOperacoesIdRoute
   AuthenticatedPagamentosIdRoute: typeof AuthenticatedPagamentosIdRoute
+  AuthenticatedProfissionaisIdRoute: typeof AuthenticatedProfissionaisIdRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
   AuthenticatedClientesIndexRoute: typeof AuthenticatedClientesIndexRoute
   AuthenticatedPagamentosIndexRoute: typeof AuthenticatedPagamentosIndexRoute
@@ -625,11 +688,14 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppFinanceiroRoute: AuthenticatedAppFinanceiroRoute,
   AuthenticatedAppServicosRoute: AuthenticatedAppServicosRoute,
   AuthenticatedCatalogoCategoriasRoute: AuthenticatedCatalogoCategoriasRoute,
+  AuthenticatedCatalogoProdutosRoute: AuthenticatedCatalogoProdutosRoute,
+  AuthenticatedCatalogoServicosRoute: AuthenticatedCatalogoServicosRoute,
   AuthenticatedClientesIdRoute: AuthenticatedClientesIdRoute,
   AuthenticatedConfiguracoesFinanceiroRoute:
     AuthenticatedConfiguracoesFinanceiroRoute,
   AuthenticatedOperacoesIdRoute: AuthenticatedOperacoesIdRoute,
   AuthenticatedPagamentosIdRoute: AuthenticatedPagamentosIdRoute,
+  AuthenticatedProfissionaisIdRoute: AuthenticatedProfissionaisIdRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
   AuthenticatedClientesIndexRoute: AuthenticatedClientesIndexRoute,
   AuthenticatedPagamentosIndexRoute: AuthenticatedPagamentosIndexRoute,

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -11,7 +11,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
+  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -209,7 +209,7 @@ function CategoryDialog({
   const [active, setActive] = useState(initial?.is_active ?? true);
 
   // sync when initial changes
-  useMemo(() => {
+  useEffect(() => {
     setName(initial?.name ?? "");
     setEntity(initial?.entity_type ?? "SERVICE");
     setOrder(initial?.sort_order ?? 1);
