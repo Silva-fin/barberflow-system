@@ -50,6 +50,7 @@ import { Route as AuthenticatedEstoqueMovimentacoesRouteImport } from './routes/
 import { Route as AuthenticatedConfiguracoesModulosRouteImport } from './routes/_authenticated.configuracoes.modulos'
 import { Route as AuthenticatedConfiguracoesIntegracoesRouteImport } from './routes/_authenticated.configuracoes.integracoes'
 import { Route as AuthenticatedConfiguracoesFinanceiroRouteImport } from './routes/_authenticated.configuracoes.financeiro'
+import { Route as AuthenticatedConfiguracoesBrandingRouteImport } from './routes/_authenticated.configuracoes.branding'
 import { Route as AuthenticatedComunicacaoLogsRouteImport } from './routes/_authenticated.comunicacao.logs'
 import { Route as AuthenticatedClientesIdRouteImport } from './routes/_authenticated.clientes.$id'
 import { Route as AuthenticatedCatalogoServicosRouteImport } from './routes/_authenticated.catalogo.servicos'
@@ -289,6 +290,12 @@ const AuthenticatedConfiguracoesFinanceiroRoute =
     path: '/configuracoes/financeiro',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedConfiguracoesBrandingRoute =
+  AuthenticatedConfiguracoesBrandingRouteImport.update({
+    id: '/configuracoes/branding',
+    path: '/configuracoes/branding',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedComunicacaoLogsRoute =
   AuthenticatedComunicacaoLogsRouteImport.update({
     id: '/comunicacao/logs',
@@ -399,6 +406,7 @@ export interface FileRoutesByFullPath {
   '/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/comunicacao/logs': typeof AuthenticatedComunicacaoLogsRoute
+  '/configuracoes/branding': typeof AuthenticatedConfiguracoesBrandingRoute
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/configuracoes/integracoes': typeof AuthenticatedConfiguracoesIntegracoesRoute
   '/configuracoes/modulos': typeof AuthenticatedConfiguracoesModulosRoute
@@ -452,6 +460,7 @@ export interface FileRoutesByTo {
   '/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/comunicacao/logs': typeof AuthenticatedComunicacaoLogsRoute
+  '/configuracoes/branding': typeof AuthenticatedConfiguracoesBrandingRoute
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/configuracoes/integracoes': typeof AuthenticatedConfiguracoesIntegracoesRoute
   '/configuracoes/modulos': typeof AuthenticatedConfiguracoesModulosRoute
@@ -510,6 +519,7 @@ export interface FileRoutesById {
   '/_authenticated/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/_authenticated/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/_authenticated/comunicacao/logs': typeof AuthenticatedComunicacaoLogsRoute
+  '/_authenticated/configuracoes/branding': typeof AuthenticatedConfiguracoesBrandingRoute
   '/_authenticated/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/_authenticated/configuracoes/integracoes': typeof AuthenticatedConfiguracoesIntegracoesRoute
   '/_authenticated/configuracoes/modulos': typeof AuthenticatedConfiguracoesModulosRoute
@@ -568,6 +578,7 @@ export interface FileRouteTypes {
     | '/catalogo/servicos'
     | '/clientes/$id'
     | '/comunicacao/logs'
+    | '/configuracoes/branding'
     | '/configuracoes/financeiro'
     | '/configuracoes/integracoes'
     | '/configuracoes/modulos'
@@ -621,6 +632,7 @@ export interface FileRouteTypes {
     | '/catalogo/servicos'
     | '/clientes/$id'
     | '/comunicacao/logs'
+    | '/configuracoes/branding'
     | '/configuracoes/financeiro'
     | '/configuracoes/integracoes'
     | '/configuracoes/modulos'
@@ -678,6 +690,7 @@ export interface FileRouteTypes {
     | '/_authenticated/catalogo/servicos'
     | '/_authenticated/clientes/$id'
     | '/_authenticated/comunicacao/logs'
+    | '/_authenticated/configuracoes/branding'
     | '/_authenticated/configuracoes/financeiro'
     | '/_authenticated/configuracoes/integracoes'
     | '/_authenticated/configuracoes/modulos'
@@ -1006,6 +1019,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConfiguracoesFinanceiroRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/configuracoes/branding': {
+      id: '/_authenticated/configuracoes/branding'
+      path: '/configuracoes/branding'
+      fullPath: '/configuracoes/branding'
+      preLoaderRoute: typeof AuthenticatedConfiguracoesBrandingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/comunicacao/logs': {
       id: '/_authenticated/comunicacao/logs'
       path: '/comunicacao/logs'
@@ -1128,6 +1148,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCatalogoServicosRoute: typeof AuthenticatedCatalogoServicosRoute
   AuthenticatedClientesIdRoute: typeof AuthenticatedClientesIdRoute
   AuthenticatedComunicacaoLogsRoute: typeof AuthenticatedComunicacaoLogsRoute
+  AuthenticatedConfiguracoesBrandingRoute: typeof AuthenticatedConfiguracoesBrandingRoute
   AuthenticatedConfiguracoesFinanceiroRoute: typeof AuthenticatedConfiguracoesFinanceiroRoute
   AuthenticatedConfiguracoesIntegracoesRoute: typeof AuthenticatedConfiguracoesIntegracoesRoute
   AuthenticatedConfiguracoesModulosRoute: typeof AuthenticatedConfiguracoesModulosRoute
@@ -1174,6 +1195,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCatalogoServicosRoute: AuthenticatedCatalogoServicosRoute,
   AuthenticatedClientesIdRoute: AuthenticatedClientesIdRoute,
   AuthenticatedComunicacaoLogsRoute: AuthenticatedComunicacaoLogsRoute,
+  AuthenticatedConfiguracoesBrandingRoute:
+    AuthenticatedConfiguracoesBrandingRoute,
   AuthenticatedConfiguracoesFinanceiroRoute:
     AuthenticatedConfiguracoesFinanceiroRoute,
   AuthenticatedConfiguracoesIntegracoesRoute:
