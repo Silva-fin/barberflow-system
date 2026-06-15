@@ -35,6 +35,7 @@ import { Route as AuthenticatedProfissionaisIdRouteImport } from './routes/_auth
 import { Route as AuthenticatedPagamentosIdRouteImport } from './routes/_authenticated.pagamentos.$id'
 import { Route as AuthenticatedPacotesComprasRouteImport } from './routes/_authenticated.pacotes.compras'
 import { Route as AuthenticatedOperacoesIdRouteImport } from './routes/_authenticated.operacoes.$id'
+import { Route as AuthenticatedEstoqueMovimentacoesRouteImport } from './routes/_authenticated.estoque.movimentacoes'
 import { Route as AuthenticatedConfiguracoesFinanceiroRouteImport } from './routes/_authenticated.configuracoes.financeiro'
 import { Route as AuthenticatedClientesIdRouteImport } from './routes/_authenticated.clientes.$id'
 import { Route as AuthenticatedCatalogoServicosRouteImport } from './routes/_authenticated.catalogo.servicos'
@@ -189,6 +190,12 @@ const AuthenticatedOperacoesIdRoute =
     path: '/operacoes/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedEstoqueMovimentacoesRoute =
+  AuthenticatedEstoqueMovimentacoesRouteImport.update({
+    id: '/estoque/movimentacoes',
+    path: '/estoque/movimentacoes',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedConfiguracoesFinanceiroRoute =
   AuthenticatedConfiguracoesFinanceiroRouteImport.update({
     id: '/configuracoes/financeiro',
@@ -296,6 +303,7 @@ export interface FileRoutesByFullPath {
   '/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
+  '/estoque/movimentacoes': typeof AuthenticatedEstoqueMovimentacoesRoute
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
@@ -334,6 +342,7 @@ export interface FileRoutesByTo {
   '/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
+  '/estoque/movimentacoes': typeof AuthenticatedEstoqueMovimentacoesRoute
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
@@ -377,6 +386,7 @@ export interface FileRoutesById {
   '/_authenticated/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/_authenticated/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/_authenticated/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
+  '/_authenticated/estoque/movimentacoes': typeof AuthenticatedEstoqueMovimentacoesRoute
   '/_authenticated/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/_authenticated/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/_authenticated/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
@@ -420,6 +430,7 @@ export interface FileRouteTypes {
     | '/catalogo/servicos'
     | '/clientes/$id'
     | '/configuracoes/financeiro'
+    | '/estoque/movimentacoes'
     | '/operacoes/$id'
     | '/pacotes/compras'
     | '/pagamentos/$id'
@@ -458,6 +469,7 @@ export interface FileRouteTypes {
     | '/catalogo/servicos'
     | '/clientes/$id'
     | '/configuracoes/financeiro'
+    | '/estoque/movimentacoes'
     | '/operacoes/$id'
     | '/pacotes/compras'
     | '/pagamentos/$id'
@@ -500,6 +512,7 @@ export interface FileRouteTypes {
     | '/_authenticated/catalogo/servicos'
     | '/_authenticated/clientes/$id'
     | '/_authenticated/configuracoes/financeiro'
+    | '/_authenticated/estoque/movimentacoes'
     | '/_authenticated/operacoes/$id'
     | '/_authenticated/pacotes/compras'
     | '/_authenticated/pagamentos/$id'
@@ -710,6 +723,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOperacoesIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/estoque/movimentacoes': {
+      id: '/_authenticated/estoque/movimentacoes'
+      path: '/estoque/movimentacoes'
+      fullPath: '/estoque/movimentacoes'
+      preLoaderRoute: typeof AuthenticatedEstoqueMovimentacoesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/configuracoes/financeiro': {
       id: '/_authenticated/configuracoes/financeiro'
       path: '/configuracoes/financeiro'
@@ -829,6 +849,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCatalogoServicosRoute: typeof AuthenticatedCatalogoServicosRoute
   AuthenticatedClientesIdRoute: typeof AuthenticatedClientesIdRoute
   AuthenticatedConfiguracoesFinanceiroRoute: typeof AuthenticatedConfiguracoesFinanceiroRoute
+  AuthenticatedEstoqueMovimentacoesRoute: typeof AuthenticatedEstoqueMovimentacoesRoute
   AuthenticatedOperacoesIdRoute: typeof AuthenticatedOperacoesIdRoute
   AuthenticatedPacotesComprasRoute: typeof AuthenticatedPacotesComprasRoute
   AuthenticatedPagamentosIdRoute: typeof AuthenticatedPagamentosIdRoute
@@ -862,6 +883,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedClientesIdRoute: AuthenticatedClientesIdRoute,
   AuthenticatedConfiguracoesFinanceiroRoute:
     AuthenticatedConfiguracoesFinanceiroRoute,
+  AuthenticatedEstoqueMovimentacoesRoute:
+    AuthenticatedEstoqueMovimentacoesRoute,
   AuthenticatedOperacoesIdRoute: AuthenticatedOperacoesIdRoute,
   AuthenticatedPacotesComprasRoute: AuthenticatedPacotesComprasRoute,
   AuthenticatedPagamentosIdRoute: AuthenticatedPagamentosIdRoute,
