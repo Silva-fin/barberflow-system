@@ -61,8 +61,27 @@ const NAV: NavGroup[] = [
           { title: "Categorias", url: "/catalogo/categorias", roles: ["OWNER", "ADMIN"] },
         ],
       },
-      { title: "Pacotes / Assinaturas", url: "/pacotes", icon: Package, roles: ["OWNER", "ADMIN"] },
-      { title: "Promoções / Cupons", url: "/promocoes", icon: Tags, roles: ["OWNER", "ADMIN"] },
+      {
+        title: "Pacotes",
+        url: "/pacotes",
+        icon: Package,
+        roles: ["OWNER", "ADMIN"],
+        children: [
+          { title: "Planos", url: "/pacotes", roles: ["OWNER", "ADMIN"] },
+          { title: "Compras", url: "/pacotes/compras", roles: ["OWNER", "ADMIN"] },
+        ],
+      },
+      {
+        title: "Assinaturas",
+        url: "/assinaturas",
+        icon: Boxes,
+        roles: ["OWNER", "ADMIN"],
+        children: [
+          { title: "Planos", url: "/assinaturas/planos", roles: ["OWNER", "ADMIN"] },
+          { title: "Instâncias", url: "/assinaturas", roles: ["OWNER", "ADMIN"] },
+        ],
+      },
+      { title: "Promoções", url: "/promocoes", icon: Tags, roles: ["OWNER", "ADMIN"] },
     ],
   },
   {
