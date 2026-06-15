@@ -1,102 +1,97 @@
-## Fase 1 — 9 telas operacionais (mock)
+# Fase 2 — Comercial (10 telas, mock)
 
-Conteúdo de páginas apenas (shell, sidebar, header, branding e tokens da Fase 0 ficam intactos). Tudo em React + TanStack Router (template Lovable já está em TanStack, equivalente ao App Router do Next).
+Prototipa o bloco Comercial sobre o shell da Fase 0 e os utilitários da Fase 1. Tudo client-side, sem API real.
 
-### Mapa de rotas (alinhado ao sidebar PT já existente)
+## Pré-requisitos a criar (faltantes do contrato Fase 1)
 
-A spec usa caminhos `/appointments/[id]`, `/customers`, `/financeiro/pagamentos`, `/settings/financial` etc. O sidebar da Fase 0 já aponta para `/clientes`, `/fila`, `/inbox`, `/pagamentos`, `/configuracoes`. Para não reimplementar nem quebrar o sidebar, as rotas serão criadas em PT, mapeando 1:1 ao conteúdo da spec:
+A spec assume `CustomerAutocomplete`, `PAYMENT_METHOD_OPTIONS` e `lib/constants.ts` já existentes — não estão no projeto. Criar como dependências mínimas:
 
-| Spec                              | Arquivo TanStack                                              | URL                       |
-|-----------------------------------|---------------------------------------------------------------|---------------------------|
-| /appointments/[id]                | `_authenticated.operacoes.$id.tsx`                            | /operacoes/:id            |
-| /customers                        | `_authenticated.clientes.index.tsx`                           | /clientes                 |
-| /customers/[id]                   | `_authenticated.clientes.$id.tsx`                             | /clientes/:id             |
-| /crm                              | `_authenticated.crm.tsx` (+ entrada no sidebar group CRM)     | /crm                      |
-| /inbox                            | `_authenticated.inbox.tsx`                                    | /inbox                    |
-| /fila                             | `_authenticated.fila.tsx`                                     | /fila                     |
-| /financeiro/pagamentos            | `_authenticated.pagamentos.index.tsx`                         | /pagamentos               |
-| /financeiro/pagamentos/[id]       | `_authenticated.pagamentos.$id.tsx`                           | /pagamentos/:id           |
-| /settings/financial (DepositPol.) | `_authenticated.configuracoes.financeiro.tsx`                 | /configuracoes/financeiro |
+- `src/lib/constants.ts` — `DISCOUNT_TYPE`, `APPLICATION_MODE`, `GENERATION_TYPE`, `COUPON_REOPEN`, `PAYMENT_METHOD_OPTIONS` (agrupado Dinheiro/Pix · Crédito · Débito), `ENTITY_TYPE` (serviço/produto/despesa).
+- `src/components/app/customer-autocomplete.tsx` — Combobox shadcn sobre lista mock de clientes; emite `{id, name}`.
+- `src/components/app/datetime-picker.tsx` — wrapper `Input type="datetime-local"` (label + value/onChange controlado), usado em assinaturas/promoções/cupons.
 
-Única edição no sidebar: adicionar item "CRM" no grupo Relacionamento (OWNER/ADMIN) apontando para `/crm`. Nenhum outro item é tocado.
+## Extensões compartilhadas
 
-### Mocks e utilitários compartilhados
+- `src/components/app/fsm-badge.tsx` — adicionar `PackagePurchaseBadge`, `SubscriptionBadge`, `PromotionBadge`, `CouponBadge` seguindo a paleta semântica já usada (emerald/amber/destructive/muted). Sem hardcodar `#hex`.
+- `src/lib/mock/fase2.ts` — datasets isolados por tela: categories, serviceVariants (por serviceId), professionalPricing (por professionalId), products (com galeria de até 5 slots), packagePlans, packagePurchases, subscriptionPlans, subscriptions, promotions, coupons (por promotionId).
+- `src/components/app/app-sidebar.tsx` — ajustar links existentes para apontar às novas rotas: `Catálogo` → `/catalogo/servicos|produtos|categorias`, `Pacotes / Assinaturas` (separar em `/pacotes` + `/assinaturas/planos` + `/assinaturas`), `Promoções / Cupons` → `/promocoes`. Não tocar em estilo/colapso.
 
-`src/lib/mock/fase1.ts` — datasets isolados (sem mexer em `mock/data.ts` da Fase 0):
-- `mockAppointments` (10) com FSM, sinal/depósito opcional, histórico de transições
-- `mockCustomers` (24) com classificação, cotas, consentimentos, histórico
-- `mockConversations` (8) com mensagens por sender_type, escaladas/resolvidas
-- `mockQueueEntries` (12) + `mockQueueConfig`
-- `mockPayments` (30) PENDING/CONFIRMED/REFUNDED com método/submétodo
-- `mockDepositPolicies` (4)
-- `mockCrmInsights`
+## Rotas (TanStack file-based, todas sob `_authenticated`)
 
-`src/lib/format.ts` — estender com:
-- `formatBRLFromDecimal(s: string)` (API devolve "38.50")
-- `formatDateTime(d, { timeZone: "America/Sao_Paulo" })`
-- `Empty` componente `<span class="text-xs text-muted-foreground opacity-50">Em breve</span>`
+```text
+_authenticated.catalogo.categorias.tsx            (tela 1)
+_authenticated.catalogo.servicos.tsx              (tela 2 — Sheet "Variantes" embutida)
+_authenticated.catalogo.produtos.tsx              (tela 4 — galeria no Dialog)
+_authenticated.profissionais.$id.tsx              (tela 3 — ficha com tab "Preços por serviço")
+_authenticated.pacotes.index.tsx                  (tela 5 — Planos + ação Vender abre Dialog tela 6)
+_authenticated.pacotes.compras.tsx                (tela 7)
+_authenticated.assinaturas.planos.tsx             (tela 8)
+_authenticated.assinaturas.index.tsx              (tela 9)
+_authenticated.promocoes.index.tsx                (tela 10a)
+_authenticated.promocoes.$id.cupons.tsx           (tela 10b)
+```
 
-`src/components/app/fsm-badge.tsx` — `<AppointmentBadge status>`, `<PaymentBadge status>`, `<CrmBadge classification>` com mapeamento de cor via tokens (`bg-primary`, `bg-destructive`, `text-sidebar-primary` para VIP brass, `bg-muted` para neutro, âmbar via classe utilitária `bg-amber-500/15 text-amber-700`).
+Tela 6 (Venda de pacote) é um Dialog stepper hospedado dentro de `pacotes.index.tsx` (não vira rota).
 
-`src/components/app/page-header.tsx` — título `font-display text-3xl tracking-wide` + descrição + ações.
+## Padrão por tela
 
-`src/components/app/empty-state.tsx`, `error-state.tsx` (com retry), skeletons reutilizáveis para tabela.
+Toda página usa `PageHeader` (font-display, tracking-wide), wrappers `Card`, shadcn `Table` + paginação client-side (10/pg), 4 estados (Skeleton/erro com retry/empty guiado/dados), `sonner` toast em toda ação, `Dialog` para destrutivas. Ações sem endpoint → não renderizar OU `disabled` + Tooltip "Em breve". RBAC via `useAuth().role`.
 
-### Padrões aplicados em todas as telas
+## Detalhes por tela
 
-- Cabeçalho `<PageHeader>` + container `space-y-6`.
-- 4 estados: loading (Skeleton), erro (retry), vazio (texto guiado), dados.
-- Toast (`sonner`) em toda ação; Dialog de confirmação em destrutivas.
-- Reason obrigatório nos forms: manual-discount, grant-cota, refund.
-- Ação sem endpoint → Button `disabled` + Tooltip "Em breve".
-- RBAC via `useAuth().role`: OWNER-only oculta para ADMIN/OPERATOR; PROFESSIONAL em rotas de pagamento → cards somente leitura (sem botões de ação).
-- Tabelas: shadcn `Table` + `Pagination` cliente (10/pg). Detalhe de operação simula paginação server-side só estado visual.
+1. **Categorias** — agrupar por `entity_type`, ordenar por `sort_order`. Form Dialog (nome, entity_type, sort_order, Switch is_active). Switch is_active inline na linha. `is_default=true` → excluir e nome/tipo/ordem disabled + Tooltip; só `is_active` editável. OPERATOR vê em read-only.
 
-### Conteúdo por tela
+2. **Serviços + Variantes (Sheet)** — manter lista de serviços existente; cada linha ganha ação "Variantes" → `Sheet` lateral com nome do serviço + Table (Nome · Preço via `formatBRLFromDecimal` · Duração `${n} min` · Ordem · Status · ações) + form inline (Input nome, preço, duration_min, sort_order). Sem rota nova.
 
-**1. /operacoes/:id (Detalhe de operação)**
-Grid `lg:grid-cols-3`. Coluna principal (2): `<AppointmentBadge>` + cliente + horário; Card "Serviço(s)" Table; Card "Profissional"; Card "Valores" (subtotal/desconto/total). Aside: Card Sinal/Depósito condicional (`deposit?` → "Sinal pago R$X" + saldo pendente; senão oculto) + Card "Histórico de transições" (timeline simples).
-Ações: `Concluir`, `Cancelar` (Dialog com Textarea reason opcional), `Remarcar` (Dialog com DatePicker + Select horário). `Iniciar` e `NO_SHOW` disabled + Tooltip "Em breve". PROFESSIONAL: vê tudo; sem botões financeiros.
+3. **Profissional [id]** — ficha existente (mock) com Tabs: Horários · Serviços · Bloqueios · **Preços por serviço (novo, OWNER/ADMIN)**. Table: Serviço · Preço base · Preço override · Duração override (ou EmptyField "—") · Status · ações. Form criar: Select service_id · preço · duração (opc). Editar restrito a price/duration/is_active. PROFESSIONAL não vê a tab.
 
-**2. /clientes (Lista CRM)**
-Filtros: Select classificação · Input "sem visita há ≥ N dias". Table colunas conforme spec; "Última visita" e "Ticket médio" como `<Empty>`. Cotas ativas = Badge contador. Linha clicável → `/clientes/:id`. Pagination cliente.
+4. **Produtos + galeria** — Dialog de criar/editar produto com grid de 5 slots. SLOT 1 = primária (persiste em `image_url`), upload real simulado (POST `/uploads/` mockado, spinner, toast). SLOTS 2–5 visuais, `disabled` + Badge "Em breve". Drag-and-drop opcional (ordenar slots 1↔n só visual). Remover por slot.
 
-**3. /clientes/:id (Ficha)**
-Header: Avatar (iniciais via fallback), nome `font-display text-2xl`, telefone, `<CrmBadge>`. Tabs (`Resumo | Histórico | Cotas | Consentimentos`).
-- Resumo: cards de dados + classificação + insights (cada insight em Card; oculto se ausente).
-- Histórico: Table appointments passados com `<AppointmentBadge>`, paginada.
-- Cotas: grid de Cards (tipo, remaining/total, validade ou "sem validade", status). Botão "Conceder cota" (Dialog: Input total>0, DatePicker opcional, Textarea reason obrigatório). Botão "Revogar" por cota (Dialog confirm).
-- Consentimentos: Lista (COMMUNICATION/MARKETING/DATA_PROCESSING) com Badge GRANTED/REVOKED e botão grant/revoke.
+5. **Pacotes (planos)** — Table: Nome · Serviço (`mock.lookupServiceName(service_id)` ou "Genérico" se null) · `total_cotas` · Preço · Validade (`${validity_days} dias` ou "Sem validade") · Status · ações Editar/Excluir/**Vender**. Form Dialog: nome · cotas (int>0) · preço · Select serviço (com opção "Genérico") · validade dias (opc) · Switch is_active (só editar). Modelo: 1 `service_id` nullable.
 
-**4. /crm (Dashboard CRM, OWNER/ADMIN)**
-Guard: outras roles → Empty "Sem acesso". 4 Cards KPI (Em risco/Novos no mês/VIP/Recuperados na semana). Section: Lista Top 10 em risco (Table: nome · dias sem visita · ação Abrir ficha). Section: Sugestões de ação (Cards "Remarcar X" / "Enviar pacote Y"). Vazio → "Tudo em dia".
+6. **Vender pacote (Dialog stepper)** — 4 steps: Cliente (`CustomerAutocomplete`) → Plano (resumo) → Pagamento (`PAYMENT_METHOD_OPTIONS` em RadioGroup agrupado) → Confirmar. Submit cria localmente `PackagePurchase{status:'PENDING_PAYMENT'}` + Payment PENDING; toast "Pacote vendido — pagamento pendente de confirmação" + link opcional para `/pagamentos/$id`. **Não confirma sozinha, nem CASH.** OPERATOR pode usar.
 
-**5. /inbox (Master-detail)**
-Layout `grid lg:grid-cols-[320px_1fr]`. Coluna esquerda: Tabs `Escaladas | Resolvidas` + lista (cliente, msg truncada, "esperando há Xm" desde `escalated_at`, Badge "Em atendimento"). Coluna direita: thread de bolhas (CLIENT esquerda muted; BOT/AGENT direita com rótulo small) em `ScrollArea`; Textarea reply + botão Enviar (toast). Botão "Resolver conversa" (Dialog → toast "Bot reassumiu o atendimento", move p/ Resolvidas). Enviar em conversa resolvida → toast erro "Conversa não está em atendimento humano". Vazio → "Nenhuma conversa em atendimento".
+7. **Pacotes / Compras (read-only)** — Table: Data · Cliente · Pacote · Valor (`total_price`) · Status (`PackagePurchaseBadge`) · Pagamento (Link `/pagamentos/$id`) · "Ver cotas" (Link `/clientes/$id`#cotas). Filtros client-side: status, cliente. Linha → Dialog detalhe. Sem cancelar/estornar.
 
-**6. /fila (Tabs Entradas | Configuração)**
-Entradas: Filtros Select status/escopo. Table: cliente · Badge escopo (SERVICE/PROFESSIONAL/PRODUCT + alvo) · prioridade · "na fila há Xm" · status · ações. Remover (Dialog → toast). "Notificar manualmente" disabled + Tooltip "Em breve". Vazio → "Fila vazia".
-Configuração (OWNER/ADMIN): Switch enabled · Select priority_mode (FIFO/PRIORITY) · Input number notification_window_hours · Botão Salvar (toast).
+8. **Assinaturas / Planos** — Table: Nome · Serviço (ou "Genérico") · Cotas/ciclo · Preço · `${cycle_days} dias` · Rollover (badge sim/não) · Status · ações. Form Dialog: nome · cotas_per_cycle · preço · ciclo (default 30) · Switch rollover_enabled · Select serviço (opc) · Switch is_active. Sem DELETE: ação "Desativar" = PATCH is_active=false.
 
-**7. /pagamentos (Lista)**
-Filtros client-side: Select status, Select método, DateRange período. Table: Data · Cliente · Valor (`formatBRLFromDecimal(net)`) · Método (label glossário map) · `<PaymentBadge>` · ação. Linha → `/pagamentos/:id`. Ação rápida "Confirmar" (só PENDING) → Dialog → toast. Se mock flag `tenant.feeNotConfigured` → Alert banner no topo.
+9. **Assinaturas / Instâncias** — Table: Cliente · Plano · Status (`SubscriptionBadge`) · Próx. cobrança (`formatDateTime`) · Em atraso desde · ações. Filtros client-side (status/cliente). "Nova assinatura" Dialog: CustomerAutocomplete + Select plano + DateTimePicker `first_billing_at` (opc). Ações por status (esconder inválidas): Pausar (ACTIVE) · Retomar (PAUSED) · Cancelar (ACTIVE/PAUSED/OVERDUE) via Dialog. **Sem reason.**
 
-**8. /pagamentos/:id (Detalhe)**
-Cards: Valores (bruto/desconto/líquido/taxa), Origem (método/submétodo, provider, link appointment, cupom), Datas. Ações (OWNER/ADMIN):
-- Confirmar (Dialog) se PENDING.
-- Estornar (Dialog: Select RefundReason obrigatório + Checkbox `force_local` só OWNER) se CONFIRMED.
-- Aplicar desconto manual (Dialog: Input valor>0 + Textarea reason obrigatório) se PENDING.
-OPERATOR: view-only (Cards sem botões).
+10a. **Promoções (lista)** — Table: Nome · Tipo (`discount_type`) · Valor (% se PERCENTAGE; `formatBRLFromDecimal` se FIXED_AMOUNT; "—" caso contrário) · Modo · Status (`PromotionBadge`) · Vigência (`valid_from`–`valid_until`) · Usos (`uses_count/max_uses`) · ações. Form criar Dialog: nome · Textarea descrição · Select discount_type · discount_value (condicional; PERCENTAGE ≤100) · Select application_mode · Switch cumulative · priority · DateTimePicker valid_from/until · max_uses · max_uses_per_customer. `conditions` read-only (mostra JSON). Ações por status: Ativar (DRAFT/PAUSED) · Pausar (ACTIVE) · Cancelar (DRAFT/ACTIVE/PAUSED, Dialog) · **Cupons** → 10b. **Sem editar/excluir.**
 
-**9. /configuracoes/financeiro (aba Deposit Policies)**
-Tabs no topo da página (única aba implementada: "Políticas de sinal"; outras tabs como stubs disabled). Table: Serviço (nome ou "Global") · Tipo · Valor (R$ ou %) · Janela cancelamento (h) · Retain NO_SHOW Badge sim/não · ações. Botão "Nova política" (Dialog form: Select serviço/Global, Select tipo, Input valor, Input h, Switch refund_on_tenant_fault, Switch retain_on_no_show, Switch commission_on_retained_deposit). Editar reaproveita o Dialog. Excluir (Dialog confirm) → toast. Vazio → "Nenhuma política".
+10b. **Cupons da promoção** — Header com nome/status da promoção + botão "Gerar cupons" + Table: Código (+ botão copiar com `navigator.clipboard`) · Tipo (`generation_type`) · Usos (`uses_count/max_uses`) · Cliente (se PER_CUSTOMER) · Validade (`expires_at`) · Reabertura (`coupon_reopen_policy`) · Status (`CouponBadge`). Form Dialog "Gerar cupons" — Select `generation_type` com campos condicionais:
+- BULK: quantity · prefix (opc) · max_uses
+- SINGLE_USE: code (opc)/prefix · max_uses fixo 1 (disabled)
+- PER_CUSTOMER: CustomerAutocomplete obrigatório · max_uses
+- comuns: DateTimePicker expires_at · Select coupon_reopen_policy
+Gera N linhas localmente e exibe toast "N cupons gerados".
 
-### Fora de escopo (confirmado)
-Catálogo, Pacotes, Promoções, NPS, Estoque, Despesas, Owner, Portal, Comissões, Caixa, DRE — nada criado nesta sessão. Botões/itens já existentes no sidebar permanecem como estão (rotas inexistentes → 404 default do TanStack; não é tarefa desta fase resolver).
+## Arquivos criados
 
-### Entregáveis
-- 9 arquivos de rota novos em `src/routes/`
-- `src/lib/mock/fase1.ts`
-- `src/lib/format.ts` estendido
-- `src/components/app/{fsm-badge,page-header,empty-state,error-state,empty-field}.tsx`
-- Patch mínimo no `app-sidebar.tsx` adicionando item "CRM" no grupo Relacionamento (OWNER/ADMIN)
+```text
+src/lib/constants.ts
+src/lib/mock/fase2.ts
+src/components/app/customer-autocomplete.tsx
+src/components/app/datetime-picker.tsx
+src/routes/_authenticated.catalogo.categorias.tsx
+src/routes/_authenticated.catalogo.servicos.tsx
+src/routes/_authenticated.catalogo.produtos.tsx
+src/routes/_authenticated.profissionais.$id.tsx
+src/routes/_authenticated.pacotes.index.tsx
+src/routes/_authenticated.pacotes.compras.tsx
+src/routes/_authenticated.assinaturas.planos.tsx
+src/routes/_authenticated.assinaturas.index.tsx
+src/routes/_authenticated.promocoes.index.tsx
+src/routes/_authenticated.promocoes.$id.cupons.tsx
+```
+
+## Arquivos editados
+
+```text
+src/components/app/fsm-badge.tsx        # +4 badges (PackagePurchase, Subscription, Promotion, Coupon)
+src/components/app/app-sidebar.tsx      # rearranja links Comercial p/ novas rotas
+```
+
+## Fora do escopo (não tocar)
+
+Financeiro, Estoque, Fornecedores, Payables, Despesas, NPS, Comunicação, Inbox, Owner, Portal. Editor de `conditions` de promoção, cancelar compra de pacote, slots 2–5 de imagem, DELETE de plano de assinatura, editar/excluir promoção — todos disabled + Tooltip "Em breve" ou não renderizados.
