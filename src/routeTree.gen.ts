@@ -26,6 +26,7 @@ import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
 import { Route as AuthenticatedPromocoesIndexRouteImport } from './routes/_authenticated.promocoes.index'
 import { Route as AuthenticatedPagamentosIndexRouteImport } from './routes/_authenticated.pagamentos.index'
 import { Route as AuthenticatedPacotesIndexRouteImport } from './routes/_authenticated.pacotes.index'
+import { Route as AuthenticatedEstoqueIndexRouteImport } from './routes/_authenticated.estoque.index'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
@@ -134,6 +135,12 @@ const AuthenticatedPacotesIndexRoute =
   AuthenticatedPacotesIndexRouteImport.update({
     id: '/pacotes/',
     path: '/pacotes/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedEstoqueIndexRoute =
+  AuthenticatedEstoqueIndexRouteImport.update({
+    id: '/estoque/',
+    path: '/estoque/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedClientesIndexRoute =
@@ -297,6 +304,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AuthenticatedAppIndexRoute
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
+  '/estoque/': typeof AuthenticatedEstoqueIndexRoute
   '/pacotes/': typeof AuthenticatedPacotesIndexRoute
   '/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
   '/promocoes/': typeof AuthenticatedPromocoesIndexRoute
@@ -334,6 +342,7 @@ export interface FileRoutesByTo {
   '/app': typeof AuthenticatedAppIndexRoute
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
+  '/estoque': typeof AuthenticatedEstoqueIndexRoute
   '/pacotes': typeof AuthenticatedPacotesIndexRoute
   '/pagamentos': typeof AuthenticatedPagamentosIndexRoute
   '/promocoes': typeof AuthenticatedPromocoesIndexRoute
@@ -376,6 +385,7 @@ export interface FileRoutesById {
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
+  '/_authenticated/estoque/': typeof AuthenticatedEstoqueIndexRoute
   '/_authenticated/pacotes/': typeof AuthenticatedPacotesIndexRoute
   '/_authenticated/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
   '/_authenticated/promocoes/': typeof AuthenticatedPromocoesIndexRoute
@@ -418,6 +428,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/assinaturas/'
     | '/clientes/'
+    | '/estoque/'
     | '/pacotes/'
     | '/pagamentos/'
     | '/promocoes/'
@@ -455,6 +466,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/assinaturas'
     | '/clientes'
+    | '/estoque'
     | '/pacotes'
     | '/pagamentos'
     | '/promocoes'
@@ -496,6 +508,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/'
     | '/_authenticated/assinaturas/'
     | '/_authenticated/clientes/'
+    | '/_authenticated/estoque/'
     | '/_authenticated/pacotes/'
     | '/_authenticated/pagamentos/'
     | '/_authenticated/promocoes/'
@@ -632,6 +645,13 @@ declare module '@tanstack/react-router' {
       path: '/pacotes'
       fullPath: '/pacotes/'
       preLoaderRoute: typeof AuthenticatedPacotesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/estoque/': {
+      id: '/_authenticated/estoque/'
+      path: '/estoque'
+      fullPath: '/estoque/'
+      preLoaderRoute: typeof AuthenticatedEstoqueIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/clientes/': {
@@ -816,6 +836,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
   AuthenticatedAssinaturasIndexRoute: typeof AuthenticatedAssinaturasIndexRoute
   AuthenticatedClientesIndexRoute: typeof AuthenticatedClientesIndexRoute
+  AuthenticatedEstoqueIndexRoute: typeof AuthenticatedEstoqueIndexRoute
   AuthenticatedPacotesIndexRoute: typeof AuthenticatedPacotesIndexRoute
   AuthenticatedPagamentosIndexRoute: typeof AuthenticatedPagamentosIndexRoute
   AuthenticatedPromocoesIndexRoute: typeof AuthenticatedPromocoesIndexRoute
@@ -848,6 +869,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
   AuthenticatedAssinaturasIndexRoute: AuthenticatedAssinaturasIndexRoute,
   AuthenticatedClientesIndexRoute: AuthenticatedClientesIndexRoute,
+  AuthenticatedEstoqueIndexRoute: AuthenticatedEstoqueIndexRoute,
   AuthenticatedPacotesIndexRoute: AuthenticatedPacotesIndexRoute,
   AuthenticatedPagamentosIndexRoute: AuthenticatedPagamentosIndexRoute,
   AuthenticatedPromocoesIndexRoute: AuthenticatedPromocoesIndexRoute,
