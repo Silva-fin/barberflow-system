@@ -135,8 +135,6 @@ function FormDialog({ open, initial, onClose, onSave }: {
   const [name, setName] = useState(initial?.name ?? "");
   const [contact, setContact] = useState(initial?.contact ?? "");
   const [document, setDocument] = useState(initial?.document ?? "");
-  // re-sync when initial changes
-  useState(() => { setName(initial?.name ?? ""); setContact(initial?.contact ?? ""); setDocument(initial?.document ?? ""); });
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
