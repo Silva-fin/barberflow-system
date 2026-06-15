@@ -30,6 +30,7 @@ import { Route as AuthenticatedPagamentosIndexRouteImport } from './routes/_auth
 import { Route as AuthenticatedPacotesIndexRouteImport } from './routes/_authenticated.pacotes.index'
 import { Route as AuthenticatedNpsIndexRouteImport } from './routes/_authenticated.nps.index'
 import { Route as AuthenticatedEstoqueIndexRouteImport } from './routes/_authenticated.estoque.index'
+import { Route as AuthenticatedComunicacaoIndexRouteImport } from './routes/_authenticated.comunicacao.index'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
@@ -167,6 +168,12 @@ const AuthenticatedEstoqueIndexRoute =
   AuthenticatedEstoqueIndexRouteImport.update({
     id: '/estoque/',
     path: '/estoque/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedComunicacaoIndexRoute =
+  AuthenticatedComunicacaoIndexRouteImport.update({
+    id: '/comunicacao/',
+    path: '/comunicacao/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedClientesIndexRoute =
@@ -379,6 +386,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AuthenticatedAppIndexRoute
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
+  '/comunicacao/': typeof AuthenticatedComunicacaoIndexRoute
   '/estoque/': typeof AuthenticatedEstoqueIndexRoute
   '/nps/': typeof AuthenticatedNpsIndexRoute
   '/pacotes/': typeof AuthenticatedPacotesIndexRoute
@@ -427,6 +435,7 @@ export interface FileRoutesByTo {
   '/app': typeof AuthenticatedAppIndexRoute
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
+  '/comunicacao': typeof AuthenticatedComunicacaoIndexRoute
   '/estoque': typeof AuthenticatedEstoqueIndexRoute
   '/nps': typeof AuthenticatedNpsIndexRoute
   '/pacotes': typeof AuthenticatedPacotesIndexRoute
@@ -480,6 +489,7 @@ export interface FileRoutesById {
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
+  '/_authenticated/comunicacao/': typeof AuthenticatedComunicacaoIndexRoute
   '/_authenticated/estoque/': typeof AuthenticatedEstoqueIndexRoute
   '/_authenticated/nps/': typeof AuthenticatedNpsIndexRoute
   '/_authenticated/pacotes/': typeof AuthenticatedPacotesIndexRoute
@@ -533,6 +543,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/assinaturas/'
     | '/clientes/'
+    | '/comunicacao/'
     | '/estoque/'
     | '/nps/'
     | '/pacotes/'
@@ -581,6 +592,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/assinaturas'
     | '/clientes'
+    | '/comunicacao'
     | '/estoque'
     | '/nps'
     | '/pacotes'
@@ -633,6 +645,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/'
     | '/_authenticated/assinaturas/'
     | '/_authenticated/clientes/'
+    | '/_authenticated/comunicacao/'
     | '/_authenticated/estoque/'
     | '/_authenticated/nps/'
     | '/_authenticated/pacotes/'
@@ -800,6 +813,13 @@ declare module '@tanstack/react-router' {
       path: '/estoque'
       fullPath: '/estoque/'
       preLoaderRoute: typeof AuthenticatedEstoqueIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/comunicacao/': {
+      id: '/_authenticated/comunicacao/'
+      path: '/comunicacao'
+      fullPath: '/comunicacao/'
+      preLoaderRoute: typeof AuthenticatedComunicacaoIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/clientes/': {
@@ -1041,6 +1061,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
   AuthenticatedAssinaturasIndexRoute: typeof AuthenticatedAssinaturasIndexRoute
   AuthenticatedClientesIndexRoute: typeof AuthenticatedClientesIndexRoute
+  AuthenticatedComunicacaoIndexRoute: typeof AuthenticatedComunicacaoIndexRoute
   AuthenticatedEstoqueIndexRoute: typeof AuthenticatedEstoqueIndexRoute
   AuthenticatedNpsIndexRoute: typeof AuthenticatedNpsIndexRoute
   AuthenticatedPacotesIndexRoute: typeof AuthenticatedPacotesIndexRoute
@@ -1085,6 +1106,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
   AuthenticatedAssinaturasIndexRoute: AuthenticatedAssinaturasIndexRoute,
   AuthenticatedClientesIndexRoute: AuthenticatedClientesIndexRoute,
+  AuthenticatedComunicacaoIndexRoute: AuthenticatedComunicacaoIndexRoute,
   AuthenticatedEstoqueIndexRoute: AuthenticatedEstoqueIndexRoute,
   AuthenticatedNpsIndexRoute: AuthenticatedNpsIndexRoute,
   AuthenticatedPacotesIndexRoute: AuthenticatedPacotesIndexRoute,
