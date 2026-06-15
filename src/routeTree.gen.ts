@@ -33,6 +33,7 @@ import { Route as AuthenticatedEstoqueIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
+import { Route as NpsRespondSurveyIdRouteImport } from './routes/nps.respond.$surveyId'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
 import { Route as AuthenticatedProfissionaisIdRouteImport } from './routes/_authenticated.profissionais.$id'
 import { Route as AuthenticatedPagamentosIdRouteImport } from './routes/_authenticated.pagamentos.$id'
@@ -184,6 +185,11 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   id: '/app/',
   path: '/app/',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+const NpsRespondSurveyIdRoute = NpsRespondSurveyIdRouteImport.update({
+  id: '/nps/respond/$surveyId',
+  path: '/nps/respond/$surveyId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const BSlugAgendarRoute = BSlugAgendarRouteImport.update({
   id: '/agendar',
@@ -369,6 +375,7 @@ export interface FileRoutesByFullPath {
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
+  '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
@@ -416,6 +423,7 @@ export interface FileRoutesByTo {
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
+  '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
@@ -468,6 +476,7 @@ export interface FileRoutesById {
   '/_authenticated/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/_authenticated/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
+  '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
@@ -520,6 +529,7 @@ export interface FileRouteTypes {
     | '/pagamentos/$id'
     | '/profissionais/$id'
     | '/b/$slug/agendar'
+    | '/nps/respond/$surveyId'
     | '/app/'
     | '/assinaturas/'
     | '/clientes/'
@@ -567,6 +577,7 @@ export interface FileRouteTypes {
     | '/pagamentos/$id'
     | '/profissionais/$id'
     | '/b/$slug/agendar'
+    | '/nps/respond/$surveyId'
     | '/app'
     | '/assinaturas'
     | '/clientes'
@@ -618,6 +629,7 @@ export interface FileRouteTypes {
     | '/_authenticated/pagamentos/$id'
     | '/_authenticated/profissionais/$id'
     | '/b/$slug/agendar'
+    | '/nps/respond/$surveyId'
     | '/_authenticated/app/'
     | '/_authenticated/assinaturas/'
     | '/_authenticated/clientes/'
@@ -638,6 +650,7 @@ export interface RootRouteChildren {
   OwnerRoute: typeof OwnerRouteWithChildren
   PortalRoute: typeof PortalRouteWithChildren
   BSlugRoute: typeof BSlugRouteWithChildren
+  NpsRespondSurveyIdRoute: typeof NpsRespondSurveyIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -809,6 +822,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/nps/respond/$surveyId': {
+      id: '/nps/respond/$surveyId'
+      path: '/nps/respond/$surveyId'
+      fullPath: '/nps/respond/$surveyId'
+      preLoaderRoute: typeof NpsRespondSurveyIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/b/$slug/agendar': {
       id: '/b/$slug/agendar'
@@ -1119,6 +1139,7 @@ const rootRouteChildren: RootRouteChildren = {
   OwnerRoute: OwnerRouteWithChildren,
   PortalRoute: PortalRouteWithChildren,
   BSlugRoute: BSlugRouteWithChildren,
+  NpsRespondSurveyIdRoute: NpsRespondSurveyIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
