@@ -93,3 +93,91 @@ export function CrmBadge({ classification }: { classification: CrmClassification
     </Badge>
   );
 }
+
+/* ============ PackagePurchase ============ */
+export type PackagePurchaseStatus = "PENDING_PAYMENT" | "ACTIVE" | "REVOKED";
+const PKG_LABEL: Record<PackagePurchaseStatus, string> = {
+  PENDING_PAYMENT: "Pagamento pendente",
+  ACTIVE: "Ativo",
+  REVOKED: "Revogado",
+};
+const PKG_CLASS: Record<PackagePurchaseStatus, string> = {
+  PENDING_PAYMENT: "bg-amber-500/15 text-amber-700 border-amber-500/30 dark:text-amber-300",
+  ACTIVE: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-300",
+  REVOKED: "bg-destructive/15 text-destructive border-destructive/30",
+};
+export function PackagePurchaseBadge({ status }: { status: PackagePurchaseStatus }) {
+  return (
+    <Badge variant="outline" className={cn("font-normal", PKG_CLASS[status])}>
+      {PKG_LABEL[status]}
+    </Badge>
+  );
+}
+
+/* ============ Subscription ============ */
+export type SubscriptionStatus = "ACTIVE" | "PAUSED" | "OVERDUE" | "SUSPENDED" | "CANCELLED";
+const SUB_LABEL: Record<SubscriptionStatus, string> = {
+  ACTIVE: "Ativa",
+  PAUSED: "Pausada",
+  OVERDUE: "Em atraso",
+  SUSPENDED: "Suspensa",
+  CANCELLED: "Cancelada",
+};
+const SUB_CLASS: Record<SubscriptionStatus, string> = {
+  ACTIVE: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-300",
+  PAUSED: "bg-amber-500/15 text-amber-700 border-amber-500/30 dark:text-amber-300",
+  OVERDUE: "bg-amber-500/15 text-amber-700 border-amber-500/30 dark:text-amber-300",
+  SUSPENDED: "bg-destructive/15 text-destructive border-destructive/30",
+  CANCELLED: "bg-muted text-muted-foreground border-border",
+};
+export function SubscriptionBadge({ status }: { status: SubscriptionStatus }) {
+  return (
+    <Badge variant="outline" className={cn("font-normal", SUB_CLASS[status])}>
+      {SUB_LABEL[status]}
+    </Badge>
+  );
+}
+
+/* ============ Promotion ============ */
+export type PromotionStatus = "DRAFT" | "ACTIVE" | "PAUSED" | "EXPIRED" | "CANCELLED";
+const PROMO_LABEL: Record<PromotionStatus, string> = {
+  DRAFT: "Rascunho",
+  ACTIVE: "Ativa",
+  PAUSED: "Pausada",
+  EXPIRED: "Expirada",
+  CANCELLED: "Cancelada",
+};
+const PROMO_CLASS: Record<PromotionStatus, string> = {
+  DRAFT: "bg-muted text-muted-foreground border-border",
+  ACTIVE: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-300",
+  PAUSED: "bg-amber-500/15 text-amber-700 border-amber-500/30 dark:text-amber-300",
+  EXPIRED: "bg-muted text-muted-foreground border-border",
+  CANCELLED: "bg-destructive/15 text-destructive border-destructive/30",
+};
+export function PromotionBadge({ status }: { status: PromotionStatus }) {
+  return (
+    <Badge variant="outline" className={cn("font-normal", PROMO_CLASS[status])}>
+      {PROMO_LABEL[status]}
+    </Badge>
+  );
+}
+
+/* ============ Coupon ============ */
+export type CouponStatus = "ACTIVE" | "EXHAUSTED" | "CANCELLED";
+const COUPON_LABEL: Record<CouponStatus, string> = {
+  ACTIVE: "Ativo",
+  EXHAUSTED: "Esgotado",
+  CANCELLED: "Cancelado",
+};
+const COUPON_CLASS: Record<CouponStatus, string> = {
+  ACTIVE: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-300",
+  EXHAUSTED: "bg-muted text-muted-foreground border-border",
+  CANCELLED: "bg-destructive/15 text-destructive border-destructive/30",
+};
+export function CouponBadge({ status }: { status: CouponStatus }) {
+  return (
+    <Badge variant="outline" className={cn("font-normal", COUPON_CLASS[status])}>
+      {COUPON_LABEL[status]}
+    </Badge>
+  );
+}
