@@ -30,6 +30,7 @@ import { Route as AuthenticatedPagamentosIdRouteImport } from './routes/_authent
 import { Route as AuthenticatedOperacoesIdRouteImport } from './routes/_authenticated.operacoes.$id'
 import { Route as AuthenticatedConfiguracoesFinanceiroRouteImport } from './routes/_authenticated.configuracoes.financeiro'
 import { Route as AuthenticatedClientesIdRouteImport } from './routes/_authenticated.clientes.$id'
+import { Route as AuthenticatedCatalogoCategoriasRouteImport } from './routes/_authenticated.catalogo.categorias'
 import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated.app.servicos'
 import { Route as AuthenticatedAppFinanceiroRouteImport } from './routes/_authenticated.app.financeiro'
 import { Route as AuthenticatedAppConfiguracoesRouteImport } from './routes/_authenticated.app.configuracoes'
@@ -147,6 +148,12 @@ const AuthenticatedClientesIdRoute = AuthenticatedClientesIdRouteImport.update({
   path: '/clientes/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedCatalogoCategoriasRoute =
+  AuthenticatedCatalogoCategoriasRouteImport.update({
+    id: '/catalogo/categorias',
+    path: '/catalogo/categorias',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAppServicosRoute =
   AuthenticatedAppServicosRouteImport.update({
     id: '/app/servicos',
@@ -206,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
   '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
+  '/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
@@ -232,6 +240,7 @@ export interface FileRoutesByTo {
   '/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
   '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
+  '/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
@@ -263,6 +272,7 @@ export interface FileRoutesById {
   '/_authenticated/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
   '/_authenticated/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
   '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
+  '/_authenticated/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
   '/_authenticated/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/_authenticated/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/_authenticated/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
@@ -294,6 +304,7 @@ export interface FileRouteTypes {
     | '/app/configuracoes'
     | '/app/financeiro'
     | '/app/servicos'
+    | '/catalogo/categorias'
     | '/clientes/$id'
     | '/configuracoes/financeiro'
     | '/operacoes/$id'
@@ -320,6 +331,7 @@ export interface FileRouteTypes {
     | '/app/configuracoes'
     | '/app/financeiro'
     | '/app/servicos'
+    | '/catalogo/categorias'
     | '/clientes/$id'
     | '/configuracoes/financeiro'
     | '/operacoes/$id'
@@ -350,6 +362,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/configuracoes'
     | '/_authenticated/app/financeiro'
     | '/_authenticated/app/servicos'
+    | '/_authenticated/catalogo/categorias'
     | '/_authenticated/clientes/$id'
     | '/_authenticated/configuracoes/financeiro'
     | '/_authenticated/operacoes/$id'
@@ -520,6 +533,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClientesIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/catalogo/categorias': {
+      id: '/_authenticated/catalogo/categorias'
+      path: '/catalogo/categorias'
+      fullPath: '/catalogo/categorias'
+      preLoaderRoute: typeof AuthenticatedCatalogoCategoriasRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/app/servicos': {
       id: '/_authenticated/app/servicos'
       path: '/app/servicos'
@@ -583,6 +603,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAppConfiguracoesRoute: typeof AuthenticatedAppConfiguracoesRoute
   AuthenticatedAppFinanceiroRoute: typeof AuthenticatedAppFinanceiroRoute
   AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRoute
+  AuthenticatedCatalogoCategoriasRoute: typeof AuthenticatedCatalogoCategoriasRoute
   AuthenticatedClientesIdRoute: typeof AuthenticatedClientesIdRoute
   AuthenticatedConfiguracoesFinanceiroRoute: typeof AuthenticatedConfiguracoesFinanceiroRoute
   AuthenticatedOperacoesIdRoute: typeof AuthenticatedOperacoesIdRoute
@@ -603,6 +624,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppConfiguracoesRoute: AuthenticatedAppConfiguracoesRoute,
   AuthenticatedAppFinanceiroRoute: AuthenticatedAppFinanceiroRoute,
   AuthenticatedAppServicosRoute: AuthenticatedAppServicosRoute,
+  AuthenticatedCatalogoCategoriasRoute: AuthenticatedCatalogoCategoriasRoute,
   AuthenticatedClientesIdRoute: AuthenticatedClientesIdRoute,
   AuthenticatedConfiguracoesFinanceiroRoute:
     AuthenticatedConfiguracoesFinanceiroRoute,
