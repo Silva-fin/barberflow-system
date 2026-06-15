@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as OwnerIndexRouteImport } from './routes/owner.index'
 import { Route as BSlugRouteImport } from './routes/b.$slug'
+import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated.usuarios'
 import { Route as AuthenticatedPayablesRouteImport } from './routes/_authenticated.payables'
 import { Route as AuthenticatedInboxRouteImport } from './routes/_authenticated.inbox'
 import { Route as AuthenticatedFornecedoresRouteImport } from './routes/_authenticated.fornecedores'
@@ -24,25 +25,34 @@ import { Route as AuthenticatedFilaRouteImport } from './routes/_authenticated.f
 import { Route as AuthenticatedDespesasRouteImport } from './routes/_authenticated.despesas'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated.crm'
+import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated.audit'
 import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
 import { Route as AuthenticatedPromocoesIndexRouteImport } from './routes/_authenticated.promocoes.index'
 import { Route as AuthenticatedPagamentosIndexRouteImport } from './routes/_authenticated.pagamentos.index'
 import { Route as AuthenticatedPacotesIndexRouteImport } from './routes/_authenticated.pacotes.index'
+import { Route as AuthenticatedNpsIndexRouteImport } from './routes/_authenticated.nps.index'
 import { Route as AuthenticatedEstoqueIndexRouteImport } from './routes/_authenticated.estoque.index'
+import { Route as AuthenticatedComunicacaoIndexRouteImport } from './routes/_authenticated.comunicacao.index'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
+import { Route as NpsRespondSurveyIdRouteImport } from './routes/nps.respond.$surveyId'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
 import { Route as AuthenticatedProfissionaisIdRouteImport } from './routes/_authenticated.profissionais.$id'
 import { Route as AuthenticatedPagamentosIdRouteImport } from './routes/_authenticated.pagamentos.$id'
 import { Route as AuthenticatedPacotesComprasRouteImport } from './routes/_authenticated.pacotes.compras'
 import { Route as AuthenticatedOperacoesIdRouteImport } from './routes/_authenticated.operacoes.$id'
+import { Route as AuthenticatedNpsConfigRouteImport } from './routes/_authenticated.nps.config'
 import { Route as AuthenticatedFinanceiroExtratoRouteImport } from './routes/_authenticated.financeiro.extrato'
 import { Route as AuthenticatedFinanceiroDreRouteImport } from './routes/_authenticated.financeiro.dre'
 import { Route as AuthenticatedFinanceiroContasRouteImport } from './routes/_authenticated.financeiro.contas'
 import { Route as AuthenticatedFinanceiroConciliacaoRouteImport } from './routes/_authenticated.financeiro.conciliacao'
 import { Route as AuthenticatedEstoqueMovimentacoesRouteImport } from './routes/_authenticated.estoque.movimentacoes'
+import { Route as AuthenticatedConfiguracoesModulosRouteImport } from './routes/_authenticated.configuracoes.modulos'
+import { Route as AuthenticatedConfiguracoesIntegracoesRouteImport } from './routes/_authenticated.configuracoes.integracoes'
 import { Route as AuthenticatedConfiguracoesFinanceiroRouteImport } from './routes/_authenticated.configuracoes.financeiro'
+import { Route as AuthenticatedConfiguracoesBrandingRouteImport } from './routes/_authenticated.configuracoes.branding'
+import { Route as AuthenticatedComunicacaoLogsRouteImport } from './routes/_authenticated.comunicacao.logs'
 import { Route as AuthenticatedClientesIdRouteImport } from './routes/_authenticated.clientes.$id'
 import { Route as AuthenticatedCatalogoServicosRouteImport } from './routes/_authenticated.catalogo.servicos'
 import { Route as AuthenticatedCatalogoProdutosRouteImport } from './routes/_authenticated.catalogo.produtos'
@@ -96,6 +106,11 @@ const BSlugRoute = BSlugRouteImport.update({
   path: '/b/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedUsuariosRoute = AuthenticatedUsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedPayablesRoute = AuthenticatedPayablesRouteImport.update({
   id: '/payables',
   path: '/payables',
@@ -132,6 +147,11 @@ const AuthenticatedCrmRoute = AuthenticatedCrmRouteImport.update({
   path: '/crm',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAuditRoute = AuthenticatedAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const BSlugIndexRoute = BSlugIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -155,10 +175,21 @@ const AuthenticatedPacotesIndexRoute =
     path: '/pacotes/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedNpsIndexRoute = AuthenticatedNpsIndexRouteImport.update({
+  id: '/nps/',
+  path: '/nps/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedEstoqueIndexRoute =
   AuthenticatedEstoqueIndexRouteImport.update({
     id: '/estoque/',
     path: '/estoque/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedComunicacaoIndexRoute =
+  AuthenticatedComunicacaoIndexRouteImport.update({
+    id: '/comunicacao/',
+    path: '/comunicacao/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedClientesIndexRoute =
@@ -177,6 +208,11 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   id: '/app/',
   path: '/app/',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+const NpsRespondSurveyIdRoute = NpsRespondSurveyIdRouteImport.update({
+  id: '/nps/respond/$surveyId',
+  path: '/nps/respond/$surveyId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const BSlugAgendarRoute = BSlugAgendarRouteImport.update({
   id: '/agendar',
@@ -207,6 +243,11 @@ const AuthenticatedOperacoesIdRoute =
     path: '/operacoes/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedNpsConfigRoute = AuthenticatedNpsConfigRouteImport.update({
+  id: '/nps/config',
+  path: '/nps/config',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedFinanceiroExtratoRoute =
   AuthenticatedFinanceiroExtratoRouteImport.update({
     id: '/financeiro/extrato',
@@ -237,10 +278,34 @@ const AuthenticatedEstoqueMovimentacoesRoute =
     path: '/estoque/movimentacoes',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedConfiguracoesModulosRoute =
+  AuthenticatedConfiguracoesModulosRouteImport.update({
+    id: '/configuracoes/modulos',
+    path: '/configuracoes/modulos',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedConfiguracoesIntegracoesRoute =
+  AuthenticatedConfiguracoesIntegracoesRouteImport.update({
+    id: '/configuracoes/integracoes',
+    path: '/configuracoes/integracoes',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedConfiguracoesFinanceiroRoute =
   AuthenticatedConfiguracoesFinanceiroRouteImport.update({
     id: '/configuracoes/financeiro',
     path: '/configuracoes/financeiro',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedConfiguracoesBrandingRoute =
+  AuthenticatedConfiguracoesBrandingRouteImport.update({
+    id: '/configuracoes/branding',
+    path: '/configuracoes/branding',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedComunicacaoLogsRoute =
+  AuthenticatedComunicacaoLogsRouteImport.update({
+    id: '/comunicacao/logs',
+    path: '/comunicacao/logs',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedClientesIdRoute = AuthenticatedClientesIdRouteImport.update({
@@ -324,6 +389,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/owner': typeof OwnerRouteWithChildren
   '/portal': typeof PortalRouteWithChildren
+  '/audit': typeof AuthenticatedAuditRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/despesas': typeof AuthenticatedDespesasRoute
@@ -331,6 +397,7 @@ export interface FileRoutesByFullPath {
   '/fornecedores': typeof AuthenticatedFornecedoresRoute
   '/inbox': typeof AuthenticatedInboxRoute
   '/payables': typeof AuthenticatedPayablesRoute
+  '/usuarios': typeof AuthenticatedUsuariosRoute
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -345,21 +412,29 @@ export interface FileRoutesByFullPath {
   '/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
   '/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
+  '/comunicacao/logs': typeof AuthenticatedComunicacaoLogsRoute
+  '/configuracoes/branding': typeof AuthenticatedConfiguracoesBrandingRoute
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
+  '/configuracoes/integracoes': typeof AuthenticatedConfiguracoesIntegracoesRoute
+  '/configuracoes/modulos': typeof AuthenticatedConfiguracoesModulosRoute
   '/estoque/movimentacoes': typeof AuthenticatedEstoqueMovimentacoesRoute
   '/financeiro/conciliacao': typeof AuthenticatedFinanceiroConciliacaoRoute
   '/financeiro/contas': typeof AuthenticatedFinanceiroContasRoute
   '/financeiro/dre': typeof AuthenticatedFinanceiroDreRoute
   '/financeiro/extrato': typeof AuthenticatedFinanceiroExtratoRoute
+  '/nps/config': typeof AuthenticatedNpsConfigRoute
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
+  '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
+  '/comunicacao/': typeof AuthenticatedComunicacaoIndexRoute
   '/estoque/': typeof AuthenticatedEstoqueIndexRoute
+  '/nps/': typeof AuthenticatedNpsIndexRoute
   '/pacotes/': typeof AuthenticatedPacotesIndexRoute
   '/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
   '/promocoes/': typeof AuthenticatedPromocoesIndexRoute
@@ -370,6 +445,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/audit': typeof AuthenticatedAuditRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/despesas': typeof AuthenticatedDespesasRoute
@@ -377,6 +453,7 @@ export interface FileRoutesByTo {
   '/fornecedores': typeof AuthenticatedFornecedoresRoute
   '/inbox': typeof AuthenticatedInboxRoute
   '/payables': typeof AuthenticatedPayablesRoute
+  '/usuarios': typeof AuthenticatedUsuariosRoute
   '/owner': typeof OwnerIndexRoute
   '/portal': typeof PortalIndexRoute
   '/app/agenda': typeof AuthenticatedAppAgendaRoute
@@ -390,21 +467,29 @@ export interface FileRoutesByTo {
   '/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
   '/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
+  '/comunicacao/logs': typeof AuthenticatedComunicacaoLogsRoute
+  '/configuracoes/branding': typeof AuthenticatedConfiguracoesBrandingRoute
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
+  '/configuracoes/integracoes': typeof AuthenticatedConfiguracoesIntegracoesRoute
+  '/configuracoes/modulos': typeof AuthenticatedConfiguracoesModulosRoute
   '/estoque/movimentacoes': typeof AuthenticatedEstoqueMovimentacoesRoute
   '/financeiro/conciliacao': typeof AuthenticatedFinanceiroConciliacaoRoute
   '/financeiro/contas': typeof AuthenticatedFinanceiroContasRoute
   '/financeiro/dre': typeof AuthenticatedFinanceiroDreRoute
   '/financeiro/extrato': typeof AuthenticatedFinanceiroExtratoRoute
+  '/nps/config': typeof AuthenticatedNpsConfigRoute
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
+  '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
+  '/comunicacao': typeof AuthenticatedComunicacaoIndexRoute
   '/estoque': typeof AuthenticatedEstoqueIndexRoute
+  '/nps': typeof AuthenticatedNpsIndexRoute
   '/pacotes': typeof AuthenticatedPacotesIndexRoute
   '/pagamentos': typeof AuthenticatedPagamentosIndexRoute
   '/promocoes': typeof AuthenticatedPromocoesIndexRoute
@@ -419,6 +504,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/owner': typeof OwnerRouteWithChildren
   '/portal': typeof PortalRouteWithChildren
+  '/_authenticated/audit': typeof AuthenticatedAuditRoute
   '/_authenticated/crm': typeof AuthenticatedCrmRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/despesas': typeof AuthenticatedDespesasRoute
@@ -426,6 +512,7 @@ export interface FileRoutesById {
   '/_authenticated/fornecedores': typeof AuthenticatedFornecedoresRoute
   '/_authenticated/inbox': typeof AuthenticatedInboxRoute
   '/_authenticated/payables': typeof AuthenticatedPayablesRoute
+  '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -440,21 +527,29 @@ export interface FileRoutesById {
   '/_authenticated/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
   '/_authenticated/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/_authenticated/clientes/$id': typeof AuthenticatedClientesIdRoute
+  '/_authenticated/comunicacao/logs': typeof AuthenticatedComunicacaoLogsRoute
+  '/_authenticated/configuracoes/branding': typeof AuthenticatedConfiguracoesBrandingRoute
   '/_authenticated/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
+  '/_authenticated/configuracoes/integracoes': typeof AuthenticatedConfiguracoesIntegracoesRoute
+  '/_authenticated/configuracoes/modulos': typeof AuthenticatedConfiguracoesModulosRoute
   '/_authenticated/estoque/movimentacoes': typeof AuthenticatedEstoqueMovimentacoesRoute
   '/_authenticated/financeiro/conciliacao': typeof AuthenticatedFinanceiroConciliacaoRoute
   '/_authenticated/financeiro/contas': typeof AuthenticatedFinanceiroContasRoute
   '/_authenticated/financeiro/dre': typeof AuthenticatedFinanceiroDreRoute
   '/_authenticated/financeiro/extrato': typeof AuthenticatedFinanceiroExtratoRoute
+  '/_authenticated/nps/config': typeof AuthenticatedNpsConfigRoute
   '/_authenticated/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/_authenticated/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/_authenticated/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/_authenticated/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
+  '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
+  '/_authenticated/comunicacao/': typeof AuthenticatedComunicacaoIndexRoute
   '/_authenticated/estoque/': typeof AuthenticatedEstoqueIndexRoute
+  '/_authenticated/nps/': typeof AuthenticatedNpsIndexRoute
   '/_authenticated/pacotes/': typeof AuthenticatedPacotesIndexRoute
   '/_authenticated/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
   '/_authenticated/promocoes/': typeof AuthenticatedPromocoesIndexRoute
@@ -469,6 +564,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/owner'
     | '/portal'
+    | '/audit'
     | '/crm'
     | '/dashboard'
     | '/despesas'
@@ -476,6 +572,7 @@ export interface FileRouteTypes {
     | '/fornecedores'
     | '/inbox'
     | '/payables'
+    | '/usuarios'
     | '/b/$slug'
     | '/owner/'
     | '/portal/'
@@ -490,21 +587,29 @@ export interface FileRouteTypes {
     | '/catalogo/produtos'
     | '/catalogo/servicos'
     | '/clientes/$id'
+    | '/comunicacao/logs'
+    | '/configuracoes/branding'
     | '/configuracoes/financeiro'
+    | '/configuracoes/integracoes'
+    | '/configuracoes/modulos'
     | '/estoque/movimentacoes'
     | '/financeiro/conciliacao'
     | '/financeiro/contas'
     | '/financeiro/dre'
     | '/financeiro/extrato'
+    | '/nps/config'
     | '/operacoes/$id'
     | '/pacotes/compras'
     | '/pagamentos/$id'
     | '/profissionais/$id'
     | '/b/$slug/agendar'
+    | '/nps/respond/$surveyId'
     | '/app/'
     | '/assinaturas/'
     | '/clientes/'
+    | '/comunicacao/'
     | '/estoque/'
+    | '/nps/'
     | '/pacotes/'
     | '/pagamentos/'
     | '/promocoes/'
@@ -515,6 +620,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/audit'
     | '/crm'
     | '/dashboard'
     | '/despesas'
@@ -522,6 +628,7 @@ export interface FileRouteTypes {
     | '/fornecedores'
     | '/inbox'
     | '/payables'
+    | '/usuarios'
     | '/owner'
     | '/portal'
     | '/app/agenda'
@@ -535,21 +642,29 @@ export interface FileRouteTypes {
     | '/catalogo/produtos'
     | '/catalogo/servicos'
     | '/clientes/$id'
+    | '/comunicacao/logs'
+    | '/configuracoes/branding'
     | '/configuracoes/financeiro'
+    | '/configuracoes/integracoes'
+    | '/configuracoes/modulos'
     | '/estoque/movimentacoes'
     | '/financeiro/conciliacao'
     | '/financeiro/contas'
     | '/financeiro/dre'
     | '/financeiro/extrato'
+    | '/nps/config'
     | '/operacoes/$id'
     | '/pacotes/compras'
     | '/pagamentos/$id'
     | '/profissionais/$id'
     | '/b/$slug/agendar'
+    | '/nps/respond/$surveyId'
     | '/app'
     | '/assinaturas'
     | '/clientes'
+    | '/comunicacao'
     | '/estoque'
+    | '/nps'
     | '/pacotes'
     | '/pagamentos'
     | '/promocoes'
@@ -563,6 +678,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/owner'
     | '/portal'
+    | '/_authenticated/audit'
     | '/_authenticated/crm'
     | '/_authenticated/dashboard'
     | '/_authenticated/despesas'
@@ -570,6 +686,7 @@ export interface FileRouteTypes {
     | '/_authenticated/fornecedores'
     | '/_authenticated/inbox'
     | '/_authenticated/payables'
+    | '/_authenticated/usuarios'
     | '/b/$slug'
     | '/owner/'
     | '/portal/'
@@ -584,21 +701,29 @@ export interface FileRouteTypes {
     | '/_authenticated/catalogo/produtos'
     | '/_authenticated/catalogo/servicos'
     | '/_authenticated/clientes/$id'
+    | '/_authenticated/comunicacao/logs'
+    | '/_authenticated/configuracoes/branding'
     | '/_authenticated/configuracoes/financeiro'
+    | '/_authenticated/configuracoes/integracoes'
+    | '/_authenticated/configuracoes/modulos'
     | '/_authenticated/estoque/movimentacoes'
     | '/_authenticated/financeiro/conciliacao'
     | '/_authenticated/financeiro/contas'
     | '/_authenticated/financeiro/dre'
     | '/_authenticated/financeiro/extrato'
+    | '/_authenticated/nps/config'
     | '/_authenticated/operacoes/$id'
     | '/_authenticated/pacotes/compras'
     | '/_authenticated/pagamentos/$id'
     | '/_authenticated/profissionais/$id'
     | '/b/$slug/agendar'
+    | '/nps/respond/$surveyId'
     | '/_authenticated/app/'
     | '/_authenticated/assinaturas/'
     | '/_authenticated/clientes/'
+    | '/_authenticated/comunicacao/'
     | '/_authenticated/estoque/'
+    | '/_authenticated/nps/'
     | '/_authenticated/pacotes/'
     | '/_authenticated/pagamentos/'
     | '/_authenticated/promocoes/'
@@ -614,6 +739,7 @@ export interface RootRouteChildren {
   OwnerRoute: typeof OwnerRouteWithChildren
   PortalRoute: typeof PortalRouteWithChildren
   BSlugRoute: typeof BSlugRouteWithChildren
+  NpsRespondSurveyIdRoute: typeof NpsRespondSurveyIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -674,6 +800,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/usuarios': {
+      id: '/_authenticated/usuarios'
+      path: '/usuarios'
+      fullPath: '/usuarios'
+      preLoaderRoute: typeof AuthenticatedUsuariosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/payables': {
       id: '/_authenticated/payables'
       path: '/payables'
@@ -723,6 +856,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCrmRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/audit': {
+      id: '/_authenticated/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuthenticatedAuditRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/b/$slug/': {
       id: '/b/$slug/'
       path: '/'
@@ -751,11 +891,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPacotesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/nps/': {
+      id: '/_authenticated/nps/'
+      path: '/nps'
+      fullPath: '/nps/'
+      preLoaderRoute: typeof AuthenticatedNpsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/estoque/': {
       id: '/_authenticated/estoque/'
       path: '/estoque'
       fullPath: '/estoque/'
       preLoaderRoute: typeof AuthenticatedEstoqueIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/comunicacao/': {
+      id: '/_authenticated/comunicacao/'
+      path: '/comunicacao'
+      fullPath: '/comunicacao/'
+      preLoaderRoute: typeof AuthenticatedComunicacaoIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/clientes/': {
@@ -778,6 +932,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/nps/respond/$surveyId': {
+      id: '/nps/respond/$surveyId'
+      path: '/nps/respond/$surveyId'
+      fullPath: '/nps/respond/$surveyId'
+      preLoaderRoute: typeof NpsRespondSurveyIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/b/$slug/agendar': {
       id: '/b/$slug/agendar'
@@ -812,6 +973,13 @@ declare module '@tanstack/react-router' {
       path: '/operacoes/$id'
       fullPath: '/operacoes/$id'
       preLoaderRoute: typeof AuthenticatedOperacoesIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nps/config': {
+      id: '/_authenticated/nps/config'
+      path: '/nps/config'
+      fullPath: '/nps/config'
+      preLoaderRoute: typeof AuthenticatedNpsConfigRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/financeiro/extrato': {
@@ -849,11 +1017,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEstoqueMovimentacoesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/configuracoes/modulos': {
+      id: '/_authenticated/configuracoes/modulos'
+      path: '/configuracoes/modulos'
+      fullPath: '/configuracoes/modulos'
+      preLoaderRoute: typeof AuthenticatedConfiguracoesModulosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/configuracoes/integracoes': {
+      id: '/_authenticated/configuracoes/integracoes'
+      path: '/configuracoes/integracoes'
+      fullPath: '/configuracoes/integracoes'
+      preLoaderRoute: typeof AuthenticatedConfiguracoesIntegracoesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/configuracoes/financeiro': {
       id: '/_authenticated/configuracoes/financeiro'
       path: '/configuracoes/financeiro'
       fullPath: '/configuracoes/financeiro'
       preLoaderRoute: typeof AuthenticatedConfiguracoesFinanceiroRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/configuracoes/branding': {
+      id: '/_authenticated/configuracoes/branding'
+      path: '/configuracoes/branding'
+      fullPath: '/configuracoes/branding'
+      preLoaderRoute: typeof AuthenticatedConfiguracoesBrandingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/comunicacao/logs': {
+      id: '/_authenticated/comunicacao/logs'
+      path: '/comunicacao/logs'
+      fullPath: '/comunicacao/logs'
+      preLoaderRoute: typeof AuthenticatedComunicacaoLogsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/clientes/$id': {
@@ -951,6 +1147,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAuditRoute: typeof AuthenticatedAuditRoute
   AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDespesasRoute: typeof AuthenticatedDespesasRoute
@@ -958,6 +1155,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFornecedoresRoute: typeof AuthenticatedFornecedoresRoute
   AuthenticatedInboxRoute: typeof AuthenticatedInboxRoute
   AuthenticatedPayablesRoute: typeof AuthenticatedPayablesRoute
+  AuthenticatedUsuariosRoute: typeof AuthenticatedUsuariosRoute
   AuthenticatedAppAgendaRoute: typeof AuthenticatedAppAgendaRoute
   AuthenticatedAppBarbeirosRoute: typeof AuthenticatedAppBarbeirosRoute
   AuthenticatedAppClientesRoute: typeof AuthenticatedAppClientesRoute
@@ -969,12 +1167,17 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCatalogoProdutosRoute: typeof AuthenticatedCatalogoProdutosRoute
   AuthenticatedCatalogoServicosRoute: typeof AuthenticatedCatalogoServicosRoute
   AuthenticatedClientesIdRoute: typeof AuthenticatedClientesIdRoute
+  AuthenticatedComunicacaoLogsRoute: typeof AuthenticatedComunicacaoLogsRoute
+  AuthenticatedConfiguracoesBrandingRoute: typeof AuthenticatedConfiguracoesBrandingRoute
   AuthenticatedConfiguracoesFinanceiroRoute: typeof AuthenticatedConfiguracoesFinanceiroRoute
+  AuthenticatedConfiguracoesIntegracoesRoute: typeof AuthenticatedConfiguracoesIntegracoesRoute
+  AuthenticatedConfiguracoesModulosRoute: typeof AuthenticatedConfiguracoesModulosRoute
   AuthenticatedEstoqueMovimentacoesRoute: typeof AuthenticatedEstoqueMovimentacoesRoute
   AuthenticatedFinanceiroConciliacaoRoute: typeof AuthenticatedFinanceiroConciliacaoRoute
   AuthenticatedFinanceiroContasRoute: typeof AuthenticatedFinanceiroContasRoute
   AuthenticatedFinanceiroDreRoute: typeof AuthenticatedFinanceiroDreRoute
   AuthenticatedFinanceiroExtratoRoute: typeof AuthenticatedFinanceiroExtratoRoute
+  AuthenticatedNpsConfigRoute: typeof AuthenticatedNpsConfigRoute
   AuthenticatedOperacoesIdRoute: typeof AuthenticatedOperacoesIdRoute
   AuthenticatedPacotesComprasRoute: typeof AuthenticatedPacotesComprasRoute
   AuthenticatedPagamentosIdRoute: typeof AuthenticatedPagamentosIdRoute
@@ -982,7 +1185,9 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
   AuthenticatedAssinaturasIndexRoute: typeof AuthenticatedAssinaturasIndexRoute
   AuthenticatedClientesIndexRoute: typeof AuthenticatedClientesIndexRoute
+  AuthenticatedComunicacaoIndexRoute: typeof AuthenticatedComunicacaoIndexRoute
   AuthenticatedEstoqueIndexRoute: typeof AuthenticatedEstoqueIndexRoute
+  AuthenticatedNpsIndexRoute: typeof AuthenticatedNpsIndexRoute
   AuthenticatedPacotesIndexRoute: typeof AuthenticatedPacotesIndexRoute
   AuthenticatedPagamentosIndexRoute: typeof AuthenticatedPagamentosIndexRoute
   AuthenticatedPromocoesIndexRoute: typeof AuthenticatedPromocoesIndexRoute
@@ -990,6 +1195,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAuditRoute: AuthenticatedAuditRoute,
   AuthenticatedCrmRoute: AuthenticatedCrmRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDespesasRoute: AuthenticatedDespesasRoute,
@@ -997,6 +1203,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFornecedoresRoute: AuthenticatedFornecedoresRoute,
   AuthenticatedInboxRoute: AuthenticatedInboxRoute,
   AuthenticatedPayablesRoute: AuthenticatedPayablesRoute,
+  AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
   AuthenticatedAppAgendaRoute: AuthenticatedAppAgendaRoute,
   AuthenticatedAppBarbeirosRoute: AuthenticatedAppBarbeirosRoute,
   AuthenticatedAppClientesRoute: AuthenticatedAppClientesRoute,
@@ -1008,8 +1215,15 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCatalogoProdutosRoute: AuthenticatedCatalogoProdutosRoute,
   AuthenticatedCatalogoServicosRoute: AuthenticatedCatalogoServicosRoute,
   AuthenticatedClientesIdRoute: AuthenticatedClientesIdRoute,
+  AuthenticatedComunicacaoLogsRoute: AuthenticatedComunicacaoLogsRoute,
+  AuthenticatedConfiguracoesBrandingRoute:
+    AuthenticatedConfiguracoesBrandingRoute,
   AuthenticatedConfiguracoesFinanceiroRoute:
     AuthenticatedConfiguracoesFinanceiroRoute,
+  AuthenticatedConfiguracoesIntegracoesRoute:
+    AuthenticatedConfiguracoesIntegracoesRoute,
+  AuthenticatedConfiguracoesModulosRoute:
+    AuthenticatedConfiguracoesModulosRoute,
   AuthenticatedEstoqueMovimentacoesRoute:
     AuthenticatedEstoqueMovimentacoesRoute,
   AuthenticatedFinanceiroConciliacaoRoute:
@@ -1017,6 +1231,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFinanceiroContasRoute: AuthenticatedFinanceiroContasRoute,
   AuthenticatedFinanceiroDreRoute: AuthenticatedFinanceiroDreRoute,
   AuthenticatedFinanceiroExtratoRoute: AuthenticatedFinanceiroExtratoRoute,
+  AuthenticatedNpsConfigRoute: AuthenticatedNpsConfigRoute,
   AuthenticatedOperacoesIdRoute: AuthenticatedOperacoesIdRoute,
   AuthenticatedPacotesComprasRoute: AuthenticatedPacotesComprasRoute,
   AuthenticatedPagamentosIdRoute: AuthenticatedPagamentosIdRoute,
@@ -1024,7 +1239,9 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
   AuthenticatedAssinaturasIndexRoute: AuthenticatedAssinaturasIndexRoute,
   AuthenticatedClientesIndexRoute: AuthenticatedClientesIndexRoute,
+  AuthenticatedComunicacaoIndexRoute: AuthenticatedComunicacaoIndexRoute,
   AuthenticatedEstoqueIndexRoute: AuthenticatedEstoqueIndexRoute,
+  AuthenticatedNpsIndexRoute: AuthenticatedNpsIndexRoute,
   AuthenticatedPacotesIndexRoute: AuthenticatedPacotesIndexRoute,
   AuthenticatedPagamentosIndexRoute: AuthenticatedPagamentosIndexRoute,
   AuthenticatedPromocoesIndexRoute: AuthenticatedPromocoesIndexRoute,
@@ -1077,6 +1294,7 @@ const rootRouteChildren: RootRouteChildren = {
   OwnerRoute: OwnerRouteWithChildren,
   PortalRoute: PortalRouteWithChildren,
   BSlugRoute: BSlugRouteWithChildren,
+  NpsRespondSurveyIdRoute: NpsRespondSurveyIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
