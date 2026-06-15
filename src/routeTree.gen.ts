@@ -28,6 +28,7 @@ import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
 import { Route as AuthenticatedPromocoesIndexRouteImport } from './routes/_authenticated.promocoes.index'
 import { Route as AuthenticatedPagamentosIndexRouteImport } from './routes/_authenticated.pagamentos.index'
 import { Route as AuthenticatedPacotesIndexRouteImport } from './routes/_authenticated.pacotes.index'
+import { Route as AuthenticatedNpsIndexRouteImport } from './routes/_authenticated.nps.index'
 import { Route as AuthenticatedEstoqueIndexRouteImport } from './routes/_authenticated.estoque.index'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
@@ -156,6 +157,11 @@ const AuthenticatedPacotesIndexRoute =
     path: '/pacotes/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedNpsIndexRoute = AuthenticatedNpsIndexRouteImport.update({
+  id: '/nps/',
+  path: '/nps/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedEstoqueIndexRoute =
   AuthenticatedEstoqueIndexRouteImport.update({
     id: '/estoque/',
@@ -367,6 +373,7 @@ export interface FileRoutesByFullPath {
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
   '/estoque/': typeof AuthenticatedEstoqueIndexRoute
+  '/nps/': typeof AuthenticatedNpsIndexRoute
   '/pacotes/': typeof AuthenticatedPacotesIndexRoute
   '/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
   '/promocoes/': typeof AuthenticatedPromocoesIndexRoute
@@ -413,6 +420,7 @@ export interface FileRoutesByTo {
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
   '/estoque': typeof AuthenticatedEstoqueIndexRoute
+  '/nps': typeof AuthenticatedNpsIndexRoute
   '/pacotes': typeof AuthenticatedPacotesIndexRoute
   '/pagamentos': typeof AuthenticatedPagamentosIndexRoute
   '/promocoes': typeof AuthenticatedPromocoesIndexRoute
@@ -464,6 +472,7 @@ export interface FileRoutesById {
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
   '/_authenticated/estoque/': typeof AuthenticatedEstoqueIndexRoute
+  '/_authenticated/nps/': typeof AuthenticatedNpsIndexRoute
   '/_authenticated/pacotes/': typeof AuthenticatedPacotesIndexRoute
   '/_authenticated/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
   '/_authenticated/promocoes/': typeof AuthenticatedPromocoesIndexRoute
@@ -515,6 +524,7 @@ export interface FileRouteTypes {
     | '/assinaturas/'
     | '/clientes/'
     | '/estoque/'
+    | '/nps/'
     | '/pacotes/'
     | '/pagamentos/'
     | '/promocoes/'
@@ -561,6 +571,7 @@ export interface FileRouteTypes {
     | '/assinaturas'
     | '/clientes'
     | '/estoque'
+    | '/nps'
     | '/pacotes'
     | '/pagamentos'
     | '/promocoes'
@@ -611,6 +622,7 @@ export interface FileRouteTypes {
     | '/_authenticated/assinaturas/'
     | '/_authenticated/clientes/'
     | '/_authenticated/estoque/'
+    | '/_authenticated/nps/'
     | '/_authenticated/pacotes/'
     | '/_authenticated/pagamentos/'
     | '/_authenticated/promocoes/'
@@ -761,6 +773,13 @@ declare module '@tanstack/react-router' {
       path: '/pacotes'
       fullPath: '/pacotes/'
       preLoaderRoute: typeof AuthenticatedPacotesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nps/': {
+      id: '/_authenticated/nps/'
+      path: '/nps'
+      fullPath: '/nps/'
+      preLoaderRoute: typeof AuthenticatedNpsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/estoque/': {
@@ -1003,6 +1022,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAssinaturasIndexRoute: typeof AuthenticatedAssinaturasIndexRoute
   AuthenticatedClientesIndexRoute: typeof AuthenticatedClientesIndexRoute
   AuthenticatedEstoqueIndexRoute: typeof AuthenticatedEstoqueIndexRoute
+  AuthenticatedNpsIndexRoute: typeof AuthenticatedNpsIndexRoute
   AuthenticatedPacotesIndexRoute: typeof AuthenticatedPacotesIndexRoute
   AuthenticatedPagamentosIndexRoute: typeof AuthenticatedPagamentosIndexRoute
   AuthenticatedPromocoesIndexRoute: typeof AuthenticatedPromocoesIndexRoute
@@ -1046,6 +1066,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAssinaturasIndexRoute: AuthenticatedAssinaturasIndexRoute,
   AuthenticatedClientesIndexRoute: AuthenticatedClientesIndexRoute,
   AuthenticatedEstoqueIndexRoute: AuthenticatedEstoqueIndexRoute,
+  AuthenticatedNpsIndexRoute: AuthenticatedNpsIndexRoute,
   AuthenticatedPacotesIndexRoute: AuthenticatedPacotesIndexRoute,
   AuthenticatedPagamentosIndexRoute: AuthenticatedPagamentosIndexRoute,
   AuthenticatedPromocoesIndexRoute: AuthenticatedPromocoesIndexRoute,
