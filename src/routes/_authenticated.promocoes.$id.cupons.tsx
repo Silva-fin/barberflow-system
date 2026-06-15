@@ -47,9 +47,15 @@ function CouponsPage() {
         <Link to="/promocoes"><ArrowLeft size={16} strokeWidth={1.5} />Promoções</Link>
       </Button>
       <PageHeader
-        eyebrow={<span className="inline-flex items-center gap-2">Promoção <PromotionBadge status={promo.status} /></span> as unknown as string}
+        eyebrow="Promoção"
         title={`Cupons · ${promo.name}`}
-        actions={<Button size="sm" onClick={() => setCreating(true)}><Plus size={16} strokeWidth={1.5} />Gerar cupons</Button>}
+        description="Gere e gerencie cupons desta promoção."
+        actions={
+          <div className="flex items-center gap-2">
+            <PromotionBadge status={promo.status} />
+            <Button size="sm" onClick={() => setCreating(true)}><Plus size={16} strokeWidth={1.5} />Gerar cupons</Button>
+          </div>
+        }
       />
       <Card>
         <Table>

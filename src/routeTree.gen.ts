@@ -22,6 +22,7 @@ import { Route as AuthenticatedFilaRouteImport } from './routes/_authenticated.f
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated.crm'
 import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
+import { Route as AuthenticatedPromocoesIndexRouteImport } from './routes/_authenticated.promocoes.index'
 import { Route as AuthenticatedPagamentosIndexRouteImport } from './routes/_authenticated.pagamentos.index'
 import { Route as AuthenticatedPacotesIndexRouteImport } from './routes/_authenticated.pacotes.index'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
@@ -45,6 +46,7 @@ import { Route as AuthenticatedAppClientesRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppBarbeirosRouteImport } from './routes/_authenticated.app.barbeiros'
 import { Route as AuthenticatedAppAgendaRouteImport } from './routes/_authenticated.app.agenda'
 import { Route as BSlugConfirmacaoIdRouteImport } from './routes/b.$slug.confirmacao.$id'
+import { Route as AuthenticatedPromocoesIdCuponsRouteImport } from './routes/_authenticated.promocoes.$id.cupons'
 
 const PortalRoute = PortalRouteImport.update({
   id: '/portal',
@@ -110,6 +112,12 @@ const BSlugIndexRoute = BSlugIndexRouteImport.update({
   path: '/',
   getParentRoute: () => BSlugRoute,
 } as any)
+const AuthenticatedPromocoesIndexRoute =
+  AuthenticatedPromocoesIndexRouteImport.update({
+    id: '/promocoes/',
+    path: '/promocoes/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPagamentosIndexRoute =
   AuthenticatedPagamentosIndexRouteImport.update({
     id: '/pagamentos/',
@@ -243,6 +251,12 @@ const BSlugConfirmacaoIdRoute = BSlugConfirmacaoIdRouteImport.update({
   path: '/confirmacao/$id',
   getParentRoute: () => BSlugRoute,
 } as any)
+const AuthenticatedPromocoesIdCuponsRoute =
+  AuthenticatedPromocoesIdCuponsRouteImport.update({
+    id: '/promocoes/$id/cupons',
+    path: '/promocoes/$id/cupons',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -278,7 +292,9 @@ export interface FileRoutesByFullPath {
   '/clientes/': typeof AuthenticatedClientesIndexRoute
   '/pacotes/': typeof AuthenticatedPacotesIndexRoute
   '/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
+  '/promocoes/': typeof AuthenticatedPromocoesIndexRoute
   '/b/$slug/': typeof BSlugIndexRoute
+  '/promocoes/$id/cupons': typeof AuthenticatedPromocoesIdCuponsRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
 export interface FileRoutesByTo {
@@ -312,7 +328,9 @@ export interface FileRoutesByTo {
   '/clientes': typeof AuthenticatedClientesIndexRoute
   '/pacotes': typeof AuthenticatedPacotesIndexRoute
   '/pagamentos': typeof AuthenticatedPagamentosIndexRoute
+  '/promocoes': typeof AuthenticatedPromocoesIndexRoute
   '/b/$slug': typeof BSlugIndexRoute
+  '/promocoes/$id/cupons': typeof AuthenticatedPromocoesIdCuponsRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
 export interface FileRoutesById {
@@ -351,7 +369,9 @@ export interface FileRoutesById {
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
   '/_authenticated/pacotes/': typeof AuthenticatedPacotesIndexRoute
   '/_authenticated/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
+  '/_authenticated/promocoes/': typeof AuthenticatedPromocoesIndexRoute
   '/b/$slug/': typeof BSlugIndexRoute
+  '/_authenticated/promocoes/$id/cupons': typeof AuthenticatedPromocoesIdCuponsRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
 export interface FileRouteTypes {
@@ -390,7 +410,9 @@ export interface FileRouteTypes {
     | '/clientes/'
     | '/pacotes/'
     | '/pagamentos/'
+    | '/promocoes/'
     | '/b/$slug/'
+    | '/promocoes/$id/cupons'
     | '/b/$slug/confirmacao/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -424,7 +446,9 @@ export interface FileRouteTypes {
     | '/clientes'
     | '/pacotes'
     | '/pagamentos'
+    | '/promocoes'
     | '/b/$slug'
+    | '/promocoes/$id/cupons'
     | '/b/$slug/confirmacao/$id'
   id:
     | '__root__'
@@ -462,7 +486,9 @@ export interface FileRouteTypes {
     | '/_authenticated/clientes/'
     | '/_authenticated/pacotes/'
     | '/_authenticated/pagamentos/'
+    | '/_authenticated/promocoes/'
     | '/b/$slug/'
+    | '/_authenticated/promocoes/$id/cupons'
     | '/b/$slug/confirmacao/$id'
   fileRoutesById: FileRoutesById
 }
@@ -567,6 +593,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/b/$slug/'
       preLoaderRoute: typeof BSlugIndexRouteImport
       parentRoute: typeof BSlugRoute
+    }
+    '/_authenticated/promocoes/': {
+      id: '/_authenticated/promocoes/'
+      path: '/promocoes'
+      fullPath: '/promocoes/'
+      preLoaderRoute: typeof AuthenticatedPromocoesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/pagamentos/': {
       id: '/_authenticated/pagamentos/'
@@ -729,6 +762,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BSlugConfirmacaoIdRouteImport
       parentRoute: typeof BSlugRoute
     }
+    '/_authenticated/promocoes/$id/cupons': {
+      id: '/_authenticated/promocoes/$id/cupons'
+      path: '/promocoes/$id/cupons'
+      fullPath: '/promocoes/$id/cupons'
+      preLoaderRoute: typeof AuthenticatedPromocoesIdCuponsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -758,6 +798,8 @@ interface AuthenticatedRouteChildren {
   AuthenticatedClientesIndexRoute: typeof AuthenticatedClientesIndexRoute
   AuthenticatedPacotesIndexRoute: typeof AuthenticatedPacotesIndexRoute
   AuthenticatedPagamentosIndexRoute: typeof AuthenticatedPagamentosIndexRoute
+  AuthenticatedPromocoesIndexRoute: typeof AuthenticatedPromocoesIndexRoute
+  AuthenticatedPromocoesIdCuponsRoute: typeof AuthenticatedPromocoesIdCuponsRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -787,6 +829,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedClientesIndexRoute: AuthenticatedClientesIndexRoute,
   AuthenticatedPacotesIndexRoute: AuthenticatedPacotesIndexRoute,
   AuthenticatedPagamentosIndexRoute: AuthenticatedPagamentosIndexRoute,
+  AuthenticatedPromocoesIndexRoute: AuthenticatedPromocoesIndexRoute,
+  AuthenticatedPromocoesIdCuponsRoute: AuthenticatedPromocoesIdCuponsRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
