@@ -25,6 +25,7 @@ import { Route as AuthenticatedFilaRouteImport } from './routes/_authenticated.f
 import { Route as AuthenticatedDespesasRouteImport } from './routes/_authenticated.despesas'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated.crm'
+import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated.audit'
 import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
 import { Route as AuthenticatedPromocoesIndexRouteImport } from './routes/_authenticated.promocoes.index'
 import { Route as AuthenticatedPagamentosIndexRouteImport } from './routes/_authenticated.pagamentos.index'
@@ -144,6 +145,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 const AuthenticatedCrmRoute = AuthenticatedCrmRouteImport.update({
   id: '/crm',
   path: '/crm',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAuditRoute = AuthenticatedAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const BSlugIndexRoute = BSlugIndexRouteImport.update({
@@ -383,6 +389,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/owner': typeof OwnerRouteWithChildren
   '/portal': typeof PortalRouteWithChildren
+  '/audit': typeof AuthenticatedAuditRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/despesas': typeof AuthenticatedDespesasRoute
@@ -438,6 +445,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/audit': typeof AuthenticatedAuditRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/despesas': typeof AuthenticatedDespesasRoute
@@ -496,6 +504,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/owner': typeof OwnerRouteWithChildren
   '/portal': typeof PortalRouteWithChildren
+  '/_authenticated/audit': typeof AuthenticatedAuditRoute
   '/_authenticated/crm': typeof AuthenticatedCrmRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/despesas': typeof AuthenticatedDespesasRoute
@@ -555,6 +564,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/owner'
     | '/portal'
+    | '/audit'
     | '/crm'
     | '/dashboard'
     | '/despesas'
@@ -610,6 +620,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/audit'
     | '/crm'
     | '/dashboard'
     | '/despesas'
@@ -667,6 +678,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/owner'
     | '/portal'
+    | '/_authenticated/audit'
     | '/_authenticated/crm'
     | '/_authenticated/dashboard'
     | '/_authenticated/despesas'
@@ -842,6 +854,13 @@ declare module '@tanstack/react-router' {
       path: '/crm'
       fullPath: '/crm'
       preLoaderRoute: typeof AuthenticatedCrmRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/audit': {
+      id: '/_authenticated/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuthenticatedAuditRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/b/$slug/': {
@@ -1128,6 +1147,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAuditRoute: typeof AuthenticatedAuditRoute
   AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDespesasRoute: typeof AuthenticatedDespesasRoute
@@ -1175,6 +1195,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAuditRoute: AuthenticatedAuditRoute,
   AuthenticatedCrmRoute: AuthenticatedCrmRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDespesasRoute: AuthenticatedDespesasRoute,
