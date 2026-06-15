@@ -193,3 +193,102 @@ export const EXPENSE_CATEGORY_KEYS: EntryCategoryKey[] = [
   "LIMPEZA", "MANUTENCAO", "SALARIO", "SERVICOS_PJ", "ALIMENTACAO_COPA",
   "EQUIPAMENTOS", "TAXAS_BANCARIAS", "TREINAMENTO", "DESPESA_OUTROS",
 ];
+
+/* ============ FASE 4 — NPS / Comunicação / Administração ============ */
+
+export const NPS_SURVEY_STATUS_LABELS = {
+  PENDING: "Pendente",
+  SENT: "Enviada",
+  RESPONDED: "Respondida",
+  EXPIRED: "Expirada",
+} as const;
+export type NpsSurveyStatus = keyof typeof NPS_SURVEY_STATUS_LABELS;
+
+export const COMMUNICATION_LOG_STATUS_LABELS = {
+  SENT: "Enviada",
+  SCHEDULED: "Agendada",
+  FAILED: "Falhou",
+  SKIPPED_QUIET_HOURS: "Adiada (silêncio)",
+  SKIPPED_NO_CONSENT: "Sem consentimento",
+  SKIPPED_CHANNEL_DISABLED: "Canal desativado",
+  SKIPPED_NO_TEMPLATE: "Sem template",
+} as const;
+export type CommunicationLogStatus = keyof typeof COMMUNICATION_LOG_STATUS_LABELS;
+
+export const COMMUNICATION_CHANNEL_LABELS = {
+  WHATSAPP: "WhatsApp",
+  EMAIL: "E-mail",
+  SMS: "SMS",
+} as const;
+export type CommunicationChannel = keyof typeof COMMUNICATION_CHANNEL_LABELS;
+
+export const COMMUNICATION_AUDIENCE_LABELS = {
+  CLIENT: "Cliente",
+  PROFESSIONAL: "Profissional",
+  OWNER: "Proprietário",
+} as const;
+export type CommunicationAudience = keyof typeof COMMUNICATION_AUDIENCE_LABELS;
+
+export const WHATSAPP_API_TYPE_LABELS = {
+  UNOFFICIAL_BAILEYS: "Não-oficial (Baileys)",
+  OFFICIAL_META: "Oficial (Meta)",
+} as const;
+export type WhatsappApiType = keyof typeof WHATSAPP_API_TYPE_LABELS;
+
+export const MODULE_LABELS = {
+  ESTOQUE: "Estoque",
+  COMISSOES: "Comissões",
+  PACOTES: "Pacotes",
+  ASSINATURAS: "Assinaturas",
+  PROMOCOES: "Promoções",
+  CRM: "CRM",
+  NPS: "NPS",
+  FILA: "Fila de espera",
+  BOT_WHATSAPP: "Bot WhatsApp",
+  LINK_PUBLICO: "Link público",
+} as const;
+export type ModuleName = keyof typeof MODULE_LABELS;
+
+export const MODULE_DESCRIPTIONS: Record<ModuleName, string> = {
+  ESTOQUE: "Controle de produtos, entradas e movimentações.",
+  COMISSOES: "Cálculo automático de comissões por profissional.",
+  PACOTES: "Pacotes de serviços pré-pagos com saldo.",
+  ASSINATURAS: "Planos recorrentes com cobrança automática.",
+  PROMOCOES: "Cupons e campanhas promocionais.",
+  CRM: "Classificação e jornada do cliente.",
+  NPS: "Pesquisas de satisfação pós-atendimento.",
+  FILA: "Fila de espera com avisos automáticos.",
+  BOT_WHATSAPP: "Atendimento automatizado via WhatsApp.",
+  LINK_PUBLICO: "Página pública de agendamento.",
+};
+
+export const COMMUNICATION_EVENT_TYPE_LABELS = {
+  "appointment.confirmed": "Agendamento confirmado",
+  "appointment.cancelled": "Agendamento cancelado",
+  "appointment.reminder_24h": "Lembrete 24h",
+  "appointment.reminder_2h": "Lembrete 2h",
+  "appointment.completed": "Atendimento concluído",
+  "appointment.no_show": "Não comparecimento",
+  "auth.password_reset_requested": "Redefinição de senha",
+  "user.invitation_sent": "Convite de usuário",
+  "nps.survey_request": "Pesquisa NPS",
+  "nps.low_score_alert": "Alerta de nota baixa",
+  "waitlist.slot_available": "Vaga disponível (fila)",
+  "conversation.escalated": "Conversa escalada",
+} as const;
+export type CommunicationEventType = keyof typeof COMMUNICATION_EVENT_TYPE_LABELS;
+
+export const TEMPLATE_VARIABLES_BY_EVENT: Record<CommunicationEventType, string[]> = {
+  "appointment.confirmed": ["cliente_nome", "servico", "profissional", "data", "horario", "empresa_nome", "manage_url"],
+  "appointment.cancelled": ["cliente_nome", "servico", "data", "horario", "empresa_nome"],
+  "appointment.reminder_24h": ["cliente_nome", "servico", "profissional", "data", "horario", "empresa_nome", "manage_url"],
+  "appointment.reminder_2h": ["cliente_nome", "servico", "horario", "empresa_nome", "manage_url"],
+  "appointment.completed": ["cliente_nome", "servico", "profissional", "empresa_nome", "nps_url"],
+  "appointment.no_show": ["cliente_nome", "servico", "data", "horario", "empresa_nome"],
+  "auth.password_reset_requested": ["user_name", "token"],
+  "user.invitation_sent": ["user_name", "company_name", "activation_link"],
+  "nps.survey_request": ["cliente_nome", "empresa_nome", "nps_url"],
+  "nps.low_score_alert": ["cliente_nome", "nota", "comentario"],
+  "waitlist.slot_available": ["customer_name", "data", "horario", "manage_url"],
+  "conversation.escalated": ["customer_name", "phone", "panel_url"],
+};
