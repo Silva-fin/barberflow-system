@@ -263,3 +263,48 @@ export function ActiveBadge({ active }: { active: boolean }) {
     </Badge>
   );
 }
+
+/* ============ FASE 4 ============ */
+
+export type NpsSurveyStatus = "PENDING" | "SENT" | "RESPONDED" | "EXPIRED";
+const NPS_MAP: Record<NpsSurveyStatus, { label: string; cls: string }> = {
+  PENDING: { label: "Pendente", cls: AMBER },
+  SENT: { label: "Enviada", cls: SKY },
+  RESPONDED: { label: "Respondida", cls: EMERALD },
+  EXPIRED: { label: "Expirada", cls: NEUTRAL },
+};
+export function NpsSurveyBadge({ status }: { status: NpsSurveyStatus }) {
+  const m = NPS_MAP[status];
+  return <Badge variant="outline" className={cn("font-normal", m.cls)}>{m.label}</Badge>;
+}
+
+export type CommunicationLogStatus =
+  | "SENT" | "SCHEDULED" | "FAILED"
+  | "SKIPPED_QUIET_HOURS" | "SKIPPED_NO_CONSENT"
+  | "SKIPPED_CHANNEL_DISABLED" | "SKIPPED_NO_TEMPLATE";
+const COMMLOG_MAP: Record<CommunicationLogStatus, { label: string; cls: string }> = {
+  SENT: { label: "Enviada", cls: EMERALD },
+  SCHEDULED: { label: "Agendada", cls: SKY },
+  FAILED: { label: "Falhou", cls: DESTRUCTIVE },
+  SKIPPED_QUIET_HOURS: { label: "Adiada (silêncio)", cls: NEUTRAL },
+  SKIPPED_NO_CONSENT: { label: "Sem consentimento", cls: NEUTRAL },
+  SKIPPED_CHANNEL_DISABLED: { label: "Canal desativado", cls: NEUTRAL },
+  SKIPPED_NO_TEMPLATE: { label: "Sem template", cls: NEUTRAL },
+};
+export function CommunicationLogBadge({ status }: { status: CommunicationLogStatus }) {
+  const m = COMMLOG_MAP[status];
+  return <Badge variant="outline" className={cn("font-normal", m.cls)}>{m.label}</Badge>;
+}
+
+/** NPS score chip: 0–6 detrator (destructive), 7–8 neutro (amber), 9–10 promotor (emerald). */
+export function NpsScoreChip({ score }: { score: number | null | undefined }) {
+  if (score === null || score === undefined) {
+    return <span className="text-muted-foreground">—</span>;
+  }
+  const cls = score <= 6 ? DESTRUCTIVE : score <= 8 ? AMBER : EMERALD;
+  return (
+    <Badge variant="outline" className={cn("font-mono font-normal tabular-nums", cls)}>
+      {score}
+    </Badge>
+  );
+}
