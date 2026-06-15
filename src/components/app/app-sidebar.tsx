@@ -5,7 +5,7 @@ import {
   Users, MessageCircle, HeartHandshake, Scissors, Package, Tags, Boxes,
   Wallet, Landmark, Receipt, Warehouse, HandCoins, FileSpreadsheet, Percent,
   UserCircle, ShieldCheck, Settings, BarChart3, ScrollText,
-  ChevronRight, type LucideIcon,
+  ChevronRight, Star, type LucideIcon,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent,
@@ -44,7 +44,26 @@ const NAV: NavGroup[] = [
     items: [
       { title: "Clientes / CRM", url: "/clientes", icon: Users, roles: ALL },
       { title: "CRM", url: "/crm", icon: HeartHandshake, roles: ["OWNER", "ADMIN"] },
-      { title: "Comunicação", url: "/comunicacao", icon: MessageCircle, roles: ["OWNER", "ADMIN"] },
+      {
+        title: "Comunicação",
+        url: "/comunicacao",
+        icon: MessageCircle,
+        roles: ["OWNER", "ADMIN"],
+        children: [
+          { title: "Templates", url: "/comunicacao", roles: ["OWNER", "ADMIN"] },
+          { title: "Logs", url: "/comunicacao/logs", roles: ["OWNER", "ADMIN"] },
+        ],
+      },
+      {
+        title: "NPS",
+        url: "/nps",
+        icon: Star,
+        roles: ["OWNER", "ADMIN"],
+        children: [
+          { title: "Pesquisas", url: "/nps", roles: ["OWNER", "ADMIN"] },
+          { title: "Configuração", url: "/nps/config", roles: ["OWNER", "ADMIN"] },
+        ],
+      },
     ],
   },
   {
@@ -123,7 +142,18 @@ const NAV: NavGroup[] = [
     items: [
       { title: "Profissionais", url: "/profissionais", icon: UserCircle, roles: ["OWNER", "ADMIN"] },
       { title: "Usuários e acessos", url: "/usuarios", icon: ShieldCheck, roles: ["OWNER", "ADMIN"] },
-      { title: "Configurações", url: "/configuracoes", icon: Settings, roles: ["OWNER", "ADMIN"] },
+      {
+        title: "Configurações",
+        url: "/configuracoes",
+        icon: Settings,
+        roles: ["OWNER", "ADMIN"],
+        children: [
+          { title: "Financeiro", url: "/configuracoes/financeiro", roles: ["OWNER", "ADMIN"] },
+          { title: "Integrações", url: "/configuracoes/integracoes", roles: ["OWNER", "ADMIN"] },
+          { title: "Módulos", url: "/configuracoes/modulos", roles: ["OWNER", "ADMIN"] },
+          { title: "Branding", url: "/configuracoes/branding", roles: ["OWNER", "ADMIN"] },
+        ],
+      },
       { title: "Relatórios", url: "/relatorios", icon: BarChart3, roles: ["OWNER", "ADMIN"] },
       { title: "Auditoria", url: "/audit", icon: ScrollText, roles: ["OWNER"] },
     ],
