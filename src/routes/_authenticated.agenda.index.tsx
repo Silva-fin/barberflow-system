@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/lib/format";
 
-export const Route = createFileRoute("/_authenticated/app/agenda")({
+export const Route = createFileRoute("/_authenticated/agenda/")({
   head: () => ({ meta: [{ title: "Agenda — Navalha" }] }),
   component: AgendaPage,
 });

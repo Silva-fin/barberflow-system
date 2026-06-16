@@ -36,6 +36,7 @@ import { Route as AuthenticatedComunicacaoIndexRouteImport } from './routes/_aut
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
+import { Route as AuthenticatedAgendaIndexRouteImport } from './routes/_authenticated.agenda.index'
 import { Route as NpsRespondSurveyIdRouteImport } from './routes/nps.respond.$surveyId'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
 import { Route as AuthenticatedProfissionaisIdRouteImport } from './routes/_authenticated.profissionais.$id'
@@ -209,6 +210,12 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   path: '/app/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAgendaIndexRoute =
+  AuthenticatedAgendaIndexRouteImport.update({
+    id: '/agenda/',
+    path: '/agenda/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const NpsRespondSurveyIdRoute = NpsRespondSurveyIdRouteImport.update({
   id: '/nps/respond/$surveyId',
   path: '/nps/respond/$surveyId',
@@ -429,6 +436,7 @@ export interface FileRoutesByFullPath {
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
+  '/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
@@ -484,6 +492,7 @@ export interface FileRoutesByTo {
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
+  '/agenda': typeof AuthenticatedAgendaIndexRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
@@ -544,6 +553,7 @@ export interface FileRoutesById {
   '/_authenticated/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
+  '/_authenticated/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
@@ -604,6 +614,7 @@ export interface FileRouteTypes {
     | '/profissionais/$id'
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
+    | '/agenda/'
     | '/app/'
     | '/assinaturas/'
     | '/clientes/'
@@ -659,6 +670,7 @@ export interface FileRouteTypes {
     | '/profissionais/$id'
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
+    | '/agenda'
     | '/app'
     | '/assinaturas'
     | '/clientes'
@@ -718,6 +730,7 @@ export interface FileRouteTypes {
     | '/_authenticated/profissionais/$id'
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
+    | '/_authenticated/agenda/'
     | '/_authenticated/app/'
     | '/_authenticated/assinaturas/'
     | '/_authenticated/clientes/'
@@ -931,6 +944,13 @@ declare module '@tanstack/react-router' {
       path: '/app'
       fullPath: '/app/'
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/agenda/': {
+      id: '/_authenticated/agenda/'
+      path: '/agenda'
+      fullPath: '/agenda/'
+      preLoaderRoute: typeof AuthenticatedAgendaIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/nps/respond/$surveyId': {
@@ -1182,6 +1202,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPacotesComprasRoute: typeof AuthenticatedPacotesComprasRoute
   AuthenticatedPagamentosIdRoute: typeof AuthenticatedPagamentosIdRoute
   AuthenticatedProfissionaisIdRoute: typeof AuthenticatedProfissionaisIdRoute
+  AuthenticatedAgendaIndexRoute: typeof AuthenticatedAgendaIndexRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
   AuthenticatedAssinaturasIndexRoute: typeof AuthenticatedAssinaturasIndexRoute
   AuthenticatedClientesIndexRoute: typeof AuthenticatedClientesIndexRoute
@@ -1236,6 +1257,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPacotesComprasRoute: AuthenticatedPacotesComprasRoute,
   AuthenticatedPagamentosIdRoute: AuthenticatedPagamentosIdRoute,
   AuthenticatedProfissionaisIdRoute: AuthenticatedProfissionaisIdRoute,
+  AuthenticatedAgendaIndexRoute: AuthenticatedAgendaIndexRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
   AuthenticatedAssinaturasIndexRoute: AuthenticatedAssinaturasIndexRoute,
   AuthenticatedClientesIndexRoute: AuthenticatedClientesIndexRoute,
@@ -1299,13 +1321,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
