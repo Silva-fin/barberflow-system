@@ -35,7 +35,6 @@ import { Route as AuthenticatedEstoqueIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedComunicacaoIndexRouteImport } from './routes/_authenticated.comunicacao.index'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
-import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
 import { Route as AuthenticatedAgendaIndexRouteImport } from './routes/_authenticated.agenda.index'
 import { Route as NpsRespondSurveyIdRouteImport } from './routes/nps.respond.$surveyId'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
@@ -59,11 +58,6 @@ import { Route as AuthenticatedCatalogoServicosRouteImport } from './routes/_aut
 import { Route as AuthenticatedCatalogoProdutosRouteImport } from './routes/_authenticated.catalogo.produtos'
 import { Route as AuthenticatedCatalogoCategoriasRouteImport } from './routes/_authenticated.catalogo.categorias'
 import { Route as AuthenticatedAssinaturasPlanosRouteImport } from './routes/_authenticated.assinaturas.planos'
-import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated.app.servicos'
-import { Route as AuthenticatedAppFinanceiroRouteImport } from './routes/_authenticated.app.financeiro'
-import { Route as AuthenticatedAppConfiguracoesRouteImport } from './routes/_authenticated.app.configuracoes'
-import { Route as AuthenticatedAppClientesRouteImport } from './routes/_authenticated.app.clientes'
-import { Route as AuthenticatedAppBarbeirosRouteImport } from './routes/_authenticated.app.barbeiros'
 import { Route as BSlugConfirmacaoIdRouteImport } from './routes/b.$slug.confirmacao.$id'
 import { Route as AuthenticatedPromocoesIdCuponsRouteImport } from './routes/_authenticated.promocoes.$id.cupons'
 
@@ -204,11 +198,6 @@ const AuthenticatedAssinaturasIndexRoute =
     path: '/assinaturas/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
-  id: '/app/',
-  path: '/app/',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedAgendaIndexRoute =
   AuthenticatedAgendaIndexRouteImport.update({
     id: '/agenda/',
@@ -343,36 +332,6 @@ const AuthenticatedAssinaturasPlanosRoute =
     path: '/assinaturas/planos',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedAppServicosRoute =
-  AuthenticatedAppServicosRouteImport.update({
-    id: '/app/servicos',
-    path: '/app/servicos',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedAppFinanceiroRoute =
-  AuthenticatedAppFinanceiroRouteImport.update({
-    id: '/app/financeiro',
-    path: '/app/financeiro',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedAppConfiguracoesRoute =
-  AuthenticatedAppConfiguracoesRouteImport.update({
-    id: '/app/configuracoes',
-    path: '/app/configuracoes',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedAppClientesRoute =
-  AuthenticatedAppClientesRouteImport.update({
-    id: '/app/clientes',
-    path: '/app/clientes',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedAppBarbeirosRoute =
-  AuthenticatedAppBarbeirosRouteImport.update({
-    id: '/app/barbeiros',
-    path: '/app/barbeiros',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const BSlugConfirmacaoIdRoute = BSlugConfirmacaoIdRouteImport.update({
   id: '/confirmacao/$id',
   path: '/confirmacao/$id',
@@ -402,11 +361,6 @@ export interface FileRoutesByFullPath {
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
-  '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
-  '/app/clientes': typeof AuthenticatedAppClientesRoute
-  '/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
-  '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
-  '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/assinaturas/planos': typeof AuthenticatedAssinaturasPlanosRoute
   '/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
   '/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
@@ -430,7 +384,6 @@ export interface FileRoutesByFullPath {
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/agenda/': typeof AuthenticatedAgendaIndexRoute
-  '/app/': typeof AuthenticatedAppIndexRoute
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
   '/comunicacao/': typeof AuthenticatedComunicacaoIndexRoute
@@ -457,11 +410,6 @@ export interface FileRoutesByTo {
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/owner': typeof OwnerIndexRoute
   '/portal': typeof PortalIndexRoute
-  '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
-  '/app/clientes': typeof AuthenticatedAppClientesRoute
-  '/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
-  '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
-  '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/assinaturas/planos': typeof AuthenticatedAssinaturasPlanosRoute
   '/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
   '/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
@@ -485,7 +433,6 @@ export interface FileRoutesByTo {
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/agenda': typeof AuthenticatedAgendaIndexRoute
-  '/app': typeof AuthenticatedAppIndexRoute
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
   '/comunicacao': typeof AuthenticatedComunicacaoIndexRoute
@@ -517,11 +464,6 @@ export interface FileRoutesById {
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
-  '/_authenticated/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
-  '/_authenticated/app/clientes': typeof AuthenticatedAppClientesRoute
-  '/_authenticated/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
-  '/_authenticated/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
-  '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
   '/_authenticated/assinaturas/planos': typeof AuthenticatedAssinaturasPlanosRoute
   '/_authenticated/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
   '/_authenticated/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
@@ -545,7 +487,6 @@ export interface FileRoutesById {
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/_authenticated/agenda/': typeof AuthenticatedAgendaIndexRoute
-  '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
   '/_authenticated/comunicacao/': typeof AuthenticatedComunicacaoIndexRoute
@@ -577,11 +518,6 @@ export interface FileRouteTypes {
     | '/b/$slug'
     | '/owner/'
     | '/portal/'
-    | '/app/barbeiros'
-    | '/app/clientes'
-    | '/app/configuracoes'
-    | '/app/financeiro'
-    | '/app/servicos'
     | '/assinaturas/planos'
     | '/catalogo/categorias'
     | '/catalogo/produtos'
@@ -605,7 +541,6 @@ export interface FileRouteTypes {
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
     | '/agenda/'
-    | '/app/'
     | '/assinaturas/'
     | '/clientes/'
     | '/comunicacao/'
@@ -632,11 +567,6 @@ export interface FileRouteTypes {
     | '/usuarios'
     | '/owner'
     | '/portal'
-    | '/app/barbeiros'
-    | '/app/clientes'
-    | '/app/configuracoes'
-    | '/app/financeiro'
-    | '/app/servicos'
     | '/assinaturas/planos'
     | '/catalogo/categorias'
     | '/catalogo/produtos'
@@ -660,7 +590,6 @@ export interface FileRouteTypes {
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
     | '/agenda'
-    | '/app'
     | '/assinaturas'
     | '/clientes'
     | '/comunicacao'
@@ -691,11 +620,6 @@ export interface FileRouteTypes {
     | '/b/$slug'
     | '/owner/'
     | '/portal/'
-    | '/_authenticated/app/barbeiros'
-    | '/_authenticated/app/clientes'
-    | '/_authenticated/app/configuracoes'
-    | '/_authenticated/app/financeiro'
-    | '/_authenticated/app/servicos'
     | '/_authenticated/assinaturas/planos'
     | '/_authenticated/catalogo/categorias'
     | '/_authenticated/catalogo/produtos'
@@ -719,7 +643,6 @@ export interface FileRouteTypes {
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
     | '/_authenticated/agenda/'
-    | '/_authenticated/app/'
     | '/_authenticated/assinaturas/'
     | '/_authenticated/clientes/'
     | '/_authenticated/comunicacao/'
@@ -927,13 +850,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAssinaturasIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/app/': {
-      id: '/_authenticated/app/'
-      path: '/app'
-      fullPath: '/app/'
-      preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/agenda/': {
       id: '/_authenticated/agenda/'
       path: '/agenda'
@@ -1095,41 +1011,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAssinaturasPlanosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/app/servicos': {
-      id: '/_authenticated/app/servicos'
-      path: '/app/servicos'
-      fullPath: '/app/servicos'
-      preLoaderRoute: typeof AuthenticatedAppServicosRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/app/financeiro': {
-      id: '/_authenticated/app/financeiro'
-      path: '/app/financeiro'
-      fullPath: '/app/financeiro'
-      preLoaderRoute: typeof AuthenticatedAppFinanceiroRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/app/configuracoes': {
-      id: '/_authenticated/app/configuracoes'
-      path: '/app/configuracoes'
-      fullPath: '/app/configuracoes'
-      preLoaderRoute: typeof AuthenticatedAppConfiguracoesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/app/clientes': {
-      id: '/_authenticated/app/clientes'
-      path: '/app/clientes'
-      fullPath: '/app/clientes'
-      preLoaderRoute: typeof AuthenticatedAppClientesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/app/barbeiros': {
-      id: '/_authenticated/app/barbeiros'
-      path: '/app/barbeiros'
-      fullPath: '/app/barbeiros'
-      preLoaderRoute: typeof AuthenticatedAppBarbeirosRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/b/$slug/confirmacao/$id': {
       id: '/b/$slug/confirmacao/$id'
       path: '/confirmacao/$id'
@@ -1157,11 +1038,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedInboxRoute: typeof AuthenticatedInboxRoute
   AuthenticatedPayablesRoute: typeof AuthenticatedPayablesRoute
   AuthenticatedUsuariosRoute: typeof AuthenticatedUsuariosRoute
-  AuthenticatedAppBarbeirosRoute: typeof AuthenticatedAppBarbeirosRoute
-  AuthenticatedAppClientesRoute: typeof AuthenticatedAppClientesRoute
-  AuthenticatedAppConfiguracoesRoute: typeof AuthenticatedAppConfiguracoesRoute
-  AuthenticatedAppFinanceiroRoute: typeof AuthenticatedAppFinanceiroRoute
-  AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRoute
   AuthenticatedAssinaturasPlanosRoute: typeof AuthenticatedAssinaturasPlanosRoute
   AuthenticatedCatalogoCategoriasRoute: typeof AuthenticatedCatalogoCategoriasRoute
   AuthenticatedCatalogoProdutosRoute: typeof AuthenticatedCatalogoProdutosRoute
@@ -1183,7 +1059,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPagamentosIdRoute: typeof AuthenticatedPagamentosIdRoute
   AuthenticatedProfissionaisIdRoute: typeof AuthenticatedProfissionaisIdRoute
   AuthenticatedAgendaIndexRoute: typeof AuthenticatedAgendaIndexRoute
-  AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
   AuthenticatedAssinaturasIndexRoute: typeof AuthenticatedAssinaturasIndexRoute
   AuthenticatedClientesIndexRoute: typeof AuthenticatedClientesIndexRoute
   AuthenticatedComunicacaoIndexRoute: typeof AuthenticatedComunicacaoIndexRoute
@@ -1205,11 +1080,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedInboxRoute: AuthenticatedInboxRoute,
   AuthenticatedPayablesRoute: AuthenticatedPayablesRoute,
   AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
-  AuthenticatedAppBarbeirosRoute: AuthenticatedAppBarbeirosRoute,
-  AuthenticatedAppClientesRoute: AuthenticatedAppClientesRoute,
-  AuthenticatedAppConfiguracoesRoute: AuthenticatedAppConfiguracoesRoute,
-  AuthenticatedAppFinanceiroRoute: AuthenticatedAppFinanceiroRoute,
-  AuthenticatedAppServicosRoute: AuthenticatedAppServicosRoute,
   AuthenticatedAssinaturasPlanosRoute: AuthenticatedAssinaturasPlanosRoute,
   AuthenticatedCatalogoCategoriasRoute: AuthenticatedCatalogoCategoriasRoute,
   AuthenticatedCatalogoProdutosRoute: AuthenticatedCatalogoProdutosRoute,
@@ -1237,7 +1107,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPagamentosIdRoute: AuthenticatedPagamentosIdRoute,
   AuthenticatedProfissionaisIdRoute: AuthenticatedProfissionaisIdRoute,
   AuthenticatedAgendaIndexRoute: AuthenticatedAgendaIndexRoute,
-  AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
   AuthenticatedAssinaturasIndexRoute: AuthenticatedAssinaturasIndexRoute,
   AuthenticatedClientesIndexRoute: AuthenticatedClientesIndexRoute,
   AuthenticatedComunicacaoIndexRoute: AuthenticatedComunicacaoIndexRoute,
