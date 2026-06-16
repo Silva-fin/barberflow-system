@@ -308,3 +308,28 @@ export function NpsScoreChip({ score }: { score: number | null | undefined }) {
     </Badge>
   );
 }
+
+/* ============ RESKIN: Comissões & Pagamentos ============ */
+
+export type CommissionStatus = "PENDING" | "DUE_SOON" | "PAID" | "REFUNDED";
+const COMMISSION_MAP: Record<CommissionStatus, { label: string; cls: string }> = {
+  PENDING: { label: "Pendente", cls: AMBER },
+  DUE_SOON: { label: "Vence em breve", cls: SKY },
+  PAID: { label: "Paga", cls: EMERALD },
+  REFUNDED: { label: "Estornada", cls: DESTRUCTIVE },
+};
+export function CommissionBadge({ status }: { status: CommissionStatus }) {
+  const m = COMMISSION_MAP[status];
+  return <Badge variant="outline" className={cn("font-normal", m.cls)}>{m.label}</Badge>;
+}
+
+export type PayoutStatus = "PAID" | "PENDING" | "FAILED";
+const PAYOUT_MAP: Record<PayoutStatus, { label: string; cls: string }> = {
+  PAID: { label: "Pago", cls: EMERALD },
+  PENDING: { label: "Pendente", cls: AMBER },
+  FAILED: { label: "Falhou", cls: DESTRUCTIVE },
+};
+export function PayoutBadge({ status }: { status: PayoutStatus }) {
+  const m = PAYOUT_MAP[status];
+  return <Badge variant="outline" className={cn("font-normal", m.cls)}>{m.label}</Badge>;
+}

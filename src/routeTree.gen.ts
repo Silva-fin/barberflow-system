@@ -18,6 +18,7 @@ import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as OwnerIndexRouteImport } from './routes/owner.index'
 import { Route as BSlugRouteImport } from './routes/b.$slug'
 import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated.usuarios'
+import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated.relatorios'
 import { Route as AuthenticatedPayablesRouteImport } from './routes/_authenticated.payables'
 import { Route as AuthenticatedInboxRouteImport } from './routes/_authenticated.inbox'
 import { Route as AuthenticatedFornecedoresRouteImport } from './routes/_authenticated.fornecedores'
@@ -28,18 +29,21 @@ import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated.cr
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated.audit'
 import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
 import { Route as AuthenticatedPromocoesIndexRouteImport } from './routes/_authenticated.promocoes.index'
+import { Route as AuthenticatedProfissionaisIndexRouteImport } from './routes/_authenticated.profissionais.index'
 import { Route as AuthenticatedPagamentosIndexRouteImport } from './routes/_authenticated.pagamentos.index'
 import { Route as AuthenticatedPacotesIndexRouteImport } from './routes/_authenticated.pacotes.index'
 import { Route as AuthenticatedNpsIndexRouteImport } from './routes/_authenticated.nps.index'
 import { Route as AuthenticatedEstoqueIndexRouteImport } from './routes/_authenticated.estoque.index'
+import { Route as AuthenticatedConfiguracoesIndexRouteImport } from './routes/_authenticated.configuracoes.index'
 import { Route as AuthenticatedComunicacaoIndexRouteImport } from './routes/_authenticated.comunicacao.index'
+import { Route as AuthenticatedComissoesIndexRouteImport } from './routes/_authenticated.comissoes.index'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
-import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
 import { Route as AuthenticatedAgendaIndexRouteImport } from './routes/_authenticated.agenda.index'
 import { Route as NpsRespondSurveyIdRouteImport } from './routes/nps.respond.$surveyId'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
 import { Route as AuthenticatedProfissionaisIdRouteImport } from './routes/_authenticated.profissionais.$id'
+import { Route as AuthenticatedPagamentosNovoRouteImport } from './routes/_authenticated.pagamentos.novo'
 import { Route as AuthenticatedPagamentosIdRouteImport } from './routes/_authenticated.pagamentos.$id'
 import { Route as AuthenticatedPacotesComprasRouteImport } from './routes/_authenticated.pacotes.compras'
 import { Route as AuthenticatedOperacoesIdRouteImport } from './routes/_authenticated.operacoes.$id'
@@ -49,21 +53,23 @@ import { Route as AuthenticatedFinanceiroDreRouteImport } from './routes/_authen
 import { Route as AuthenticatedFinanceiroContasRouteImport } from './routes/_authenticated.financeiro.contas'
 import { Route as AuthenticatedFinanceiroConciliacaoRouteImport } from './routes/_authenticated.financeiro.conciliacao'
 import { Route as AuthenticatedEstoqueMovimentacoesRouteImport } from './routes/_authenticated.estoque.movimentacoes'
+import { Route as AuthenticatedConfiguracoesTaxasRouteImport } from './routes/_authenticated.configuracoes.taxas'
+import { Route as AuthenticatedConfiguracoesSegurancaRouteImport } from './routes/_authenticated.configuracoes.seguranca'
+import { Route as AuthenticatedConfiguracoesPerfilRouteImport } from './routes/_authenticated.configuracoes.perfil'
 import { Route as AuthenticatedConfiguracoesModulosRouteImport } from './routes/_authenticated.configuracoes.modulos'
 import { Route as AuthenticatedConfiguracoesIntegracoesRouteImport } from './routes/_authenticated.configuracoes.integracoes'
 import { Route as AuthenticatedConfiguracoesFinanceiroRouteImport } from './routes/_authenticated.configuracoes.financeiro'
 import { Route as AuthenticatedConfiguracoesBrandingRouteImport } from './routes/_authenticated.configuracoes.branding'
 import { Route as AuthenticatedComunicacaoLogsRouteImport } from './routes/_authenticated.comunicacao.logs'
+import { Route as AuthenticatedComissoesRegrasRouteImport } from './routes/_authenticated.comissoes.regras'
+import { Route as AuthenticatedComissoesPagamentosRouteImport } from './routes/_authenticated.comissoes.pagamentos'
+import { Route as AuthenticatedComissoesHistoricoRouteImport } from './routes/_authenticated.comissoes.historico'
 import { Route as AuthenticatedClientesIdRouteImport } from './routes/_authenticated.clientes.$id'
 import { Route as AuthenticatedCatalogoServicosRouteImport } from './routes/_authenticated.catalogo.servicos'
 import { Route as AuthenticatedCatalogoProdutosRouteImport } from './routes/_authenticated.catalogo.produtos'
 import { Route as AuthenticatedCatalogoCategoriasRouteImport } from './routes/_authenticated.catalogo.categorias'
 import { Route as AuthenticatedAssinaturasPlanosRouteImport } from './routes/_authenticated.assinaturas.planos'
-import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated.app.servicos'
-import { Route as AuthenticatedAppFinanceiroRouteImport } from './routes/_authenticated.app.financeiro'
-import { Route as AuthenticatedAppConfiguracoesRouteImport } from './routes/_authenticated.app.configuracoes'
-import { Route as AuthenticatedAppClientesRouteImport } from './routes/_authenticated.app.clientes'
-import { Route as AuthenticatedAppBarbeirosRouteImport } from './routes/_authenticated.app.barbeiros'
+import { Route as AuthenticatedAgendaNovoRouteImport } from './routes/_authenticated.agenda.novo'
 import { Route as BSlugConfirmacaoIdRouteImport } from './routes/b.$slug.confirmacao.$id'
 import { Route as AuthenticatedPromocoesIdCuponsRouteImport } from './routes/_authenticated.promocoes.$id.cupons'
 
@@ -109,6 +115,11 @@ const BSlugRoute = BSlugRouteImport.update({
 const AuthenticatedUsuariosRoute = AuthenticatedUsuariosRouteImport.update({
   id: '/usuarios',
   path: '/usuarios',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedRelatoriosRoute = AuthenticatedRelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedPayablesRoute = AuthenticatedPayablesRouteImport.update({
@@ -163,6 +174,12 @@ const AuthenticatedPromocoesIndexRoute =
     path: '/promocoes/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedProfissionaisIndexRoute =
+  AuthenticatedProfissionaisIndexRouteImport.update({
+    id: '/profissionais/',
+    path: '/profissionais/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPagamentosIndexRoute =
   AuthenticatedPagamentosIndexRouteImport.update({
     id: '/pagamentos/',
@@ -186,10 +203,22 @@ const AuthenticatedEstoqueIndexRoute =
     path: '/estoque/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedConfiguracoesIndexRoute =
+  AuthenticatedConfiguracoesIndexRouteImport.update({
+    id: '/configuracoes/',
+    path: '/configuracoes/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedComunicacaoIndexRoute =
   AuthenticatedComunicacaoIndexRouteImport.update({
     id: '/comunicacao/',
     path: '/comunicacao/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedComissoesIndexRoute =
+  AuthenticatedComissoesIndexRouteImport.update({
+    id: '/comissoes/',
+    path: '/comissoes/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedClientesIndexRoute =
@@ -204,11 +233,6 @@ const AuthenticatedAssinaturasIndexRoute =
     path: '/assinaturas/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
-  id: '/app/',
-  path: '/app/',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedAgendaIndexRoute =
   AuthenticatedAgendaIndexRouteImport.update({
     id: '/agenda/',
@@ -229,6 +253,12 @@ const AuthenticatedProfissionaisIdRoute =
   AuthenticatedProfissionaisIdRouteImport.update({
     id: '/profissionais/$id',
     path: '/profissionais/$id',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedPagamentosNovoRoute =
+  AuthenticatedPagamentosNovoRouteImport.update({
+    id: '/pagamentos/novo',
+    path: '/pagamentos/novo',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedPagamentosIdRoute =
@@ -284,6 +314,24 @@ const AuthenticatedEstoqueMovimentacoesRoute =
     path: '/estoque/movimentacoes',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedConfiguracoesTaxasRoute =
+  AuthenticatedConfiguracoesTaxasRouteImport.update({
+    id: '/configuracoes/taxas',
+    path: '/configuracoes/taxas',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedConfiguracoesSegurancaRoute =
+  AuthenticatedConfiguracoesSegurancaRouteImport.update({
+    id: '/configuracoes/seguranca',
+    path: '/configuracoes/seguranca',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedConfiguracoesPerfilRoute =
+  AuthenticatedConfiguracoesPerfilRouteImport.update({
+    id: '/configuracoes/perfil',
+    path: '/configuracoes/perfil',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedConfiguracoesModulosRoute =
   AuthenticatedConfiguracoesModulosRouteImport.update({
     id: '/configuracoes/modulos',
@@ -312,6 +360,24 @@ const AuthenticatedComunicacaoLogsRoute =
   AuthenticatedComunicacaoLogsRouteImport.update({
     id: '/comunicacao/logs',
     path: '/comunicacao/logs',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedComissoesRegrasRoute =
+  AuthenticatedComissoesRegrasRouteImport.update({
+    id: '/comissoes/regras',
+    path: '/comissoes/regras',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedComissoesPagamentosRoute =
+  AuthenticatedComissoesPagamentosRouteImport.update({
+    id: '/comissoes/pagamentos',
+    path: '/comissoes/pagamentos',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedComissoesHistoricoRoute =
+  AuthenticatedComissoesHistoricoRouteImport.update({
+    id: '/comissoes/historico',
+    path: '/comissoes/historico',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedClientesIdRoute = AuthenticatedClientesIdRouteImport.update({
@@ -343,36 +409,11 @@ const AuthenticatedAssinaturasPlanosRoute =
     path: '/assinaturas/planos',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedAppServicosRoute =
-  AuthenticatedAppServicosRouteImport.update({
-    id: '/app/servicos',
-    path: '/app/servicos',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedAppFinanceiroRoute =
-  AuthenticatedAppFinanceiroRouteImport.update({
-    id: '/app/financeiro',
-    path: '/app/financeiro',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedAppConfiguracoesRoute =
-  AuthenticatedAppConfiguracoesRouteImport.update({
-    id: '/app/configuracoes',
-    path: '/app/configuracoes',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedAppClientesRoute =
-  AuthenticatedAppClientesRouteImport.update({
-    id: '/app/clientes',
-    path: '/app/clientes',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedAppBarbeirosRoute =
-  AuthenticatedAppBarbeirosRouteImport.update({
-    id: '/app/barbeiros',
-    path: '/app/barbeiros',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
+const AuthenticatedAgendaNovoRoute = AuthenticatedAgendaNovoRouteImport.update({
+  id: '/agenda/novo',
+  path: '/agenda/novo',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const BSlugConfirmacaoIdRoute = BSlugConfirmacaoIdRouteImport.update({
   id: '/confirmacao/$id',
   path: '/confirmacao/$id',
@@ -398,25 +439,28 @@ export interface FileRoutesByFullPath {
   '/fornecedores': typeof AuthenticatedFornecedoresRoute
   '/inbox': typeof AuthenticatedInboxRoute
   '/payables': typeof AuthenticatedPayablesRoute
+  '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
-  '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
-  '/app/clientes': typeof AuthenticatedAppClientesRoute
-  '/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
-  '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
-  '/app/servicos': typeof AuthenticatedAppServicosRoute
+  '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/assinaturas/planos': typeof AuthenticatedAssinaturasPlanosRoute
   '/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
   '/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
   '/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
+  '/comissoes/historico': typeof AuthenticatedComissoesHistoricoRoute
+  '/comissoes/pagamentos': typeof AuthenticatedComissoesPagamentosRoute
+  '/comissoes/regras': typeof AuthenticatedComissoesRegrasRoute
   '/comunicacao/logs': typeof AuthenticatedComunicacaoLogsRoute
   '/configuracoes/branding': typeof AuthenticatedConfiguracoesBrandingRoute
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/configuracoes/integracoes': typeof AuthenticatedConfiguracoesIntegracoesRoute
   '/configuracoes/modulos': typeof AuthenticatedConfiguracoesModulosRoute
+  '/configuracoes/perfil': typeof AuthenticatedConfiguracoesPerfilRoute
+  '/configuracoes/seguranca': typeof AuthenticatedConfiguracoesSegurancaRoute
+  '/configuracoes/taxas': typeof AuthenticatedConfiguracoesTaxasRoute
   '/estoque/movimentacoes': typeof AuthenticatedEstoqueMovimentacoesRoute
   '/financeiro/conciliacao': typeof AuthenticatedFinanceiroConciliacaoRoute
   '/financeiro/contas': typeof AuthenticatedFinanceiroContasRoute
@@ -426,18 +470,21 @@ export interface FileRoutesByFullPath {
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
+  '/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/agenda/': typeof AuthenticatedAgendaIndexRoute
-  '/app/': typeof AuthenticatedAppIndexRoute
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
+  '/comissoes/': typeof AuthenticatedComissoesIndexRoute
   '/comunicacao/': typeof AuthenticatedComunicacaoIndexRoute
+  '/configuracoes/': typeof AuthenticatedConfiguracoesIndexRoute
   '/estoque/': typeof AuthenticatedEstoqueIndexRoute
   '/nps/': typeof AuthenticatedNpsIndexRoute
   '/pacotes/': typeof AuthenticatedPacotesIndexRoute
   '/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
+  '/profissionais/': typeof AuthenticatedProfissionaisIndexRoute
   '/promocoes/': typeof AuthenticatedPromocoesIndexRoute
   '/b/$slug/': typeof BSlugIndexRoute
   '/promocoes/$id/cupons': typeof AuthenticatedPromocoesIdCuponsRoute
@@ -454,24 +501,27 @@ export interface FileRoutesByTo {
   '/fornecedores': typeof AuthenticatedFornecedoresRoute
   '/inbox': typeof AuthenticatedInboxRoute
   '/payables': typeof AuthenticatedPayablesRoute
+  '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/owner': typeof OwnerIndexRoute
   '/portal': typeof PortalIndexRoute
-  '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
-  '/app/clientes': typeof AuthenticatedAppClientesRoute
-  '/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
-  '/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
-  '/app/servicos': typeof AuthenticatedAppServicosRoute
+  '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/assinaturas/planos': typeof AuthenticatedAssinaturasPlanosRoute
   '/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
   '/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
   '/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
+  '/comissoes/historico': typeof AuthenticatedComissoesHistoricoRoute
+  '/comissoes/pagamentos': typeof AuthenticatedComissoesPagamentosRoute
+  '/comissoes/regras': typeof AuthenticatedComissoesRegrasRoute
   '/comunicacao/logs': typeof AuthenticatedComunicacaoLogsRoute
   '/configuracoes/branding': typeof AuthenticatedConfiguracoesBrandingRoute
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/configuracoes/integracoes': typeof AuthenticatedConfiguracoesIntegracoesRoute
   '/configuracoes/modulos': typeof AuthenticatedConfiguracoesModulosRoute
+  '/configuracoes/perfil': typeof AuthenticatedConfiguracoesPerfilRoute
+  '/configuracoes/seguranca': typeof AuthenticatedConfiguracoesSegurancaRoute
+  '/configuracoes/taxas': typeof AuthenticatedConfiguracoesTaxasRoute
   '/estoque/movimentacoes': typeof AuthenticatedEstoqueMovimentacoesRoute
   '/financeiro/conciliacao': typeof AuthenticatedFinanceiroConciliacaoRoute
   '/financeiro/contas': typeof AuthenticatedFinanceiroContasRoute
@@ -481,18 +531,21 @@ export interface FileRoutesByTo {
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
+  '/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/agenda': typeof AuthenticatedAgendaIndexRoute
-  '/app': typeof AuthenticatedAppIndexRoute
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
+  '/comissoes': typeof AuthenticatedComissoesIndexRoute
   '/comunicacao': typeof AuthenticatedComunicacaoIndexRoute
+  '/configuracoes': typeof AuthenticatedConfiguracoesIndexRoute
   '/estoque': typeof AuthenticatedEstoqueIndexRoute
   '/nps': typeof AuthenticatedNpsIndexRoute
   '/pacotes': typeof AuthenticatedPacotesIndexRoute
   '/pagamentos': typeof AuthenticatedPagamentosIndexRoute
+  '/profissionais': typeof AuthenticatedProfissionaisIndexRoute
   '/promocoes': typeof AuthenticatedPromocoesIndexRoute
   '/b/$slug': typeof BSlugIndexRoute
   '/promocoes/$id/cupons': typeof AuthenticatedPromocoesIdCuponsRoute
@@ -513,25 +566,28 @@ export interface FileRoutesById {
   '/_authenticated/fornecedores': typeof AuthenticatedFornecedoresRoute
   '/_authenticated/inbox': typeof AuthenticatedInboxRoute
   '/_authenticated/payables': typeof AuthenticatedPayablesRoute
+  '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
-  '/_authenticated/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
-  '/_authenticated/app/clientes': typeof AuthenticatedAppClientesRoute
-  '/_authenticated/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
-  '/_authenticated/app/financeiro': typeof AuthenticatedAppFinanceiroRoute
-  '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
+  '/_authenticated/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/_authenticated/assinaturas/planos': typeof AuthenticatedAssinaturasPlanosRoute
   '/_authenticated/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
   '/_authenticated/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
   '/_authenticated/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/_authenticated/clientes/$id': typeof AuthenticatedClientesIdRoute
+  '/_authenticated/comissoes/historico': typeof AuthenticatedComissoesHistoricoRoute
+  '/_authenticated/comissoes/pagamentos': typeof AuthenticatedComissoesPagamentosRoute
+  '/_authenticated/comissoes/regras': typeof AuthenticatedComissoesRegrasRoute
   '/_authenticated/comunicacao/logs': typeof AuthenticatedComunicacaoLogsRoute
   '/_authenticated/configuracoes/branding': typeof AuthenticatedConfiguracoesBrandingRoute
   '/_authenticated/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/_authenticated/configuracoes/integracoes': typeof AuthenticatedConfiguracoesIntegracoesRoute
   '/_authenticated/configuracoes/modulos': typeof AuthenticatedConfiguracoesModulosRoute
+  '/_authenticated/configuracoes/perfil': typeof AuthenticatedConfiguracoesPerfilRoute
+  '/_authenticated/configuracoes/seguranca': typeof AuthenticatedConfiguracoesSegurancaRoute
+  '/_authenticated/configuracoes/taxas': typeof AuthenticatedConfiguracoesTaxasRoute
   '/_authenticated/estoque/movimentacoes': typeof AuthenticatedEstoqueMovimentacoesRoute
   '/_authenticated/financeiro/conciliacao': typeof AuthenticatedFinanceiroConciliacaoRoute
   '/_authenticated/financeiro/contas': typeof AuthenticatedFinanceiroContasRoute
@@ -541,18 +597,21 @@ export interface FileRoutesById {
   '/_authenticated/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/_authenticated/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/_authenticated/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
+  '/_authenticated/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/_authenticated/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/_authenticated/agenda/': typeof AuthenticatedAgendaIndexRoute
-  '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
+  '/_authenticated/comissoes/': typeof AuthenticatedComissoesIndexRoute
   '/_authenticated/comunicacao/': typeof AuthenticatedComunicacaoIndexRoute
+  '/_authenticated/configuracoes/': typeof AuthenticatedConfiguracoesIndexRoute
   '/_authenticated/estoque/': typeof AuthenticatedEstoqueIndexRoute
   '/_authenticated/nps/': typeof AuthenticatedNpsIndexRoute
   '/_authenticated/pacotes/': typeof AuthenticatedPacotesIndexRoute
   '/_authenticated/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
+  '/_authenticated/profissionais/': typeof AuthenticatedProfissionaisIndexRoute
   '/_authenticated/promocoes/': typeof AuthenticatedPromocoesIndexRoute
   '/b/$slug/': typeof BSlugIndexRoute
   '/_authenticated/promocoes/$id/cupons': typeof AuthenticatedPromocoesIdCuponsRoute
@@ -573,25 +632,28 @@ export interface FileRouteTypes {
     | '/fornecedores'
     | '/inbox'
     | '/payables'
+    | '/relatorios'
     | '/usuarios'
     | '/b/$slug'
     | '/owner/'
     | '/portal/'
-    | '/app/barbeiros'
-    | '/app/clientes'
-    | '/app/configuracoes'
-    | '/app/financeiro'
-    | '/app/servicos'
+    | '/agenda/novo'
     | '/assinaturas/planos'
     | '/catalogo/categorias'
     | '/catalogo/produtos'
     | '/catalogo/servicos'
     | '/clientes/$id'
+    | '/comissoes/historico'
+    | '/comissoes/pagamentos'
+    | '/comissoes/regras'
     | '/comunicacao/logs'
     | '/configuracoes/branding'
     | '/configuracoes/financeiro'
     | '/configuracoes/integracoes'
     | '/configuracoes/modulos'
+    | '/configuracoes/perfil'
+    | '/configuracoes/seguranca'
+    | '/configuracoes/taxas'
     | '/estoque/movimentacoes'
     | '/financeiro/conciliacao'
     | '/financeiro/contas'
@@ -601,18 +663,21 @@ export interface FileRouteTypes {
     | '/operacoes/$id'
     | '/pacotes/compras'
     | '/pagamentos/$id'
+    | '/pagamentos/novo'
     | '/profissionais/$id'
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
     | '/agenda/'
-    | '/app/'
     | '/assinaturas/'
     | '/clientes/'
+    | '/comissoes/'
     | '/comunicacao/'
+    | '/configuracoes/'
     | '/estoque/'
     | '/nps/'
     | '/pacotes/'
     | '/pagamentos/'
+    | '/profissionais/'
     | '/promocoes/'
     | '/b/$slug/'
     | '/promocoes/$id/cupons'
@@ -629,24 +694,27 @@ export interface FileRouteTypes {
     | '/fornecedores'
     | '/inbox'
     | '/payables'
+    | '/relatorios'
     | '/usuarios'
     | '/owner'
     | '/portal'
-    | '/app/barbeiros'
-    | '/app/clientes'
-    | '/app/configuracoes'
-    | '/app/financeiro'
-    | '/app/servicos'
+    | '/agenda/novo'
     | '/assinaturas/planos'
     | '/catalogo/categorias'
     | '/catalogo/produtos'
     | '/catalogo/servicos'
     | '/clientes/$id'
+    | '/comissoes/historico'
+    | '/comissoes/pagamentos'
+    | '/comissoes/regras'
     | '/comunicacao/logs'
     | '/configuracoes/branding'
     | '/configuracoes/financeiro'
     | '/configuracoes/integracoes'
     | '/configuracoes/modulos'
+    | '/configuracoes/perfil'
+    | '/configuracoes/seguranca'
+    | '/configuracoes/taxas'
     | '/estoque/movimentacoes'
     | '/financeiro/conciliacao'
     | '/financeiro/contas'
@@ -656,18 +724,21 @@ export interface FileRouteTypes {
     | '/operacoes/$id'
     | '/pacotes/compras'
     | '/pagamentos/$id'
+    | '/pagamentos/novo'
     | '/profissionais/$id'
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
     | '/agenda'
-    | '/app'
     | '/assinaturas'
     | '/clientes'
+    | '/comissoes'
     | '/comunicacao'
+    | '/configuracoes'
     | '/estoque'
     | '/nps'
     | '/pacotes'
     | '/pagamentos'
+    | '/profissionais'
     | '/promocoes'
     | '/b/$slug'
     | '/promocoes/$id/cupons'
@@ -687,25 +758,28 @@ export interface FileRouteTypes {
     | '/_authenticated/fornecedores'
     | '/_authenticated/inbox'
     | '/_authenticated/payables'
+    | '/_authenticated/relatorios'
     | '/_authenticated/usuarios'
     | '/b/$slug'
     | '/owner/'
     | '/portal/'
-    | '/_authenticated/app/barbeiros'
-    | '/_authenticated/app/clientes'
-    | '/_authenticated/app/configuracoes'
-    | '/_authenticated/app/financeiro'
-    | '/_authenticated/app/servicos'
+    | '/_authenticated/agenda/novo'
     | '/_authenticated/assinaturas/planos'
     | '/_authenticated/catalogo/categorias'
     | '/_authenticated/catalogo/produtos'
     | '/_authenticated/catalogo/servicos'
     | '/_authenticated/clientes/$id'
+    | '/_authenticated/comissoes/historico'
+    | '/_authenticated/comissoes/pagamentos'
+    | '/_authenticated/comissoes/regras'
     | '/_authenticated/comunicacao/logs'
     | '/_authenticated/configuracoes/branding'
     | '/_authenticated/configuracoes/financeiro'
     | '/_authenticated/configuracoes/integracoes'
     | '/_authenticated/configuracoes/modulos'
+    | '/_authenticated/configuracoes/perfil'
+    | '/_authenticated/configuracoes/seguranca'
+    | '/_authenticated/configuracoes/taxas'
     | '/_authenticated/estoque/movimentacoes'
     | '/_authenticated/financeiro/conciliacao'
     | '/_authenticated/financeiro/contas'
@@ -715,18 +789,21 @@ export interface FileRouteTypes {
     | '/_authenticated/operacoes/$id'
     | '/_authenticated/pacotes/compras'
     | '/_authenticated/pagamentos/$id'
+    | '/_authenticated/pagamentos/novo'
     | '/_authenticated/profissionais/$id'
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
     | '/_authenticated/agenda/'
-    | '/_authenticated/app/'
     | '/_authenticated/assinaturas/'
     | '/_authenticated/clientes/'
+    | '/_authenticated/comissoes/'
     | '/_authenticated/comunicacao/'
+    | '/_authenticated/configuracoes/'
     | '/_authenticated/estoque/'
     | '/_authenticated/nps/'
     | '/_authenticated/pacotes/'
     | '/_authenticated/pagamentos/'
+    | '/_authenticated/profissionais/'
     | '/_authenticated/promocoes/'
     | '/b/$slug/'
     | '/_authenticated/promocoes/$id/cupons'
@@ -808,6 +885,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsuariosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/relatorios': {
+      id: '/_authenticated/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof AuthenticatedRelatoriosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/payables': {
       id: '/_authenticated/payables'
       path: '/payables'
@@ -878,6 +962,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPromocoesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/profissionais/': {
+      id: '/_authenticated/profissionais/'
+      path: '/profissionais'
+      fullPath: '/profissionais/'
+      preLoaderRoute: typeof AuthenticatedProfissionaisIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/pagamentos/': {
       id: '/_authenticated/pagamentos/'
       path: '/pagamentos'
@@ -906,11 +997,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEstoqueIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/configuracoes/': {
+      id: '/_authenticated/configuracoes/'
+      path: '/configuracoes'
+      fullPath: '/configuracoes/'
+      preLoaderRoute: typeof AuthenticatedConfiguracoesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/comunicacao/': {
       id: '/_authenticated/comunicacao/'
       path: '/comunicacao'
       fullPath: '/comunicacao/'
       preLoaderRoute: typeof AuthenticatedComunicacaoIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/comissoes/': {
+      id: '/_authenticated/comissoes/'
+      path: '/comissoes'
+      fullPath: '/comissoes/'
+      preLoaderRoute: typeof AuthenticatedComissoesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/clientes/': {
@@ -925,13 +1030,6 @@ declare module '@tanstack/react-router' {
       path: '/assinaturas'
       fullPath: '/assinaturas/'
       preLoaderRoute: typeof AuthenticatedAssinaturasIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/app/': {
-      id: '/_authenticated/app/'
-      path: '/app'
-      fullPath: '/app/'
-      preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/agenda/': {
@@ -960,6 +1058,13 @@ declare module '@tanstack/react-router' {
       path: '/profissionais/$id'
       fullPath: '/profissionais/$id'
       preLoaderRoute: typeof AuthenticatedProfissionaisIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/pagamentos/novo': {
+      id: '/_authenticated/pagamentos/novo'
+      path: '/pagamentos/novo'
+      fullPath: '/pagamentos/novo'
+      preLoaderRoute: typeof AuthenticatedPagamentosNovoRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/pagamentos/$id': {
@@ -1025,6 +1130,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEstoqueMovimentacoesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/configuracoes/taxas': {
+      id: '/_authenticated/configuracoes/taxas'
+      path: '/configuracoes/taxas'
+      fullPath: '/configuracoes/taxas'
+      preLoaderRoute: typeof AuthenticatedConfiguracoesTaxasRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/configuracoes/seguranca': {
+      id: '/_authenticated/configuracoes/seguranca'
+      path: '/configuracoes/seguranca'
+      fullPath: '/configuracoes/seguranca'
+      preLoaderRoute: typeof AuthenticatedConfiguracoesSegurancaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/configuracoes/perfil': {
+      id: '/_authenticated/configuracoes/perfil'
+      path: '/configuracoes/perfil'
+      fullPath: '/configuracoes/perfil'
+      preLoaderRoute: typeof AuthenticatedConfiguracoesPerfilRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/configuracoes/modulos': {
       id: '/_authenticated/configuracoes/modulos'
       path: '/configuracoes/modulos'
@@ -1058,6 +1184,27 @@ declare module '@tanstack/react-router' {
       path: '/comunicacao/logs'
       fullPath: '/comunicacao/logs'
       preLoaderRoute: typeof AuthenticatedComunicacaoLogsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/comissoes/regras': {
+      id: '/_authenticated/comissoes/regras'
+      path: '/comissoes/regras'
+      fullPath: '/comissoes/regras'
+      preLoaderRoute: typeof AuthenticatedComissoesRegrasRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/comissoes/pagamentos': {
+      id: '/_authenticated/comissoes/pagamentos'
+      path: '/comissoes/pagamentos'
+      fullPath: '/comissoes/pagamentos'
+      preLoaderRoute: typeof AuthenticatedComissoesPagamentosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/comissoes/historico': {
+      id: '/_authenticated/comissoes/historico'
+      path: '/comissoes/historico'
+      fullPath: '/comissoes/historico'
+      preLoaderRoute: typeof AuthenticatedComissoesHistoricoRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/clientes/$id': {
@@ -1095,39 +1242,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAssinaturasPlanosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/app/servicos': {
-      id: '/_authenticated/app/servicos'
-      path: '/app/servicos'
-      fullPath: '/app/servicos'
-      preLoaderRoute: typeof AuthenticatedAppServicosRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/app/financeiro': {
-      id: '/_authenticated/app/financeiro'
-      path: '/app/financeiro'
-      fullPath: '/app/financeiro'
-      preLoaderRoute: typeof AuthenticatedAppFinanceiroRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/app/configuracoes': {
-      id: '/_authenticated/app/configuracoes'
-      path: '/app/configuracoes'
-      fullPath: '/app/configuracoes'
-      preLoaderRoute: typeof AuthenticatedAppConfiguracoesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/app/clientes': {
-      id: '/_authenticated/app/clientes'
-      path: '/app/clientes'
-      fullPath: '/app/clientes'
-      preLoaderRoute: typeof AuthenticatedAppClientesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/app/barbeiros': {
-      id: '/_authenticated/app/barbeiros'
-      path: '/app/barbeiros'
-      fullPath: '/app/barbeiros'
-      preLoaderRoute: typeof AuthenticatedAppBarbeirosRouteImport
+    '/_authenticated/agenda/novo': {
+      id: '/_authenticated/agenda/novo'
+      path: '/agenda/novo'
+      fullPath: '/agenda/novo'
+      preLoaderRoute: typeof AuthenticatedAgendaNovoRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/b/$slug/confirmacao/$id': {
@@ -1156,22 +1275,25 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFornecedoresRoute: typeof AuthenticatedFornecedoresRoute
   AuthenticatedInboxRoute: typeof AuthenticatedInboxRoute
   AuthenticatedPayablesRoute: typeof AuthenticatedPayablesRoute
+  AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
   AuthenticatedUsuariosRoute: typeof AuthenticatedUsuariosRoute
-  AuthenticatedAppBarbeirosRoute: typeof AuthenticatedAppBarbeirosRoute
-  AuthenticatedAppClientesRoute: typeof AuthenticatedAppClientesRoute
-  AuthenticatedAppConfiguracoesRoute: typeof AuthenticatedAppConfiguracoesRoute
-  AuthenticatedAppFinanceiroRoute: typeof AuthenticatedAppFinanceiroRoute
-  AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRoute
+  AuthenticatedAgendaNovoRoute: typeof AuthenticatedAgendaNovoRoute
   AuthenticatedAssinaturasPlanosRoute: typeof AuthenticatedAssinaturasPlanosRoute
   AuthenticatedCatalogoCategoriasRoute: typeof AuthenticatedCatalogoCategoriasRoute
   AuthenticatedCatalogoProdutosRoute: typeof AuthenticatedCatalogoProdutosRoute
   AuthenticatedCatalogoServicosRoute: typeof AuthenticatedCatalogoServicosRoute
   AuthenticatedClientesIdRoute: typeof AuthenticatedClientesIdRoute
+  AuthenticatedComissoesHistoricoRoute: typeof AuthenticatedComissoesHistoricoRoute
+  AuthenticatedComissoesPagamentosRoute: typeof AuthenticatedComissoesPagamentosRoute
+  AuthenticatedComissoesRegrasRoute: typeof AuthenticatedComissoesRegrasRoute
   AuthenticatedComunicacaoLogsRoute: typeof AuthenticatedComunicacaoLogsRoute
   AuthenticatedConfiguracoesBrandingRoute: typeof AuthenticatedConfiguracoesBrandingRoute
   AuthenticatedConfiguracoesFinanceiroRoute: typeof AuthenticatedConfiguracoesFinanceiroRoute
   AuthenticatedConfiguracoesIntegracoesRoute: typeof AuthenticatedConfiguracoesIntegracoesRoute
   AuthenticatedConfiguracoesModulosRoute: typeof AuthenticatedConfiguracoesModulosRoute
+  AuthenticatedConfiguracoesPerfilRoute: typeof AuthenticatedConfiguracoesPerfilRoute
+  AuthenticatedConfiguracoesSegurancaRoute: typeof AuthenticatedConfiguracoesSegurancaRoute
+  AuthenticatedConfiguracoesTaxasRoute: typeof AuthenticatedConfiguracoesTaxasRoute
   AuthenticatedEstoqueMovimentacoesRoute: typeof AuthenticatedEstoqueMovimentacoesRoute
   AuthenticatedFinanceiroConciliacaoRoute: typeof AuthenticatedFinanceiroConciliacaoRoute
   AuthenticatedFinanceiroContasRoute: typeof AuthenticatedFinanceiroContasRoute
@@ -1181,16 +1303,19 @@ interface AuthenticatedRouteChildren {
   AuthenticatedOperacoesIdRoute: typeof AuthenticatedOperacoesIdRoute
   AuthenticatedPacotesComprasRoute: typeof AuthenticatedPacotesComprasRoute
   AuthenticatedPagamentosIdRoute: typeof AuthenticatedPagamentosIdRoute
+  AuthenticatedPagamentosNovoRoute: typeof AuthenticatedPagamentosNovoRoute
   AuthenticatedProfissionaisIdRoute: typeof AuthenticatedProfissionaisIdRoute
   AuthenticatedAgendaIndexRoute: typeof AuthenticatedAgendaIndexRoute
-  AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
   AuthenticatedAssinaturasIndexRoute: typeof AuthenticatedAssinaturasIndexRoute
   AuthenticatedClientesIndexRoute: typeof AuthenticatedClientesIndexRoute
+  AuthenticatedComissoesIndexRoute: typeof AuthenticatedComissoesIndexRoute
   AuthenticatedComunicacaoIndexRoute: typeof AuthenticatedComunicacaoIndexRoute
+  AuthenticatedConfiguracoesIndexRoute: typeof AuthenticatedConfiguracoesIndexRoute
   AuthenticatedEstoqueIndexRoute: typeof AuthenticatedEstoqueIndexRoute
   AuthenticatedNpsIndexRoute: typeof AuthenticatedNpsIndexRoute
   AuthenticatedPacotesIndexRoute: typeof AuthenticatedPacotesIndexRoute
   AuthenticatedPagamentosIndexRoute: typeof AuthenticatedPagamentosIndexRoute
+  AuthenticatedProfissionaisIndexRoute: typeof AuthenticatedProfissionaisIndexRoute
   AuthenticatedPromocoesIndexRoute: typeof AuthenticatedPromocoesIndexRoute
   AuthenticatedPromocoesIdCuponsRoute: typeof AuthenticatedPromocoesIdCuponsRoute
 }
@@ -1204,17 +1329,17 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFornecedoresRoute: AuthenticatedFornecedoresRoute,
   AuthenticatedInboxRoute: AuthenticatedInboxRoute,
   AuthenticatedPayablesRoute: AuthenticatedPayablesRoute,
+  AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
   AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
-  AuthenticatedAppBarbeirosRoute: AuthenticatedAppBarbeirosRoute,
-  AuthenticatedAppClientesRoute: AuthenticatedAppClientesRoute,
-  AuthenticatedAppConfiguracoesRoute: AuthenticatedAppConfiguracoesRoute,
-  AuthenticatedAppFinanceiroRoute: AuthenticatedAppFinanceiroRoute,
-  AuthenticatedAppServicosRoute: AuthenticatedAppServicosRoute,
+  AuthenticatedAgendaNovoRoute: AuthenticatedAgendaNovoRoute,
   AuthenticatedAssinaturasPlanosRoute: AuthenticatedAssinaturasPlanosRoute,
   AuthenticatedCatalogoCategoriasRoute: AuthenticatedCatalogoCategoriasRoute,
   AuthenticatedCatalogoProdutosRoute: AuthenticatedCatalogoProdutosRoute,
   AuthenticatedCatalogoServicosRoute: AuthenticatedCatalogoServicosRoute,
   AuthenticatedClientesIdRoute: AuthenticatedClientesIdRoute,
+  AuthenticatedComissoesHistoricoRoute: AuthenticatedComissoesHistoricoRoute,
+  AuthenticatedComissoesPagamentosRoute: AuthenticatedComissoesPagamentosRoute,
+  AuthenticatedComissoesRegrasRoute: AuthenticatedComissoesRegrasRoute,
   AuthenticatedComunicacaoLogsRoute: AuthenticatedComunicacaoLogsRoute,
   AuthenticatedConfiguracoesBrandingRoute:
     AuthenticatedConfiguracoesBrandingRoute,
@@ -1224,6 +1349,10 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
     AuthenticatedConfiguracoesIntegracoesRoute,
   AuthenticatedConfiguracoesModulosRoute:
     AuthenticatedConfiguracoesModulosRoute,
+  AuthenticatedConfiguracoesPerfilRoute: AuthenticatedConfiguracoesPerfilRoute,
+  AuthenticatedConfiguracoesSegurancaRoute:
+    AuthenticatedConfiguracoesSegurancaRoute,
+  AuthenticatedConfiguracoesTaxasRoute: AuthenticatedConfiguracoesTaxasRoute,
   AuthenticatedEstoqueMovimentacoesRoute:
     AuthenticatedEstoqueMovimentacoesRoute,
   AuthenticatedFinanceiroConciliacaoRoute:
@@ -1235,16 +1364,19 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedOperacoesIdRoute: AuthenticatedOperacoesIdRoute,
   AuthenticatedPacotesComprasRoute: AuthenticatedPacotesComprasRoute,
   AuthenticatedPagamentosIdRoute: AuthenticatedPagamentosIdRoute,
+  AuthenticatedPagamentosNovoRoute: AuthenticatedPagamentosNovoRoute,
   AuthenticatedProfissionaisIdRoute: AuthenticatedProfissionaisIdRoute,
   AuthenticatedAgendaIndexRoute: AuthenticatedAgendaIndexRoute,
-  AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
   AuthenticatedAssinaturasIndexRoute: AuthenticatedAssinaturasIndexRoute,
   AuthenticatedClientesIndexRoute: AuthenticatedClientesIndexRoute,
+  AuthenticatedComissoesIndexRoute: AuthenticatedComissoesIndexRoute,
   AuthenticatedComunicacaoIndexRoute: AuthenticatedComunicacaoIndexRoute,
+  AuthenticatedConfiguracoesIndexRoute: AuthenticatedConfiguracoesIndexRoute,
   AuthenticatedEstoqueIndexRoute: AuthenticatedEstoqueIndexRoute,
   AuthenticatedNpsIndexRoute: AuthenticatedNpsIndexRoute,
   AuthenticatedPacotesIndexRoute: AuthenticatedPacotesIndexRoute,
   AuthenticatedPagamentosIndexRoute: AuthenticatedPagamentosIndexRoute,
+  AuthenticatedProfissionaisIndexRoute: AuthenticatedProfissionaisIndexRoute,
   AuthenticatedPromocoesIndexRoute: AuthenticatedPromocoesIndexRoute,
   AuthenticatedPromocoesIdCuponsRoute: AuthenticatedPromocoesIdCuponsRoute,
 }
@@ -1300,13 +1432,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
