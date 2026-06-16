@@ -26,6 +26,7 @@ import { Route as AuthenticatedFilaRouteImport } from './routes/_authenticated.f
 import { Route as AuthenticatedDespesasRouteImport } from './routes/_authenticated.despesas'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated.crm'
+import { Route as AuthenticatedCaixaRouteImport } from './routes/_authenticated.caixa'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated.audit'
 import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
 import { Route as AuthenticatedPromocoesIndexRouteImport } from './routes/_authenticated.promocoes.index'
@@ -157,6 +158,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 const AuthenticatedCrmRoute = AuthenticatedCrmRouteImport.update({
   id: '/crm',
   path: '/crm',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCaixaRoute = AuthenticatedCaixaRouteImport.update({
+  id: '/caixa',
+  path: '/caixa',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedAuditRoute = AuthenticatedAuditRouteImport.update({
@@ -439,6 +445,7 @@ export interface FileRoutesByFullPath {
   '/owner': typeof OwnerRouteWithChildren
   '/portal': typeof PortalRouteWithChildren
   '/audit': typeof AuthenticatedAuditRoute
+  '/caixa': typeof AuthenticatedCaixaRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/despesas': typeof AuthenticatedDespesasRoute
@@ -502,6 +509,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/audit': typeof AuthenticatedAuditRoute
+  '/caixa': typeof AuthenticatedCaixaRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/despesas': typeof AuthenticatedDespesasRoute
@@ -568,6 +576,7 @@ export interface FileRoutesById {
   '/owner': typeof OwnerRouteWithChildren
   '/portal': typeof PortalRouteWithChildren
   '/_authenticated/audit': typeof AuthenticatedAuditRoute
+  '/_authenticated/caixa': typeof AuthenticatedCaixaRoute
   '/_authenticated/crm': typeof AuthenticatedCrmRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/despesas': typeof AuthenticatedDespesasRoute
@@ -635,6 +644,7 @@ export interface FileRouteTypes {
     | '/owner'
     | '/portal'
     | '/audit'
+    | '/caixa'
     | '/crm'
     | '/dashboard'
     | '/despesas'
@@ -698,6 +708,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/audit'
+    | '/caixa'
     | '/crm'
     | '/dashboard'
     | '/despesas'
@@ -763,6 +774,7 @@ export interface FileRouteTypes {
     | '/owner'
     | '/portal'
     | '/_authenticated/audit'
+    | '/_authenticated/caixa'
     | '/_authenticated/crm'
     | '/_authenticated/dashboard'
     | '/_authenticated/despesas'
@@ -952,6 +964,13 @@ declare module '@tanstack/react-router' {
       path: '/crm'
       fullPath: '/crm'
       preLoaderRoute: typeof AuthenticatedCrmRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/caixa': {
+      id: '/_authenticated/caixa'
+      path: '/caixa'
+      fullPath: '/caixa'
+      preLoaderRoute: typeof AuthenticatedCaixaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/audit': {
@@ -1288,6 +1307,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAuditRoute: typeof AuthenticatedAuditRoute
+  AuthenticatedCaixaRoute: typeof AuthenticatedCaixaRoute
   AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDespesasRoute: typeof AuthenticatedDespesasRoute
@@ -1343,6 +1363,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAuditRoute: AuthenticatedAuditRoute,
+  AuthenticatedCaixaRoute: AuthenticatedCaixaRoute,
   AuthenticatedCrmRoute: AuthenticatedCrmRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDespesasRoute: AuthenticatedDespesasRoute,
