@@ -4,7 +4,6 @@ import {
   ArrowLeft, Banknote, QrCode, Smartphone, CreditCard, Loader2, CheckCircle2,
   AlertCircle, type LucideIcon,
 } from "lucide-react";
-import { toast } from "sonner";
 import { PageHeader } from "@/components/app/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -201,6 +200,3 @@ function Info({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
-// suppress unused warning for toast import path (kept consistency)
-void toast;

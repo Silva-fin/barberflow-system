@@ -41,6 +41,7 @@ import { Route as AuthenticatedAgendaIndexRouteImport } from './routes/_authenti
 import { Route as NpsRespondSurveyIdRouteImport } from './routes/nps.respond.$surveyId'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
 import { Route as AuthenticatedProfissionaisIdRouteImport } from './routes/_authenticated.profissionais.$id'
+import { Route as AuthenticatedPagamentosNovoRouteImport } from './routes/_authenticated.pagamentos.novo'
 import { Route as AuthenticatedPagamentosIdRouteImport } from './routes/_authenticated.pagamentos.$id'
 import { Route as AuthenticatedPacotesComprasRouteImport } from './routes/_authenticated.pacotes.compras'
 import { Route as AuthenticatedOperacoesIdRouteImport } from './routes/_authenticated.operacoes.$id'
@@ -239,6 +240,12 @@ const AuthenticatedProfissionaisIdRoute =
     path: '/profissionais/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedPagamentosNovoRoute =
+  AuthenticatedPagamentosNovoRouteImport.update({
+    id: '/pagamentos/novo',
+    path: '/pagamentos/novo',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPagamentosIdRoute =
   AuthenticatedPagamentosIdRouteImport.update({
     id: '/pagamentos/$id',
@@ -433,6 +440,7 @@ export interface FileRoutesByFullPath {
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
+  '/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
@@ -489,6 +497,7 @@ export interface FileRoutesByTo {
   '/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
+  '/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
@@ -550,6 +559,7 @@ export interface FileRoutesById {
   '/_authenticated/operacoes/$id': typeof AuthenticatedOperacoesIdRoute
   '/_authenticated/pacotes/compras': typeof AuthenticatedPacotesComprasRoute
   '/_authenticated/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
+  '/_authenticated/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/_authenticated/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
@@ -611,6 +621,7 @@ export interface FileRouteTypes {
     | '/operacoes/$id'
     | '/pacotes/compras'
     | '/pagamentos/$id'
+    | '/pagamentos/novo'
     | '/profissionais/$id'
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
@@ -667,6 +678,7 @@ export interface FileRouteTypes {
     | '/operacoes/$id'
     | '/pacotes/compras'
     | '/pagamentos/$id'
+    | '/pagamentos/novo'
     | '/profissionais/$id'
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
@@ -727,6 +739,7 @@ export interface FileRouteTypes {
     | '/_authenticated/operacoes/$id'
     | '/_authenticated/pacotes/compras'
     | '/_authenticated/pagamentos/$id'
+    | '/_authenticated/pagamentos/novo'
     | '/_authenticated/profissionais/$id'
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
@@ -982,6 +995,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfissionaisIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/pagamentos/novo': {
+      id: '/_authenticated/pagamentos/novo'
+      path: '/pagamentos/novo'
+      fullPath: '/pagamentos/novo'
+      preLoaderRoute: typeof AuthenticatedPagamentosNovoRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/pagamentos/$id': {
       id: '/_authenticated/pagamentos/$id'
       path: '/pagamentos/$id'
@@ -1201,6 +1221,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedOperacoesIdRoute: typeof AuthenticatedOperacoesIdRoute
   AuthenticatedPacotesComprasRoute: typeof AuthenticatedPacotesComprasRoute
   AuthenticatedPagamentosIdRoute: typeof AuthenticatedPagamentosIdRoute
+  AuthenticatedPagamentosNovoRoute: typeof AuthenticatedPagamentosNovoRoute
   AuthenticatedProfissionaisIdRoute: typeof AuthenticatedProfissionaisIdRoute
   AuthenticatedAgendaIndexRoute: typeof AuthenticatedAgendaIndexRoute
   AuthenticatedAssinaturasIndexRoute: typeof AuthenticatedAssinaturasIndexRoute
@@ -1256,6 +1277,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedOperacoesIdRoute: AuthenticatedOperacoesIdRoute,
   AuthenticatedPacotesComprasRoute: AuthenticatedPacotesComprasRoute,
   AuthenticatedPagamentosIdRoute: AuthenticatedPagamentosIdRoute,
+  AuthenticatedPagamentosNovoRoute: AuthenticatedPagamentosNovoRoute,
   AuthenticatedProfissionaisIdRoute: AuthenticatedProfissionaisIdRoute,
   AuthenticatedAgendaIndexRoute: AuthenticatedAgendaIndexRoute,
   AuthenticatedAssinaturasIndexRoute: AuthenticatedAssinaturasIndexRoute,
