@@ -56,6 +56,7 @@ import { Route as AuthenticatedConfiguracoesFinanceiroRouteImport } from './rout
 import { Route as AuthenticatedConfiguracoesBrandingRouteImport } from './routes/_authenticated.configuracoes.branding'
 import { Route as AuthenticatedComunicacaoLogsRouteImport } from './routes/_authenticated.comunicacao.logs'
 import { Route as AuthenticatedComissoesRegrasRouteImport } from './routes/_authenticated.comissoes.regras'
+import { Route as AuthenticatedComissoesPagamentosRouteImport } from './routes/_authenticated.comissoes.pagamentos'
 import { Route as AuthenticatedComissoesHistoricoRouteImport } from './routes/_authenticated.comissoes.historico'
 import { Route as AuthenticatedClientesIdRouteImport } from './routes/_authenticated.clientes.$id'
 import { Route as AuthenticatedCatalogoServicosRouteImport } from './routes/_authenticated.catalogo.servicos'
@@ -326,6 +327,12 @@ const AuthenticatedComissoesRegrasRoute =
     path: '/comissoes/regras',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedComissoesPagamentosRoute =
+  AuthenticatedComissoesPagamentosRouteImport.update({
+    id: '/comissoes/pagamentos',
+    path: '/comissoes/pagamentos',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedComissoesHistoricoRoute =
   AuthenticatedComissoesHistoricoRouteImport.update({
     id: '/comissoes/historico',
@@ -402,6 +409,7 @@ export interface FileRoutesByFullPath {
   '/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/comissoes/historico': typeof AuthenticatedComissoesHistoricoRoute
+  '/comissoes/pagamentos': typeof AuthenticatedComissoesPagamentosRoute
   '/comissoes/regras': typeof AuthenticatedComissoesRegrasRoute
   '/comunicacao/logs': typeof AuthenticatedComunicacaoLogsRoute
   '/configuracoes/branding': typeof AuthenticatedConfiguracoesBrandingRoute
@@ -456,6 +464,7 @@ export interface FileRoutesByTo {
   '/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/comissoes/historico': typeof AuthenticatedComissoesHistoricoRoute
+  '/comissoes/pagamentos': typeof AuthenticatedComissoesPagamentosRoute
   '/comissoes/regras': typeof AuthenticatedComissoesRegrasRoute
   '/comunicacao/logs': typeof AuthenticatedComunicacaoLogsRoute
   '/configuracoes/branding': typeof AuthenticatedConfiguracoesBrandingRoute
@@ -515,6 +524,7 @@ export interface FileRoutesById {
   '/_authenticated/catalogo/servicos': typeof AuthenticatedCatalogoServicosRoute
   '/_authenticated/clientes/$id': typeof AuthenticatedClientesIdRoute
   '/_authenticated/comissoes/historico': typeof AuthenticatedComissoesHistoricoRoute
+  '/_authenticated/comissoes/pagamentos': typeof AuthenticatedComissoesPagamentosRoute
   '/_authenticated/comissoes/regras': typeof AuthenticatedComissoesRegrasRoute
   '/_authenticated/comunicacao/logs': typeof AuthenticatedComunicacaoLogsRoute
   '/_authenticated/configuracoes/branding': typeof AuthenticatedConfiguracoesBrandingRoute
@@ -574,6 +584,7 @@ export interface FileRouteTypes {
     | '/catalogo/servicos'
     | '/clientes/$id'
     | '/comissoes/historico'
+    | '/comissoes/pagamentos'
     | '/comissoes/regras'
     | '/comunicacao/logs'
     | '/configuracoes/branding'
@@ -628,6 +639,7 @@ export interface FileRouteTypes {
     | '/catalogo/servicos'
     | '/clientes/$id'
     | '/comissoes/historico'
+    | '/comissoes/pagamentos'
     | '/comissoes/regras'
     | '/comunicacao/logs'
     | '/configuracoes/branding'
@@ -686,6 +698,7 @@ export interface FileRouteTypes {
     | '/_authenticated/catalogo/servicos'
     | '/_authenticated/clientes/$id'
     | '/_authenticated/comissoes/historico'
+    | '/_authenticated/comissoes/pagamentos'
     | '/_authenticated/comissoes/regras'
     | '/_authenticated/comunicacao/logs'
     | '/_authenticated/configuracoes/branding'
@@ -1061,6 +1074,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedComissoesRegrasRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/comissoes/pagamentos': {
+      id: '/_authenticated/comissoes/pagamentos'
+      path: '/comissoes/pagamentos'
+      fullPath: '/comissoes/pagamentos'
+      preLoaderRoute: typeof AuthenticatedComissoesPagamentosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/comissoes/historico': {
       id: '/_authenticated/comissoes/historico'
       path: '/comissoes/historico'
@@ -1144,6 +1164,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCatalogoServicosRoute: typeof AuthenticatedCatalogoServicosRoute
   AuthenticatedClientesIdRoute: typeof AuthenticatedClientesIdRoute
   AuthenticatedComissoesHistoricoRoute: typeof AuthenticatedComissoesHistoricoRoute
+  AuthenticatedComissoesPagamentosRoute: typeof AuthenticatedComissoesPagamentosRoute
   AuthenticatedComissoesRegrasRoute: typeof AuthenticatedComissoesRegrasRoute
   AuthenticatedComunicacaoLogsRoute: typeof AuthenticatedComunicacaoLogsRoute
   AuthenticatedConfiguracoesBrandingRoute: typeof AuthenticatedConfiguracoesBrandingRoute
@@ -1191,6 +1212,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCatalogoServicosRoute: AuthenticatedCatalogoServicosRoute,
   AuthenticatedClientesIdRoute: AuthenticatedClientesIdRoute,
   AuthenticatedComissoesHistoricoRoute: AuthenticatedComissoesHistoricoRoute,
+  AuthenticatedComissoesPagamentosRoute: AuthenticatedComissoesPagamentosRoute,
   AuthenticatedComissoesRegrasRoute: AuthenticatedComissoesRegrasRoute,
   AuthenticatedComunicacaoLogsRoute: AuthenticatedComunicacaoLogsRoute,
   AuthenticatedConfiguracoesBrandingRoute:
