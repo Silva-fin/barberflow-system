@@ -58,6 +58,7 @@ import { Route as AuthenticatedCatalogoServicosRouteImport } from './routes/_aut
 import { Route as AuthenticatedCatalogoProdutosRouteImport } from './routes/_authenticated.catalogo.produtos'
 import { Route as AuthenticatedCatalogoCategoriasRouteImport } from './routes/_authenticated.catalogo.categorias'
 import { Route as AuthenticatedAssinaturasPlanosRouteImport } from './routes/_authenticated.assinaturas.planos'
+import { Route as AuthenticatedAgendaNovoRouteImport } from './routes/_authenticated.agenda.novo'
 import { Route as BSlugConfirmacaoIdRouteImport } from './routes/b.$slug.confirmacao.$id'
 import { Route as AuthenticatedPromocoesIdCuponsRouteImport } from './routes/_authenticated.promocoes.$id.cupons'
 
@@ -332,6 +333,11 @@ const AuthenticatedAssinaturasPlanosRoute =
     path: '/assinaturas/planos',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAgendaNovoRoute = AuthenticatedAgendaNovoRouteImport.update({
+  id: '/agenda/novo',
+  path: '/agenda/novo',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const BSlugConfirmacaoIdRoute = BSlugConfirmacaoIdRouteImport.update({
   id: '/confirmacao/$id',
   path: '/confirmacao/$id',
@@ -361,6 +367,7 @@ export interface FileRoutesByFullPath {
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
+  '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/assinaturas/planos': typeof AuthenticatedAssinaturasPlanosRoute
   '/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
   '/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
@@ -410,6 +417,7 @@ export interface FileRoutesByTo {
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/owner': typeof OwnerIndexRoute
   '/portal': typeof PortalIndexRoute
+  '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/assinaturas/planos': typeof AuthenticatedAssinaturasPlanosRoute
   '/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
   '/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
@@ -464,6 +472,7 @@ export interface FileRoutesById {
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
+  '/_authenticated/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/_authenticated/assinaturas/planos': typeof AuthenticatedAssinaturasPlanosRoute
   '/_authenticated/catalogo/categorias': typeof AuthenticatedCatalogoCategoriasRoute
   '/_authenticated/catalogo/produtos': typeof AuthenticatedCatalogoProdutosRoute
@@ -518,6 +527,7 @@ export interface FileRouteTypes {
     | '/b/$slug'
     | '/owner/'
     | '/portal/'
+    | '/agenda/novo'
     | '/assinaturas/planos'
     | '/catalogo/categorias'
     | '/catalogo/produtos'
@@ -567,6 +577,7 @@ export interface FileRouteTypes {
     | '/usuarios'
     | '/owner'
     | '/portal'
+    | '/agenda/novo'
     | '/assinaturas/planos'
     | '/catalogo/categorias'
     | '/catalogo/produtos'
@@ -620,6 +631,7 @@ export interface FileRouteTypes {
     | '/b/$slug'
     | '/owner/'
     | '/portal/'
+    | '/_authenticated/agenda/novo'
     | '/_authenticated/assinaturas/planos'
     | '/_authenticated/catalogo/categorias'
     | '/_authenticated/catalogo/produtos'
@@ -1011,6 +1023,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAssinaturasPlanosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/agenda/novo': {
+      id: '/_authenticated/agenda/novo'
+      path: '/agenda/novo'
+      fullPath: '/agenda/novo'
+      preLoaderRoute: typeof AuthenticatedAgendaNovoRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/b/$slug/confirmacao/$id': {
       id: '/b/$slug/confirmacao/$id'
       path: '/confirmacao/$id'
@@ -1038,6 +1057,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedInboxRoute: typeof AuthenticatedInboxRoute
   AuthenticatedPayablesRoute: typeof AuthenticatedPayablesRoute
   AuthenticatedUsuariosRoute: typeof AuthenticatedUsuariosRoute
+  AuthenticatedAgendaNovoRoute: typeof AuthenticatedAgendaNovoRoute
   AuthenticatedAssinaturasPlanosRoute: typeof AuthenticatedAssinaturasPlanosRoute
   AuthenticatedCatalogoCategoriasRoute: typeof AuthenticatedCatalogoCategoriasRoute
   AuthenticatedCatalogoProdutosRoute: typeof AuthenticatedCatalogoProdutosRoute
@@ -1080,6 +1100,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedInboxRoute: AuthenticatedInboxRoute,
   AuthenticatedPayablesRoute: AuthenticatedPayablesRoute,
   AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
+  AuthenticatedAgendaNovoRoute: AuthenticatedAgendaNovoRoute,
   AuthenticatedAssinaturasPlanosRoute: AuthenticatedAssinaturasPlanosRoute,
   AuthenticatedCatalogoCategoriasRoute: AuthenticatedCatalogoCategoriasRoute,
   AuthenticatedCatalogoProdutosRoute: AuthenticatedCatalogoProdutosRoute,
