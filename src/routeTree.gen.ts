@@ -26,12 +26,14 @@ import { Route as AuthenticatedFilaRouteImport } from './routes/_authenticated.f
 import { Route as AuthenticatedDespesasRouteImport } from './routes/_authenticated.despesas'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated.crm'
+import { Route as AuthenticatedCaixaRouteImport } from './routes/_authenticated.caixa'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated.audit'
 import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
 import { Route as AuthenticatedPromocoesIndexRouteImport } from './routes/_authenticated.promocoes.index'
 import { Route as AuthenticatedProfissionaisIndexRouteImport } from './routes/_authenticated.profissionais.index'
 import { Route as AuthenticatedPagamentosIndexRouteImport } from './routes/_authenticated.pagamentos.index'
 import { Route as AuthenticatedPacotesIndexRouteImport } from './routes/_authenticated.pacotes.index'
+import { Route as AuthenticatedOperacoesIndexRouteImport } from './routes/_authenticated.operacoes.index'
 import { Route as AuthenticatedNpsIndexRouteImport } from './routes/_authenticated.nps.index'
 import { Route as AuthenticatedEstoqueIndexRouteImport } from './routes/_authenticated.estoque.index'
 import { Route as AuthenticatedConfiguracoesIndexRouteImport } from './routes/_authenticated.configuracoes.index'
@@ -158,6 +160,11 @@ const AuthenticatedCrmRoute = AuthenticatedCrmRouteImport.update({
   path: '/crm',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedCaixaRoute = AuthenticatedCaixaRouteImport.update({
+  id: '/caixa',
+  path: '/caixa',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAuditRoute = AuthenticatedAuditRouteImport.update({
   id: '/audit',
   path: '/audit',
@@ -190,6 +197,12 @@ const AuthenticatedPacotesIndexRoute =
   AuthenticatedPacotesIndexRouteImport.update({
     id: '/pacotes/',
     path: '/pacotes/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedOperacoesIndexRoute =
+  AuthenticatedOperacoesIndexRouteImport.update({
+    id: '/operacoes/',
+    path: '/operacoes/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedNpsIndexRoute = AuthenticatedNpsIndexRouteImport.update({
@@ -432,6 +445,7 @@ export interface FileRoutesByFullPath {
   '/owner': typeof OwnerRouteWithChildren
   '/portal': typeof PortalRouteWithChildren
   '/audit': typeof AuthenticatedAuditRoute
+  '/caixa': typeof AuthenticatedCaixaRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/despesas': typeof AuthenticatedDespesasRoute
@@ -482,6 +496,7 @@ export interface FileRoutesByFullPath {
   '/configuracoes/': typeof AuthenticatedConfiguracoesIndexRoute
   '/estoque/': typeof AuthenticatedEstoqueIndexRoute
   '/nps/': typeof AuthenticatedNpsIndexRoute
+  '/operacoes/': typeof AuthenticatedOperacoesIndexRoute
   '/pacotes/': typeof AuthenticatedPacotesIndexRoute
   '/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
   '/profissionais/': typeof AuthenticatedProfissionaisIndexRoute
@@ -494,6 +509,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/audit': typeof AuthenticatedAuditRoute
+  '/caixa': typeof AuthenticatedCaixaRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/despesas': typeof AuthenticatedDespesasRoute
@@ -543,6 +559,7 @@ export interface FileRoutesByTo {
   '/configuracoes': typeof AuthenticatedConfiguracoesIndexRoute
   '/estoque': typeof AuthenticatedEstoqueIndexRoute
   '/nps': typeof AuthenticatedNpsIndexRoute
+  '/operacoes': typeof AuthenticatedOperacoesIndexRoute
   '/pacotes': typeof AuthenticatedPacotesIndexRoute
   '/pagamentos': typeof AuthenticatedPagamentosIndexRoute
   '/profissionais': typeof AuthenticatedProfissionaisIndexRoute
@@ -559,6 +576,7 @@ export interface FileRoutesById {
   '/owner': typeof OwnerRouteWithChildren
   '/portal': typeof PortalRouteWithChildren
   '/_authenticated/audit': typeof AuthenticatedAuditRoute
+  '/_authenticated/caixa': typeof AuthenticatedCaixaRoute
   '/_authenticated/crm': typeof AuthenticatedCrmRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/despesas': typeof AuthenticatedDespesasRoute
@@ -609,6 +627,7 @@ export interface FileRoutesById {
   '/_authenticated/configuracoes/': typeof AuthenticatedConfiguracoesIndexRoute
   '/_authenticated/estoque/': typeof AuthenticatedEstoqueIndexRoute
   '/_authenticated/nps/': typeof AuthenticatedNpsIndexRoute
+  '/_authenticated/operacoes/': typeof AuthenticatedOperacoesIndexRoute
   '/_authenticated/pacotes/': typeof AuthenticatedPacotesIndexRoute
   '/_authenticated/pagamentos/': typeof AuthenticatedPagamentosIndexRoute
   '/_authenticated/profissionais/': typeof AuthenticatedProfissionaisIndexRoute
@@ -625,6 +644,7 @@ export interface FileRouteTypes {
     | '/owner'
     | '/portal'
     | '/audit'
+    | '/caixa'
     | '/crm'
     | '/dashboard'
     | '/despesas'
@@ -675,6 +695,7 @@ export interface FileRouteTypes {
     | '/configuracoes/'
     | '/estoque/'
     | '/nps/'
+    | '/operacoes/'
     | '/pacotes/'
     | '/pagamentos/'
     | '/profissionais/'
@@ -687,6 +708,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/audit'
+    | '/caixa'
     | '/crm'
     | '/dashboard'
     | '/despesas'
@@ -736,6 +758,7 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/estoque'
     | '/nps'
+    | '/operacoes'
     | '/pacotes'
     | '/pagamentos'
     | '/profissionais'
@@ -751,6 +774,7 @@ export interface FileRouteTypes {
     | '/owner'
     | '/portal'
     | '/_authenticated/audit'
+    | '/_authenticated/caixa'
     | '/_authenticated/crm'
     | '/_authenticated/dashboard'
     | '/_authenticated/despesas'
@@ -801,6 +825,7 @@ export interface FileRouteTypes {
     | '/_authenticated/configuracoes/'
     | '/_authenticated/estoque/'
     | '/_authenticated/nps/'
+    | '/_authenticated/operacoes/'
     | '/_authenticated/pacotes/'
     | '/_authenticated/pagamentos/'
     | '/_authenticated/profissionais/'
@@ -941,6 +966,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCrmRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/caixa': {
+      id: '/_authenticated/caixa'
+      path: '/caixa'
+      fullPath: '/caixa'
+      preLoaderRoute: typeof AuthenticatedCaixaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/audit': {
       id: '/_authenticated/audit'
       path: '/audit'
@@ -981,6 +1013,13 @@ declare module '@tanstack/react-router' {
       path: '/pacotes'
       fullPath: '/pacotes/'
       preLoaderRoute: typeof AuthenticatedPacotesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/operacoes/': {
+      id: '/_authenticated/operacoes/'
+      path: '/operacoes'
+      fullPath: '/operacoes/'
+      preLoaderRoute: typeof AuthenticatedOperacoesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/nps/': {
@@ -1268,6 +1307,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAuditRoute: typeof AuthenticatedAuditRoute
+  AuthenticatedCaixaRoute: typeof AuthenticatedCaixaRoute
   AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDespesasRoute: typeof AuthenticatedDespesasRoute
@@ -1313,6 +1353,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedConfiguracoesIndexRoute: typeof AuthenticatedConfiguracoesIndexRoute
   AuthenticatedEstoqueIndexRoute: typeof AuthenticatedEstoqueIndexRoute
   AuthenticatedNpsIndexRoute: typeof AuthenticatedNpsIndexRoute
+  AuthenticatedOperacoesIndexRoute: typeof AuthenticatedOperacoesIndexRoute
   AuthenticatedPacotesIndexRoute: typeof AuthenticatedPacotesIndexRoute
   AuthenticatedPagamentosIndexRoute: typeof AuthenticatedPagamentosIndexRoute
   AuthenticatedProfissionaisIndexRoute: typeof AuthenticatedProfissionaisIndexRoute
@@ -1322,6 +1363,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAuditRoute: AuthenticatedAuditRoute,
+  AuthenticatedCaixaRoute: AuthenticatedCaixaRoute,
   AuthenticatedCrmRoute: AuthenticatedCrmRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDespesasRoute: AuthenticatedDespesasRoute,
@@ -1374,6 +1416,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedConfiguracoesIndexRoute: AuthenticatedConfiguracoesIndexRoute,
   AuthenticatedEstoqueIndexRoute: AuthenticatedEstoqueIndexRoute,
   AuthenticatedNpsIndexRoute: AuthenticatedNpsIndexRoute,
+  AuthenticatedOperacoesIndexRoute: AuthenticatedOperacoesIndexRoute,
   AuthenticatedPacotesIndexRoute: AuthenticatedPacotesIndexRoute,
   AuthenticatedPagamentosIndexRoute: AuthenticatedPagamentosIndexRoute,
   AuthenticatedProfissionaisIndexRoute: AuthenticatedProfissionaisIndexRoute,
@@ -1432,13 +1475,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
