@@ -34,6 +34,7 @@ import { Route as AuthenticatedPacotesIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedNpsIndexRouteImport } from './routes/_authenticated.nps.index'
 import { Route as AuthenticatedEstoqueIndexRouteImport } from './routes/_authenticated.estoque.index'
 import { Route as AuthenticatedComunicacaoIndexRouteImport } from './routes/_authenticated.comunicacao.index'
+import { Route as AuthenticatedComissoesIndexRouteImport } from './routes/_authenticated.comissoes.index'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
 import { Route as AuthenticatedAgendaIndexRouteImport } from './routes/_authenticated.agenda.index'
@@ -192,6 +193,12 @@ const AuthenticatedComunicacaoIndexRoute =
   AuthenticatedComunicacaoIndexRouteImport.update({
     id: '/comunicacao/',
     path: '/comunicacao/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedComissoesIndexRoute =
+  AuthenticatedComissoesIndexRouteImport.update({
+    id: '/comissoes/',
+    path: '/comissoes/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedClientesIndexRoute =
@@ -400,6 +407,7 @@ export interface FileRoutesByFullPath {
   '/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
+  '/comissoes/': typeof AuthenticatedComissoesIndexRoute
   '/comunicacao/': typeof AuthenticatedComunicacaoIndexRoute
   '/estoque/': typeof AuthenticatedEstoqueIndexRoute
   '/nps/': typeof AuthenticatedNpsIndexRoute
@@ -451,6 +459,7 @@ export interface FileRoutesByTo {
   '/agenda': typeof AuthenticatedAgendaIndexRoute
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
+  '/comissoes': typeof AuthenticatedComissoesIndexRoute
   '/comunicacao': typeof AuthenticatedComunicacaoIndexRoute
   '/estoque': typeof AuthenticatedEstoqueIndexRoute
   '/nps': typeof AuthenticatedNpsIndexRoute
@@ -507,6 +516,7 @@ export interface FileRoutesById {
   '/_authenticated/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
+  '/_authenticated/comissoes/': typeof AuthenticatedComissoesIndexRoute
   '/_authenticated/comunicacao/': typeof AuthenticatedComunicacaoIndexRoute
   '/_authenticated/estoque/': typeof AuthenticatedEstoqueIndexRoute
   '/_authenticated/nps/': typeof AuthenticatedNpsIndexRoute
@@ -563,6 +573,7 @@ export interface FileRouteTypes {
     | '/agenda/'
     | '/assinaturas/'
     | '/clientes/'
+    | '/comissoes/'
     | '/comunicacao/'
     | '/estoque/'
     | '/nps/'
@@ -614,6 +625,7 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/assinaturas'
     | '/clientes'
+    | '/comissoes'
     | '/comunicacao'
     | '/estoque'
     | '/nps'
@@ -669,6 +681,7 @@ export interface FileRouteTypes {
     | '/_authenticated/agenda/'
     | '/_authenticated/assinaturas/'
     | '/_authenticated/clientes/'
+    | '/_authenticated/comissoes/'
     | '/_authenticated/comunicacao/'
     | '/_authenticated/estoque/'
     | '/_authenticated/nps/'
@@ -866,6 +879,13 @@ declare module '@tanstack/react-router' {
       path: '/comunicacao'
       fullPath: '/comunicacao/'
       preLoaderRoute: typeof AuthenticatedComunicacaoIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/comissoes/': {
+      id: '/_authenticated/comissoes/'
+      path: '/comissoes'
+      fullPath: '/comissoes/'
+      preLoaderRoute: typeof AuthenticatedComissoesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/clientes/': {
@@ -1101,6 +1121,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAgendaIndexRoute: typeof AuthenticatedAgendaIndexRoute
   AuthenticatedAssinaturasIndexRoute: typeof AuthenticatedAssinaturasIndexRoute
   AuthenticatedClientesIndexRoute: typeof AuthenticatedClientesIndexRoute
+  AuthenticatedComissoesIndexRoute: typeof AuthenticatedComissoesIndexRoute
   AuthenticatedComunicacaoIndexRoute: typeof AuthenticatedComunicacaoIndexRoute
   AuthenticatedEstoqueIndexRoute: typeof AuthenticatedEstoqueIndexRoute
   AuthenticatedNpsIndexRoute: typeof AuthenticatedNpsIndexRoute
@@ -1151,6 +1172,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAgendaIndexRoute: AuthenticatedAgendaIndexRoute,
   AuthenticatedAssinaturasIndexRoute: AuthenticatedAssinaturasIndexRoute,
   AuthenticatedClientesIndexRoute: AuthenticatedClientesIndexRoute,
+  AuthenticatedComissoesIndexRoute: AuthenticatedComissoesIndexRoute,
   AuthenticatedComunicacaoIndexRoute: AuthenticatedComunicacaoIndexRoute,
   AuthenticatedEstoqueIndexRoute: AuthenticatedEstoqueIndexRoute,
   AuthenticatedNpsIndexRoute: AuthenticatedNpsIndexRoute,
