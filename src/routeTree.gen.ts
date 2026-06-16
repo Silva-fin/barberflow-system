@@ -36,6 +36,7 @@ import { Route as AuthenticatedComunicacaoIndexRouteImport } from './routes/_aut
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
+import { Route as AuthenticatedAgendaIndexRouteImport } from './routes/_authenticated.agenda.index'
 import { Route as NpsRespondSurveyIdRouteImport } from './routes/nps.respond.$surveyId'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
 import { Route as AuthenticatedProfissionaisIdRouteImport } from './routes/_authenticated.profissionais.$id'
@@ -63,7 +64,6 @@ import { Route as AuthenticatedAppFinanceiroRouteImport } from './routes/_authen
 import { Route as AuthenticatedAppConfiguracoesRouteImport } from './routes/_authenticated.app.configuracoes'
 import { Route as AuthenticatedAppClientesRouteImport } from './routes/_authenticated.app.clientes'
 import { Route as AuthenticatedAppBarbeirosRouteImport } from './routes/_authenticated.app.barbeiros'
-import { Route as AuthenticatedAppAgendaRouteImport } from './routes/_authenticated.app.agenda'
 import { Route as BSlugConfirmacaoIdRouteImport } from './routes/b.$slug.confirmacao.$id'
 import { Route as AuthenticatedPromocoesIdCuponsRouteImport } from './routes/_authenticated.promocoes.$id.cupons'
 
@@ -209,6 +209,12 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   path: '/app/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAgendaIndexRoute =
+  AuthenticatedAgendaIndexRouteImport.update({
+    id: '/agenda/',
+    path: '/agenda/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const NpsRespondSurveyIdRoute = NpsRespondSurveyIdRouteImport.update({
   id: '/nps/respond/$surveyId',
   path: '/nps/respond/$surveyId',
@@ -367,11 +373,6 @@ const AuthenticatedAppBarbeirosRoute =
     path: '/app/barbeiros',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedAppAgendaRoute = AuthenticatedAppAgendaRouteImport.update({
-  id: '/app/agenda',
-  path: '/app/agenda',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const BSlugConfirmacaoIdRoute = BSlugConfirmacaoIdRouteImport.update({
   id: '/confirmacao/$id',
   path: '/confirmacao/$id',
@@ -401,7 +402,6 @@ export interface FileRoutesByFullPath {
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
-  '/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/app/clientes': typeof AuthenticatedAppClientesRoute
   '/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
@@ -429,6 +429,7 @@ export interface FileRoutesByFullPath {
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
+  '/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
@@ -456,7 +457,6 @@ export interface FileRoutesByTo {
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/owner': typeof OwnerIndexRoute
   '/portal': typeof PortalIndexRoute
-  '/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/app/clientes': typeof AuthenticatedAppClientesRoute
   '/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
@@ -484,6 +484,7 @@ export interface FileRoutesByTo {
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
+  '/agenda': typeof AuthenticatedAgendaIndexRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
@@ -516,7 +517,6 @@ export interface FileRoutesById {
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
-  '/_authenticated/app/agenda': typeof AuthenticatedAppAgendaRoute
   '/_authenticated/app/barbeiros': typeof AuthenticatedAppBarbeirosRoute
   '/_authenticated/app/clientes': typeof AuthenticatedAppClientesRoute
   '/_authenticated/app/configuracoes': typeof AuthenticatedAppConfiguracoesRoute
@@ -544,6 +544,7 @@ export interface FileRoutesById {
   '/_authenticated/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
+  '/_authenticated/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
@@ -576,7 +577,6 @@ export interface FileRouteTypes {
     | '/b/$slug'
     | '/owner/'
     | '/portal/'
-    | '/app/agenda'
     | '/app/barbeiros'
     | '/app/clientes'
     | '/app/configuracoes'
@@ -604,6 +604,7 @@ export interface FileRouteTypes {
     | '/profissionais/$id'
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
+    | '/agenda/'
     | '/app/'
     | '/assinaturas/'
     | '/clientes/'
@@ -631,7 +632,6 @@ export interface FileRouteTypes {
     | '/usuarios'
     | '/owner'
     | '/portal'
-    | '/app/agenda'
     | '/app/barbeiros'
     | '/app/clientes'
     | '/app/configuracoes'
@@ -659,6 +659,7 @@ export interface FileRouteTypes {
     | '/profissionais/$id'
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
+    | '/agenda'
     | '/app'
     | '/assinaturas'
     | '/clientes'
@@ -690,7 +691,6 @@ export interface FileRouteTypes {
     | '/b/$slug'
     | '/owner/'
     | '/portal/'
-    | '/_authenticated/app/agenda'
     | '/_authenticated/app/barbeiros'
     | '/_authenticated/app/clientes'
     | '/_authenticated/app/configuracoes'
@@ -718,6 +718,7 @@ export interface FileRouteTypes {
     | '/_authenticated/profissionais/$id'
     | '/b/$slug/agendar'
     | '/nps/respond/$surveyId'
+    | '/_authenticated/agenda/'
     | '/_authenticated/app/'
     | '/_authenticated/assinaturas/'
     | '/_authenticated/clientes/'
@@ -933,6 +934,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/agenda/': {
+      id: '/_authenticated/agenda/'
+      path: '/agenda'
+      fullPath: '/agenda/'
+      preLoaderRoute: typeof AuthenticatedAgendaIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/nps/respond/$surveyId': {
       id: '/nps/respond/$surveyId'
       path: '/nps/respond/$surveyId'
@@ -1122,13 +1130,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppBarbeirosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/app/agenda': {
-      id: '/_authenticated/app/agenda'
-      path: '/app/agenda'
-      fullPath: '/app/agenda'
-      preLoaderRoute: typeof AuthenticatedAppAgendaRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/b/$slug/confirmacao/$id': {
       id: '/b/$slug/confirmacao/$id'
       path: '/confirmacao/$id'
@@ -1156,7 +1157,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedInboxRoute: typeof AuthenticatedInboxRoute
   AuthenticatedPayablesRoute: typeof AuthenticatedPayablesRoute
   AuthenticatedUsuariosRoute: typeof AuthenticatedUsuariosRoute
-  AuthenticatedAppAgendaRoute: typeof AuthenticatedAppAgendaRoute
   AuthenticatedAppBarbeirosRoute: typeof AuthenticatedAppBarbeirosRoute
   AuthenticatedAppClientesRoute: typeof AuthenticatedAppClientesRoute
   AuthenticatedAppConfiguracoesRoute: typeof AuthenticatedAppConfiguracoesRoute
@@ -1182,6 +1182,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPacotesComprasRoute: typeof AuthenticatedPacotesComprasRoute
   AuthenticatedPagamentosIdRoute: typeof AuthenticatedPagamentosIdRoute
   AuthenticatedProfissionaisIdRoute: typeof AuthenticatedProfissionaisIdRoute
+  AuthenticatedAgendaIndexRoute: typeof AuthenticatedAgendaIndexRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
   AuthenticatedAssinaturasIndexRoute: typeof AuthenticatedAssinaturasIndexRoute
   AuthenticatedClientesIndexRoute: typeof AuthenticatedClientesIndexRoute
@@ -1204,7 +1205,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedInboxRoute: AuthenticatedInboxRoute,
   AuthenticatedPayablesRoute: AuthenticatedPayablesRoute,
   AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
-  AuthenticatedAppAgendaRoute: AuthenticatedAppAgendaRoute,
   AuthenticatedAppBarbeirosRoute: AuthenticatedAppBarbeirosRoute,
   AuthenticatedAppClientesRoute: AuthenticatedAppClientesRoute,
   AuthenticatedAppConfiguracoesRoute: AuthenticatedAppConfiguracoesRoute,
@@ -1236,6 +1236,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPacotesComprasRoute: AuthenticatedPacotesComprasRoute,
   AuthenticatedPagamentosIdRoute: AuthenticatedPagamentosIdRoute,
   AuthenticatedProfissionaisIdRoute: AuthenticatedProfissionaisIdRoute,
+  AuthenticatedAgendaIndexRoute: AuthenticatedAgendaIndexRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
   AuthenticatedAssinaturasIndexRoute: AuthenticatedAssinaturasIndexRoute,
   AuthenticatedClientesIndexRoute: AuthenticatedClientesIndexRoute,
@@ -1299,13 +1300,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
