@@ -133,8 +133,17 @@ const NAV: NavGroup[] = [
       },
       { title: "Fornecedores", url: "/fornecedores", icon: Warehouse, roles: ["OWNER", "ADMIN", "OPERATOR"] },
       { title: "Payables", url: "/payables", icon: HandCoins, roles: ["OWNER", "ADMIN", "OPERATOR"] },
-      { title: "Comissões", url: "/comissoes", icon: Percent, roles: ["OWNER", "ADMIN"] },
-      { title: "Taxas", url: "/taxas", icon: Percent, roles: ["OWNER", "ADMIN"] },
+      {
+        title: "Comissões",
+        url: "/comissoes",
+        icon: Percent,
+        roles: ["OWNER", "ADMIN"],
+        children: [
+          { title: "Regras",      url: "/comissoes/regras",     roles: ["OWNER", "ADMIN"] },
+          { title: "Histórico",   url: "/comissoes/historico",  roles: ["OWNER", "ADMIN"] },
+          { title: "Pagamentos",  url: "/comissoes/pagamentos", roles: ["OWNER", "ADMIN"] },
+        ],
+      },
     ],
   },
   {
@@ -148,6 +157,9 @@ const NAV: NavGroup[] = [
         icon: Settings,
         roles: ["OWNER", "ADMIN"],
         children: [
+          { title: "Meu Perfil", url: "/configuracoes/perfil", roles: ["OWNER", "ADMIN", "OPERATOR", "PROFESSIONAL"] },
+          { title: "Segurança", url: "/configuracoes/seguranca", roles: ["OWNER", "ADMIN", "OPERATOR", "PROFESSIONAL"] },
+          { title: "Taxas", url: "/configuracoes/taxas", roles: ["OWNER", "ADMIN"] },
           { title: "Financeiro", url: "/configuracoes/financeiro", roles: ["OWNER", "ADMIN"] },
           { title: "Integrações", url: "/configuracoes/integracoes", roles: ["OWNER", "ADMIN"] },
           { title: "Módulos", url: "/configuracoes/modulos", roles: ["OWNER", "ADMIN"] },
