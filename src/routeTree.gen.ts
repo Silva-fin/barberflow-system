@@ -53,6 +53,7 @@ import { Route as AuthenticatedFinanceiroContasRouteImport } from './routes/_aut
 import { Route as AuthenticatedFinanceiroConciliacaoRouteImport } from './routes/_authenticated.financeiro.conciliacao'
 import { Route as AuthenticatedEstoqueMovimentacoesRouteImport } from './routes/_authenticated.estoque.movimentacoes'
 import { Route as AuthenticatedConfiguracoesTaxasRouteImport } from './routes/_authenticated.configuracoes.taxas'
+import { Route as AuthenticatedConfiguracoesPerfilRouteImport } from './routes/_authenticated.configuracoes.perfil'
 import { Route as AuthenticatedConfiguracoesModulosRouteImport } from './routes/_authenticated.configuracoes.modulos'
 import { Route as AuthenticatedConfiguracoesIntegracoesRouteImport } from './routes/_authenticated.configuracoes.integracoes'
 import { Route as AuthenticatedConfiguracoesFinanceiroRouteImport } from './routes/_authenticated.configuracoes.financeiro'
@@ -312,6 +313,12 @@ const AuthenticatedConfiguracoesTaxasRoute =
     path: '/configuracoes/taxas',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedConfiguracoesPerfilRoute =
+  AuthenticatedConfiguracoesPerfilRouteImport.update({
+    id: '/configuracoes/perfil',
+    path: '/configuracoes/perfil',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedConfiguracoesModulosRoute =
   AuthenticatedConfiguracoesModulosRouteImport.update({
     id: '/configuracoes/modulos',
@@ -437,6 +444,7 @@ export interface FileRoutesByFullPath {
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/configuracoes/integracoes': typeof AuthenticatedConfiguracoesIntegracoesRoute
   '/configuracoes/modulos': typeof AuthenticatedConfiguracoesModulosRoute
+  '/configuracoes/perfil': typeof AuthenticatedConfiguracoesPerfilRoute
   '/configuracoes/taxas': typeof AuthenticatedConfiguracoesTaxasRoute
   '/estoque/movimentacoes': typeof AuthenticatedEstoqueMovimentacoesRoute
   '/financeiro/conciliacao': typeof AuthenticatedFinanceiroConciliacaoRoute
@@ -495,6 +503,7 @@ export interface FileRoutesByTo {
   '/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/configuracoes/integracoes': typeof AuthenticatedConfiguracoesIntegracoesRoute
   '/configuracoes/modulos': typeof AuthenticatedConfiguracoesModulosRoute
+  '/configuracoes/perfil': typeof AuthenticatedConfiguracoesPerfilRoute
   '/configuracoes/taxas': typeof AuthenticatedConfiguracoesTaxasRoute
   '/estoque/movimentacoes': typeof AuthenticatedEstoqueMovimentacoesRoute
   '/financeiro/conciliacao': typeof AuthenticatedFinanceiroConciliacaoRoute
@@ -558,6 +567,7 @@ export interface FileRoutesById {
   '/_authenticated/configuracoes/financeiro': typeof AuthenticatedConfiguracoesFinanceiroRoute
   '/_authenticated/configuracoes/integracoes': typeof AuthenticatedConfiguracoesIntegracoesRoute
   '/_authenticated/configuracoes/modulos': typeof AuthenticatedConfiguracoesModulosRoute
+  '/_authenticated/configuracoes/perfil': typeof AuthenticatedConfiguracoesPerfilRoute
   '/_authenticated/configuracoes/taxas': typeof AuthenticatedConfiguracoesTaxasRoute
   '/_authenticated/estoque/movimentacoes': typeof AuthenticatedEstoqueMovimentacoesRoute
   '/_authenticated/financeiro/conciliacao': typeof AuthenticatedFinanceiroConciliacaoRoute
@@ -621,6 +631,7 @@ export interface FileRouteTypes {
     | '/configuracoes/financeiro'
     | '/configuracoes/integracoes'
     | '/configuracoes/modulos'
+    | '/configuracoes/perfil'
     | '/configuracoes/taxas'
     | '/estoque/movimentacoes'
     | '/financeiro/conciliacao'
@@ -679,6 +690,7 @@ export interface FileRouteTypes {
     | '/configuracoes/financeiro'
     | '/configuracoes/integracoes'
     | '/configuracoes/modulos'
+    | '/configuracoes/perfil'
     | '/configuracoes/taxas'
     | '/estoque/movimentacoes'
     | '/financeiro/conciliacao'
@@ -741,6 +753,7 @@ export interface FileRouteTypes {
     | '/_authenticated/configuracoes/financeiro'
     | '/_authenticated/configuracoes/integracoes'
     | '/_authenticated/configuracoes/modulos'
+    | '/_authenticated/configuracoes/perfil'
     | '/_authenticated/configuracoes/taxas'
     | '/_authenticated/estoque/movimentacoes'
     | '/_authenticated/financeiro/conciliacao'
@@ -1092,6 +1105,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConfiguracoesTaxasRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/configuracoes/perfil': {
+      id: '/_authenticated/configuracoes/perfil'
+      path: '/configuracoes/perfil'
+      fullPath: '/configuracoes/perfil'
+      preLoaderRoute: typeof AuthenticatedConfiguracoesPerfilRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/configuracoes/modulos': {
       id: '/_authenticated/configuracoes/modulos'
       path: '/configuracoes/modulos'
@@ -1231,6 +1251,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedConfiguracoesFinanceiroRoute: typeof AuthenticatedConfiguracoesFinanceiroRoute
   AuthenticatedConfiguracoesIntegracoesRoute: typeof AuthenticatedConfiguracoesIntegracoesRoute
   AuthenticatedConfiguracoesModulosRoute: typeof AuthenticatedConfiguracoesModulosRoute
+  AuthenticatedConfiguracoesPerfilRoute: typeof AuthenticatedConfiguracoesPerfilRoute
   AuthenticatedConfiguracoesTaxasRoute: typeof AuthenticatedConfiguracoesTaxasRoute
   AuthenticatedEstoqueMovimentacoesRoute: typeof AuthenticatedEstoqueMovimentacoesRoute
   AuthenticatedFinanceiroConciliacaoRoute: typeof AuthenticatedFinanceiroConciliacaoRoute
@@ -1286,6 +1307,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
     AuthenticatedConfiguracoesIntegracoesRoute,
   AuthenticatedConfiguracoesModulosRoute:
     AuthenticatedConfiguracoesModulosRoute,
+  AuthenticatedConfiguracoesPerfilRoute: AuthenticatedConfiguracoesPerfilRoute,
   AuthenticatedConfiguracoesTaxasRoute: AuthenticatedConfiguracoesTaxasRoute,
   AuthenticatedEstoqueMovimentacoesRoute:
     AuthenticatedEstoqueMovimentacoesRoute,
