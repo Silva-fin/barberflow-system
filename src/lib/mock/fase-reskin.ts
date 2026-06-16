@@ -192,3 +192,89 @@ export const mockMyProfile = {
 /* ============ helpers ============ */
 export const delay = <T,>(value: T, ms = 300) =>
   new Promise<T>((resolve) => setTimeout(() => resolve(value), ms));
+
+/* ============ Operações (/operacoes) ============ */
+import type { AppointmentStatus } from "@/components/app/fsm-badge";
+
+export type OperationRow = {
+  id: string;
+  dateTime: string; // ISO
+  customerName: string;
+  serviceName: string;
+  barberId: string;
+  barberName: string;
+  status: AppointmentStatus;
+  valueCents: number;
+};
+
+export const mockOperations: OperationRow[] = [
+  { id: "op01", dateTime: "2026-06-16T09:00:00", customerName: "Bruno Carvalho",  serviceName: "Corte",           barberId: "b1", barberName: "João Pereira",   status: "SCHEDULED",   valueCents: 4500 },
+  { id: "op02", dateTime: "2026-06-16T09:30:00", customerName: "Eduardo Pinto",   serviceName: "Corte + Barba",   barberId: "b2", barberName: "Carlos Silva",   status: "IN_PROGRESS", valueCents: 7500 },
+  { id: "op03", dateTime: "2026-06-16T10:00:00", customerName: "Felipe Ramos",    serviceName: "Barba terapia",   barberId: "b1", barberName: "João Pereira",   status: "COMPLETED",   valueCents: 5500 },
+  { id: "op04", dateTime: "2026-06-16T10:30:00", customerName: "Gustavo Martins", serviceName: "Pigmentação",     barberId: "b2", barberName: "Carlos Silva",   status: "SCHEDULED",   valueCents: 9000 },
+  { id: "op05", dateTime: "2026-06-16T11:00:00", customerName: "Henrique Costa",  serviceName: "Corte",           barberId: "b3", barberName: "Rafael Lima",    status: "CANCELLED",   valueCents: 4500 },
+  { id: "op06", dateTime: "2026-06-16T11:30:00", customerName: "Igor Almeida",    serviceName: "Corte + Barba",   barberId: "b4", barberName: "Pedro Souza",    status: "COMPLETED",   valueCents: 7500 },
+  { id: "op07", dateTime: "2026-06-16T13:00:00", customerName: "João Vieira",     serviceName: "Corte",           barberId: "b1", barberName: "João Pereira",   status: "NO_SHOW",     valueCents: 4500 },
+  { id: "op08", dateTime: "2026-06-16T13:30:00", customerName: "Lucas Pereira",   serviceName: "Pigmentação",     barberId: "b2", barberName: "Carlos Silva",   status: "SCHEDULED",   valueCents: 9000 },
+  { id: "op09", dateTime: "2026-06-16T14:00:00", customerName: "Marcos Tavares",  serviceName: "Corte",           barberId: "b3", barberName: "Rafael Lima",    status: "COMPLETED",   valueCents: 3000 },
+  { id: "op10", dateTime: "2026-06-16T14:30:00", customerName: "Nathan Oliveira", serviceName: "Barba terapia",   barberId: "b4", barberName: "Pedro Souza",    status: "IN_PROGRESS", valueCents: 5500 },
+  { id: "op11", dateTime: "2026-06-16T15:00:00", customerName: "Otávio Brito",    serviceName: "Corte + Barba",   barberId: "b1", barberName: "João Pereira",   status: "SCHEDULED",   valueCents: 7500 },
+  { id: "op12", dateTime: "2026-06-16T15:30:00", customerName: "Paulo Henrique",  serviceName: "Pigmentação",     barberId: "b2", barberName: "Carlos Silva",   status: "COMPLETED",   valueCents: 18000 },
+  { id: "op13", dateTime: "2026-06-16T16:00:00", customerName: "Rodrigo Salles",  serviceName: "Corte",           barberId: "b3", barberName: "Rafael Lima",    status: "CANCELLED",   valueCents: 4500 },
+  { id: "op14", dateTime: "2026-06-16T16:30:00", customerName: "Samuel Cordeiro", serviceName: "Corte + Barba",   barberId: "b4", barberName: "Pedro Souza",    status: "SCHEDULED",   valueCents: 7500 },
+  { id: "op15", dateTime: "2026-06-16T17:00:00", customerName: "Thiago Nunes",    serviceName: "Barba terapia",   barberId: "b1", barberName: "João Pereira",   status: "NO_SHOW",     valueCents: 5500 },
+];
+
+export const fetchOperations = () => delay(mockOperations, 500);
+
+/* ============ Caixa (/caixa) ============ */
+export type CashAccount = { id: string; label: string };
+
+export const mockCashAccounts: CashAccount[] = [
+  { id: "ca1", label: "Caixa principal" },
+  { id: "ca2", label: "Cofre" },
+  { id: "ca3", label: "PIX maquininha" },
+];
+
+export type CashMovementType = "IN" | "OUT";
+export type CashMovement = {
+  id: string;
+  time: string; // HH:MM
+  description: string;
+  type: CashMovementType;
+  valueCents: number;
+};
+
+export const mockCashMovements: CashMovement[] = [
+  { id: "mv01", time: "09:12", description: "Pagamento — Bruno Carvalho (Corte)",        type: "IN",  valueCents: 4500 },
+  { id: "mv02", time: "09:45", description: "Pagamento — Eduardo Pinto (Corte + Barba)", type: "IN",  valueCents: 7500 },
+  { id: "mv03", time: "10:20", description: "Pagamento — Felipe Ramos (Barba terapia)",  type: "IN",  valueCents: 5500 },
+  { id: "mv04", time: "11:05", description: "Sangria para banco",                         type: "OUT", valueCents: 20000 },
+  { id: "mv05", time: "11:40", description: "Pagamento — Igor Almeida (Corte + Barba)",  type: "IN",  valueCents: 7500 },
+  { id: "mv06", time: "13:15", description: "Pagamento — Marcos Tavares (Corte)",        type: "IN",  valueCents: 3000 },
+  { id: "mv07", time: "13:50", description: "Compra — produtos de limpeza",              type: "OUT", valueCents: 8500 },
+  { id: "mv08", time: "15:30", description: "Pagamento — Paulo Henrique (Pigmentação)",  type: "IN",  valueCents: 18000 },
+  { id: "mv09", time: "16:10", description: "Pagamento — Otávio Brito (Corte + Barba)",  type: "IN",  valueCents: 7500 },
+  { id: "mv10", time: "17:20", description: "Pagamento — Samuel Cordeiro (Corte + Barba)", type: "IN", valueCents: 7500 },
+];
+
+export type CashCountResolution = "WITH_ADJUSTMENT" | "WITHOUT_ADJUSTMENT";
+export type CashCount = {
+  id: string;
+  dateTime: string;
+  accountId: string;
+  accountLabel: string;
+  expectedCents: number;
+  countedCents: number;
+  resolution: CashCountResolution;
+  recordedBy: string;
+};
+
+export const mockCashCounts: CashCount[] = [
+  { id: "cc01", dateTime: "2026-06-15T19:30:00", accountId: "ca1", accountLabel: "Caixa principal", expectedCents: 124000, countedCents: 124000, resolution: "WITHOUT_ADJUSTMENT", recordedBy: "Carlos Mendes" },
+  { id: "cc02", dateTime: "2026-06-14T19:25:00", accountId: "ca1", accountLabel: "Caixa principal", expectedCents:  98000, countedCents:  95000, resolution: "WITH_ADJUSTMENT",   recordedBy: "Ana Souza" },
+  { id: "cc03", dateTime: "2026-06-13T20:10:00", accountId: "ca2", accountLabel: "Cofre",           expectedCents:  60000, countedCents:  62000, resolution: "WITH_ADJUSTMENT",   recordedBy: "Carlos Mendes" },
+];
+
+export const fetchCashMovements = () => delay(mockCashMovements, 400);
+export const fetchCashCounts = () => delay(mockCashCounts, 400);
