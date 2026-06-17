@@ -25,6 +25,10 @@ import { Route as PortalDashboardRouteImport } from './routes/portal.dashboard'
 import { Route as PortalCotasRouteImport } from './routes/portal.cotas'
 import { Route as PortalConsentimentosRouteImport } from './routes/portal.consentimentos'
 import { Route as PortalAssinaturasRouteImport } from './routes/portal.assinaturas'
+import { Route as OwnerSistemaRouteImport } from './routes/owner.sistema'
+import { Route as OwnerSettingsRouteImport } from './routes/owner.settings'
+import { Route as OwnerImpersonationRouteImport } from './routes/owner.impersonation'
+import { Route as OwnerAuditRouteImport } from './routes/owner.audit'
 import { Route as BSlugRouteImport } from './routes/b.$slug'
 import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated.usuarios'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated.relatorios'
@@ -37,6 +41,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated.crm'
 import { Route as AuthenticatedCaixaRouteImport } from './routes/_authenticated.caixa'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated.audit'
+import { Route as OwnerTenantsIndexRouteImport } from './routes/owner.tenants.index'
 import { Route as BSlugIndexRouteImport } from './routes/b.$slug.index'
 import { Route as AuthenticatedPromocoesIndexRouteImport } from './routes/_authenticated.promocoes.index'
 import { Route as AuthenticatedProfissionaisIndexRouteImport } from './routes/_authenticated.profissionais.index'
@@ -82,6 +87,8 @@ import { Route as AuthenticatedCatalogoProdutosRouteImport } from './routes/_aut
 import { Route as AuthenticatedCatalogoCategoriasRouteImport } from './routes/_authenticated.catalogo.categorias'
 import { Route as AuthenticatedAssinaturasPlanosRouteImport } from './routes/_authenticated.assinaturas.planos'
 import { Route as AuthenticatedAgendaNovoRouteImport } from './routes/_authenticated.agenda.novo'
+import { Route as OwnerTenantsIdIndexRouteImport } from './routes/owner.tenants.$id.index'
+import { Route as OwnerTenantsIdFlagsRouteImport } from './routes/owner.tenants.$id.flags'
 import { Route as BSlugConfirmacaoIdRouteImport } from './routes/b.$slug.confirmacao.$id'
 import { Route as PublicNpsRespondSurveyIdRouteImport } from './routes/_public.nps.respond.$surveyId'
 import { Route as AuthenticatedPromocoesIdCuponsRouteImport } from './routes/_authenticated.promocoes.$id.cupons'
@@ -164,6 +171,26 @@ const PortalAssinaturasRoute = PortalAssinaturasRouteImport.update({
   path: '/assinaturas',
   getParentRoute: () => PortalRoute,
 } as any)
+const OwnerSistemaRoute = OwnerSistemaRouteImport.update({
+  id: '/sistema',
+  path: '/sistema',
+  getParentRoute: () => OwnerRoute,
+} as any)
+const OwnerSettingsRoute = OwnerSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => OwnerRoute,
+} as any)
+const OwnerImpersonationRoute = OwnerImpersonationRouteImport.update({
+  id: '/impersonation',
+  path: '/impersonation',
+  getParentRoute: () => OwnerRoute,
+} as any)
+const OwnerAuditRoute = OwnerAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => OwnerRoute,
+} as any)
 const BSlugRoute = BSlugRouteImport.update({
   id: '/b/$slug',
   path: '/b/$slug',
@@ -224,6 +251,11 @@ const AuthenticatedAuditRoute = AuthenticatedAuditRouteImport.update({
   id: '/audit',
   path: '/audit',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+const OwnerTenantsIndexRoute = OwnerTenantsIndexRouteImport.update({
+  id: '/tenants/',
+  path: '/tenants/',
+  getParentRoute: () => OwnerRoute,
 } as any)
 const BSlugIndexRoute = BSlugIndexRouteImport.update({
   id: '/',
@@ -487,6 +519,16 @@ const AuthenticatedAgendaNovoRoute = AuthenticatedAgendaNovoRouteImport.update({
   path: '/agenda/novo',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const OwnerTenantsIdIndexRoute = OwnerTenantsIdIndexRouteImport.update({
+  id: '/tenants/$id/',
+  path: '/tenants/$id/',
+  getParentRoute: () => OwnerRoute,
+} as any)
+const OwnerTenantsIdFlagsRoute = OwnerTenantsIdFlagsRouteImport.update({
+  id: '/tenants/$id/flags',
+  path: '/tenants/$id/flags',
+  getParentRoute: () => OwnerRoute,
+} as any)
 const BSlugConfirmacaoIdRoute = BSlugConfirmacaoIdRouteImport.update({
   id: '/confirmacao/$id',
   path: '/confirmacao/$id',
@@ -522,6 +564,10 @@ export interface FileRoutesByFullPath {
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/b/$slug': typeof BSlugRouteWithChildren
+  '/owner/audit': typeof OwnerAuditRoute
+  '/owner/impersonation': typeof OwnerImpersonationRoute
+  '/owner/settings': typeof OwnerSettingsRoute
+  '/owner/sistema': typeof OwnerSistemaRoute
   '/portal/assinaturas': typeof PortalAssinaturasRoute
   '/portal/consentimentos': typeof PortalConsentimentosRoute
   '/portal/cotas': typeof PortalCotasRoute
@@ -577,9 +623,12 @@ export interface FileRoutesByFullPath {
   '/profissionais/': typeof AuthenticatedProfissionaisIndexRoute
   '/promocoes/': typeof AuthenticatedPromocoesIndexRoute
   '/b/$slug/': typeof BSlugIndexRoute
+  '/owner/tenants/': typeof OwnerTenantsIndexRoute
   '/promocoes/$id/cupons': typeof AuthenticatedPromocoesIdCuponsRoute
   '/nps/respond/$surveyId': typeof PublicNpsRespondSurveyIdRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
+  '/owner/tenants/$id/flags': typeof OwnerTenantsIdFlagsRoute
+  '/owner/tenants/$id/': typeof OwnerTenantsIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -595,6 +644,10 @@ export interface FileRoutesByTo {
   '/payables': typeof AuthenticatedPayablesRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
+  '/owner/audit': typeof OwnerAuditRoute
+  '/owner/impersonation': typeof OwnerImpersonationRoute
+  '/owner/settings': typeof OwnerSettingsRoute
+  '/owner/sistema': typeof OwnerSistemaRoute
   '/portal/assinaturas': typeof PortalAssinaturasRoute
   '/portal/consentimentos': typeof PortalConsentimentosRoute
   '/portal/cotas': typeof PortalCotasRoute
@@ -650,9 +703,12 @@ export interface FileRoutesByTo {
   '/profissionais': typeof AuthenticatedProfissionaisIndexRoute
   '/promocoes': typeof AuthenticatedPromocoesIndexRoute
   '/b/$slug': typeof BSlugIndexRoute
+  '/owner/tenants': typeof OwnerTenantsIndexRoute
   '/promocoes/$id/cupons': typeof AuthenticatedPromocoesIdCuponsRoute
   '/nps/respond/$surveyId': typeof PublicNpsRespondSurveyIdRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
+  '/owner/tenants/$id/flags': typeof OwnerTenantsIdFlagsRoute
+  '/owner/tenants/$id': typeof OwnerTenantsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -674,6 +730,10 @@ export interface FileRoutesById {
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
   '/b/$slug': typeof BSlugRouteWithChildren
+  '/owner/audit': typeof OwnerAuditRoute
+  '/owner/impersonation': typeof OwnerImpersonationRoute
+  '/owner/settings': typeof OwnerSettingsRoute
+  '/owner/sistema': typeof OwnerSistemaRoute
   '/portal/assinaturas': typeof PortalAssinaturasRoute
   '/portal/consentimentos': typeof PortalConsentimentosRoute
   '/portal/cotas': typeof PortalCotasRoute
@@ -729,9 +789,12 @@ export interface FileRoutesById {
   '/_authenticated/profissionais/': typeof AuthenticatedProfissionaisIndexRoute
   '/_authenticated/promocoes/': typeof AuthenticatedPromocoesIndexRoute
   '/b/$slug/': typeof BSlugIndexRoute
+  '/owner/tenants/': typeof OwnerTenantsIndexRoute
   '/_authenticated/promocoes/$id/cupons': typeof AuthenticatedPromocoesIdCuponsRoute
   '/_public/nps/respond/$surveyId': typeof PublicNpsRespondSurveyIdRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
+  '/owner/tenants/$id/flags': typeof OwnerTenantsIdFlagsRoute
+  '/owner/tenants/$id/': typeof OwnerTenantsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -752,6 +815,10 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/usuarios'
     | '/b/$slug'
+    | '/owner/audit'
+    | '/owner/impersonation'
+    | '/owner/settings'
+    | '/owner/sistema'
     | '/portal/assinaturas'
     | '/portal/consentimentos'
     | '/portal/cotas'
@@ -807,9 +874,12 @@ export interface FileRouteTypes {
     | '/profissionais/'
     | '/promocoes/'
     | '/b/$slug/'
+    | '/owner/tenants/'
     | '/promocoes/$id/cupons'
     | '/nps/respond/$surveyId'
     | '/b/$slug/confirmacao/$id'
+    | '/owner/tenants/$id/flags'
+    | '/owner/tenants/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -825,6 +895,10 @@ export interface FileRouteTypes {
     | '/payables'
     | '/relatorios'
     | '/usuarios'
+    | '/owner/audit'
+    | '/owner/impersonation'
+    | '/owner/settings'
+    | '/owner/sistema'
     | '/portal/assinaturas'
     | '/portal/consentimentos'
     | '/portal/cotas'
@@ -880,9 +954,12 @@ export interface FileRouteTypes {
     | '/profissionais'
     | '/promocoes'
     | '/b/$slug'
+    | '/owner/tenants'
     | '/promocoes/$id/cupons'
     | '/nps/respond/$surveyId'
     | '/b/$slug/confirmacao/$id'
+    | '/owner/tenants/$id/flags'
+    | '/owner/tenants/$id'
   id:
     | '__root__'
     | '/'
@@ -903,6 +980,10 @@ export interface FileRouteTypes {
     | '/_authenticated/relatorios'
     | '/_authenticated/usuarios'
     | '/b/$slug'
+    | '/owner/audit'
+    | '/owner/impersonation'
+    | '/owner/settings'
+    | '/owner/sistema'
     | '/portal/assinaturas'
     | '/portal/consentimentos'
     | '/portal/cotas'
@@ -958,9 +1039,12 @@ export interface FileRouteTypes {
     | '/_authenticated/profissionais/'
     | '/_authenticated/promocoes/'
     | '/b/$slug/'
+    | '/owner/tenants/'
     | '/_authenticated/promocoes/$id/cupons'
     | '/_public/nps/respond/$surveyId'
     | '/b/$slug/confirmacao/$id'
+    | '/owner/tenants/$id/flags'
+    | '/owner/tenants/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1087,6 +1171,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalAssinaturasRouteImport
       parentRoute: typeof PortalRoute
     }
+    '/owner/sistema': {
+      id: '/owner/sistema'
+      path: '/sistema'
+      fullPath: '/owner/sistema'
+      preLoaderRoute: typeof OwnerSistemaRouteImport
+      parentRoute: typeof OwnerRoute
+    }
+    '/owner/settings': {
+      id: '/owner/settings'
+      path: '/settings'
+      fullPath: '/owner/settings'
+      preLoaderRoute: typeof OwnerSettingsRouteImport
+      parentRoute: typeof OwnerRoute
+    }
+    '/owner/impersonation': {
+      id: '/owner/impersonation'
+      path: '/impersonation'
+      fullPath: '/owner/impersonation'
+      preLoaderRoute: typeof OwnerImpersonationRouteImport
+      parentRoute: typeof OwnerRoute
+    }
+    '/owner/audit': {
+      id: '/owner/audit'
+      path: '/audit'
+      fullPath: '/owner/audit'
+      preLoaderRoute: typeof OwnerAuditRouteImport
+      parentRoute: typeof OwnerRoute
+    }
     '/b/$slug': {
       id: '/b/$slug'
       path: '/b/$slug'
@@ -1170,6 +1282,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/audit'
       preLoaderRoute: typeof AuthenticatedAuditRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/owner/tenants/': {
+      id: '/owner/tenants/'
+      path: '/tenants'
+      fullPath: '/owner/tenants/'
+      preLoaderRoute: typeof OwnerTenantsIndexRouteImport
+      parentRoute: typeof OwnerRoute
     }
     '/b/$slug/': {
       id: '/b/$slug/'
@@ -1486,6 +1605,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgendaNovoRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/owner/tenants/$id/': {
+      id: '/owner/tenants/$id/'
+      path: '/tenants/$id'
+      fullPath: '/owner/tenants/$id/'
+      preLoaderRoute: typeof OwnerTenantsIdIndexRouteImport
+      parentRoute: typeof OwnerRoute
+    }
+    '/owner/tenants/$id/flags': {
+      id: '/owner/tenants/$id/flags'
+      path: '/tenants/$id/flags'
+      fullPath: '/owner/tenants/$id/flags'
+      preLoaderRoute: typeof OwnerTenantsIdFlagsRouteImport
+      parentRoute: typeof OwnerRoute
+    }
     '/b/$slug/confirmacao/$id': {
       id: '/b/$slug/confirmacao/$id'
       path: '/confirmacao/$id'
@@ -1647,11 +1780,25 @@ const PublicRouteWithChildren =
   PublicRoute._addFileChildren(PublicRouteChildren)
 
 interface OwnerRouteChildren {
+  OwnerAuditRoute: typeof OwnerAuditRoute
+  OwnerImpersonationRoute: typeof OwnerImpersonationRoute
+  OwnerSettingsRoute: typeof OwnerSettingsRoute
+  OwnerSistemaRoute: typeof OwnerSistemaRoute
   OwnerIndexRoute: typeof OwnerIndexRoute
+  OwnerTenantsIndexRoute: typeof OwnerTenantsIndexRoute
+  OwnerTenantsIdFlagsRoute: typeof OwnerTenantsIdFlagsRoute
+  OwnerTenantsIdIndexRoute: typeof OwnerTenantsIdIndexRoute
 }
 
 const OwnerRouteChildren: OwnerRouteChildren = {
+  OwnerAuditRoute: OwnerAuditRoute,
+  OwnerImpersonationRoute: OwnerImpersonationRoute,
+  OwnerSettingsRoute: OwnerSettingsRoute,
+  OwnerSistemaRoute: OwnerSistemaRoute,
   OwnerIndexRoute: OwnerIndexRoute,
+  OwnerTenantsIndexRoute: OwnerTenantsIndexRoute,
+  OwnerTenantsIdFlagsRoute: OwnerTenantsIdFlagsRoute,
+  OwnerTenantsIdIndexRoute: OwnerTenantsIdIndexRoute,
 }
 
 const OwnerRouteWithChildren = OwnerRoute._addFileChildren(OwnerRouteChildren)
