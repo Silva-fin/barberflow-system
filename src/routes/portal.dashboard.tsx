@@ -5,7 +5,7 @@ import { RequirePortalAuth } from "@/components/portal/guard";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { QuotaBar } from "@/components/portal/quota-bar";
 import { StatusBadge, appointmentTone } from "@/components/portal/status-badge";
 import {
   fetchActiveQuotas,
@@ -172,11 +172,7 @@ function QuotaMini({ quota }: { quota: Quota }) {
           até {formatDate(quota.validUntil)}
         </span>
       </div>
-      <Progress
-        value={pct}
-        indicatorClassName={quotaProgressColor(remaining, quota.total)}
-        className="mt-2 h-1.5"
-      />
+      <QuotaBar remaining={remaining} total={quota.total} className="mt-2" />
     </Card>
   );
 }
