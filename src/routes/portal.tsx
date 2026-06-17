@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { PortalSessionProvider } from "@/lib/portal/session";
 
 export const Route = createFileRoute("/portal")({
   component: PortalLayout,
@@ -6,8 +7,8 @@ export const Route = createFileRoute("/portal")({
 
 function PortalLayout() {
   return (
-    <div className="min-h-screen bg-background">
+    <PortalSessionProvider>
       <Outlet />
-    </div>
+    </PortalSessionProvider>
   );
 }
