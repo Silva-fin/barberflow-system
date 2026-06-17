@@ -17,8 +17,14 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as OwnerIndexRouteImport } from './routes/owner.index'
+import { Route as PortalPerfilRouteImport } from './routes/portal.perfil'
+import { Route as PortalPagamentosRouteImport } from './routes/portal.pagamentos'
 import { Route as PortalLoginRouteImport } from './routes/portal.login'
+import { Route as PortalHistoricoRouteImport } from './routes/portal.historico'
 import { Route as PortalDashboardRouteImport } from './routes/portal.dashboard'
+import { Route as PortalCotasRouteImport } from './routes/portal.cotas'
+import { Route as PortalConsentimentosRouteImport } from './routes/portal.consentimentos'
+import { Route as PortalAssinaturasRouteImport } from './routes/portal.assinaturas'
 import { Route as BSlugRouteImport } from './routes/b.$slug'
 import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated.usuarios'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated.relatorios'
@@ -118,14 +124,44 @@ const OwnerIndexRoute = OwnerIndexRouteImport.update({
   path: '/',
   getParentRoute: () => OwnerRoute,
 } as any)
+const PortalPerfilRoute = PortalPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalPagamentosRoute = PortalPagamentosRouteImport.update({
+  id: '/pagamentos',
+  path: '/pagamentos',
+  getParentRoute: () => PortalRoute,
+} as any)
 const PortalLoginRoute = PortalLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => PortalRoute,
 } as any)
+const PortalHistoricoRoute = PortalHistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
+  getParentRoute: () => PortalRoute,
+} as any)
 const PortalDashboardRoute = PortalDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalCotasRoute = PortalCotasRouteImport.update({
+  id: '/cotas',
+  path: '/cotas',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalConsentimentosRoute = PortalConsentimentosRouteImport.update({
+  id: '/consentimentos',
+  path: '/consentimentos',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalAssinaturasRoute = PortalAssinaturasRouteImport.update({
+  id: '/assinaturas',
+  path: '/assinaturas',
   getParentRoute: () => PortalRoute,
 } as any)
 const BSlugRoute = BSlugRouteImport.update({
@@ -486,8 +522,14 @@ export interface FileRoutesByFullPath {
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/b/$slug': typeof BSlugRouteWithChildren
+  '/portal/assinaturas': typeof PortalAssinaturasRoute
+  '/portal/consentimentos': typeof PortalConsentimentosRoute
+  '/portal/cotas': typeof PortalCotasRoute
   '/portal/dashboard': typeof PortalDashboardRoute
+  '/portal/historico': typeof PortalHistoricoRoute
   '/portal/login': typeof PortalLoginRoute
+  '/portal/pagamentos': typeof PortalPagamentosRoute
+  '/portal/perfil': typeof PortalPerfilRoute
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
@@ -553,8 +595,14 @@ export interface FileRoutesByTo {
   '/payables': typeof AuthenticatedPayablesRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
+  '/portal/assinaturas': typeof PortalAssinaturasRoute
+  '/portal/consentimentos': typeof PortalConsentimentosRoute
+  '/portal/cotas': typeof PortalCotasRoute
   '/portal/dashboard': typeof PortalDashboardRoute
+  '/portal/historico': typeof PortalHistoricoRoute
   '/portal/login': typeof PortalLoginRoute
+  '/portal/pagamentos': typeof PortalPagamentosRoute
+  '/portal/perfil': typeof PortalPerfilRoute
   '/owner': typeof OwnerIndexRoute
   '/portal': typeof PortalIndexRoute
   '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
@@ -626,8 +674,14 @@ export interface FileRoutesById {
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
   '/b/$slug': typeof BSlugRouteWithChildren
+  '/portal/assinaturas': typeof PortalAssinaturasRoute
+  '/portal/consentimentos': typeof PortalConsentimentosRoute
+  '/portal/cotas': typeof PortalCotasRoute
   '/portal/dashboard': typeof PortalDashboardRoute
+  '/portal/historico': typeof PortalHistoricoRoute
   '/portal/login': typeof PortalLoginRoute
+  '/portal/pagamentos': typeof PortalPagamentosRoute
+  '/portal/perfil': typeof PortalPerfilRoute
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/_authenticated/agenda/novo': typeof AuthenticatedAgendaNovoRoute
@@ -698,8 +752,14 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/usuarios'
     | '/b/$slug'
+    | '/portal/assinaturas'
+    | '/portal/consentimentos'
+    | '/portal/cotas'
     | '/portal/dashboard'
+    | '/portal/historico'
     | '/portal/login'
+    | '/portal/pagamentos'
+    | '/portal/perfil'
     | '/owner/'
     | '/portal/'
     | '/agenda/novo'
@@ -765,8 +825,14 @@ export interface FileRouteTypes {
     | '/payables'
     | '/relatorios'
     | '/usuarios'
+    | '/portal/assinaturas'
+    | '/portal/consentimentos'
+    | '/portal/cotas'
     | '/portal/dashboard'
+    | '/portal/historico'
     | '/portal/login'
+    | '/portal/pagamentos'
+    | '/portal/perfil'
     | '/owner'
     | '/portal'
     | '/agenda/novo'
@@ -837,8 +903,14 @@ export interface FileRouteTypes {
     | '/_authenticated/relatorios'
     | '/_authenticated/usuarios'
     | '/b/$slug'
+    | '/portal/assinaturas'
+    | '/portal/consentimentos'
+    | '/portal/cotas'
     | '/portal/dashboard'
+    | '/portal/historico'
     | '/portal/login'
+    | '/portal/pagamentos'
+    | '/portal/perfil'
     | '/owner/'
     | '/portal/'
     | '/_authenticated/agenda/novo'
@@ -959,6 +1031,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OwnerIndexRouteImport
       parentRoute: typeof OwnerRoute
     }
+    '/portal/perfil': {
+      id: '/portal/perfil'
+      path: '/perfil'
+      fullPath: '/portal/perfil'
+      preLoaderRoute: typeof PortalPerfilRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/pagamentos': {
+      id: '/portal/pagamentos'
+      path: '/pagamentos'
+      fullPath: '/portal/pagamentos'
+      preLoaderRoute: typeof PortalPagamentosRouteImport
+      parentRoute: typeof PortalRoute
+    }
     '/portal/login': {
       id: '/portal/login'
       path: '/login'
@@ -966,11 +1052,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalLoginRouteImport
       parentRoute: typeof PortalRoute
     }
+    '/portal/historico': {
+      id: '/portal/historico'
+      path: '/historico'
+      fullPath: '/portal/historico'
+      preLoaderRoute: typeof PortalHistoricoRouteImport
+      parentRoute: typeof PortalRoute
+    }
     '/portal/dashboard': {
       id: '/portal/dashboard'
       path: '/dashboard'
       fullPath: '/portal/dashboard'
       preLoaderRoute: typeof PortalDashboardRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/cotas': {
+      id: '/portal/cotas'
+      path: '/cotas'
+      fullPath: '/portal/cotas'
+      preLoaderRoute: typeof PortalCotasRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/consentimentos': {
+      id: '/portal/consentimentos'
+      path: '/consentimentos'
+      fullPath: '/portal/consentimentos'
+      preLoaderRoute: typeof PortalConsentimentosRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/assinaturas': {
+      id: '/portal/assinaturas'
+      path: '/assinaturas'
+      fullPath: '/portal/assinaturas'
+      preLoaderRoute: typeof PortalAssinaturasRouteImport
       parentRoute: typeof PortalRoute
     }
     '/b/$slug': {
@@ -1543,15 +1657,27 @@ const OwnerRouteChildren: OwnerRouteChildren = {
 const OwnerRouteWithChildren = OwnerRoute._addFileChildren(OwnerRouteChildren)
 
 interface PortalRouteChildren {
+  PortalAssinaturasRoute: typeof PortalAssinaturasRoute
+  PortalConsentimentosRoute: typeof PortalConsentimentosRoute
+  PortalCotasRoute: typeof PortalCotasRoute
   PortalDashboardRoute: typeof PortalDashboardRoute
+  PortalHistoricoRoute: typeof PortalHistoricoRoute
   PortalLoginRoute: typeof PortalLoginRoute
+  PortalPagamentosRoute: typeof PortalPagamentosRoute
+  PortalPerfilRoute: typeof PortalPerfilRoute
   PortalIndexRoute: typeof PortalIndexRoute
   PortalMagicTokenRoute: typeof PortalMagicTokenRoute
 }
 
 const PortalRouteChildren: PortalRouteChildren = {
+  PortalAssinaturasRoute: PortalAssinaturasRoute,
+  PortalConsentimentosRoute: PortalConsentimentosRoute,
+  PortalCotasRoute: PortalCotasRoute,
   PortalDashboardRoute: PortalDashboardRoute,
+  PortalHistoricoRoute: PortalHistoricoRoute,
   PortalLoginRoute: PortalLoginRoute,
+  PortalPagamentosRoute: PortalPagamentosRoute,
+  PortalPerfilRoute: PortalPerfilRoute,
   PortalIndexRoute: PortalIndexRoute,
   PortalMagicTokenRoute: PortalMagicTokenRoute,
 }

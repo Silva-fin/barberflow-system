@@ -85,7 +85,7 @@ function Landing() {
               <ExternalLink size={12} strokeWidth={1.5} className="text-muted-foreground" />
             </a>
             <a
-              href="/portal"
+              href="/portal/login"
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-3 text-sm hover:bg-muted"
@@ -104,6 +104,10 @@ function Landing() {
             <p>
               <span className="font-medium text-foreground">nps:</span>{" "}
               <code>survey-1</code> normal · <code>survey-x</code> indisponível
+            </p>
+            <p>
+              <span className="font-medium text-foreground">portal:</span>{" "}
+              senha <code>errada</code> = 401 · e-mail <code>*x@…</code> = magic inválido · token <code>…x</code> = expirado
             </p>
           </div>
         </div>
