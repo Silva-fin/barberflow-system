@@ -1,7 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Calendar, BarChart3, Wallet, Users, Store, CalendarCheck, Star, ExternalLink, UserCircle, ShieldCheck } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Wordmark } from "@/components/app/wordmark";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -16,6 +17,14 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  async function openPlatform() {
+    await login("platform@paladino.com", "demo", "PLATFORM_OWNER");
+    navigate({ to: "/owner/tenants" });
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border">
@@ -94,16 +103,14 @@ function Landing() {
               Painel do cliente
               <ExternalLink size={12} strokeWidth={1.5} className="text-muted-foreground" />
             </a>
-            <a
-              href="/owner"
-              target="_blank"
-              rel="noreferrer"
+            <button
+              type="button"
+              onClick={openPlatform}
               className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-3 text-sm hover:bg-muted"
             >
               <ShieldCheck size={16} strokeWidth={1.5} />
               Painel da plataforma
-              <ExternalLink size={12} strokeWidth={1.5} className="text-muted-foreground" />
-            </a>
+            </button>
           </div>
           <div className="mt-4 space-y-1 text-xs text-muted-foreground">
             <p>
@@ -121,7 +128,7 @@ function Landing() {
             </p>
             <p>
               <span className="font-medium text-foreground">platform:</span>{" "}
-              requer login com role <code>PLATFORM_OWNER</code> (seletor de role em /login)
+              o atalho entra automaticamente como <code>PLATFORM_OWNER</code>
             </p>
           </div>
         </div>

@@ -14,7 +14,7 @@ function OwnerLayout() {
 
   useEffect(() => {
     if (!hydrated) return;
-    if (!isAuthenticated) navigate({ to: "/" });
+    if (!isAuthenticated) navigate({ to: "/login" });
     else if (role !== "PLATFORM_OWNER") navigate({ to: "/dashboard" });
   }, [hydrated, role, isAuthenticated, navigate]);
 
