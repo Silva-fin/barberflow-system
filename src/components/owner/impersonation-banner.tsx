@@ -13,15 +13,16 @@ import { IMPERSONATION_MODE_LABELS } from "@/lib/owner/constants";
 import { revokeGrant } from "@/lib/owner/api";
 import { ShieldAlert } from "lucide-react";
 
-function formatRemaining(ms: number): string {
-  const total = Math.max(0, Math.floor(ms / 1000));
-  const m = Math.floor(total / 60).toString().padStart(2, "0");
-  const s = (total % 60).toString().padStart(2, "0");
-  return `${m}:${s}`;
+function formatExpiresAt(iso: string): string {
+  return new Intl.DateTimeFormat("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date(iso));
 }
 
 export function ImpersonationBanner() {
-  const { grant, remainingMs, endGrant } = useOwnerImpersonation();
+  const { grant, endGrant } = useOwnerImpersonation();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [busy, setBusy] = useState(false);
 
@@ -46,7 +47,7 @@ export function ImpersonationBanner() {
           Acessando como <span className="font-semibold">PLATFORM_OWNER</span> em{" "}
           <span className="font-semibold">{grant.tenantName}</span> ·{" "}
           {IMPERSONATION_MODE_LABELS[grant.mode]} · Expira em{" "}
-          <span className="font-mono tabular-nums">{formatRemaining(remainingMs)}</span>
+          <span className="font-mono tabular-nums">{formatExpiresAt(grant.expiresAt)}</span>
         </p>
         <Button
           size="sm"
