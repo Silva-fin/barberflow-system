@@ -1,89 +1,109 @@
-# Portal do Cliente — Plano
+## Distinção de roles (ponto-chave)
 
-Constrói uma área autenticada do cliente final, totalmente separada do painel do operador e das páginas públicas. Tudo mockado, determinístico, mobile-first, com paleta petrol + dourado já existente.
+O sistema tem DOIS universos de "owner" que NÃO se confundem:
+
+- **Tenant** (painel da barbearia): roles `OWNER`, `ADMIN`, `OPERATOR`, `PROFESSIONAL`. Vivem no shell do tenant (sidebar petrol + header), operam UMA barbearia.
+- **Plataforma** (este painel): role único `PLATFORM_OWNER`. Opera a plataforma Paladino acima de TODOS os tenants. Shell completamente separado — sidebar própria "Plataforma", sem branding do tenant, sem `useBranding`, sem `AppSidebar`/`AppHeader` do tenant.
+
+O role `PLATFORM_OWNER` já existe em `src/lib/auth.tsx`. O guard atual em `src/routes/owner.tsx` redireciona qualquer outro role. Esse isolamento é mantido e reforçado: nenhum componente do shell do tenant (ou do portal do cliente) é importado em `src/components/owner/`.
+
+## Escopo
+
+7 telas (O1, O2, P1, P2, Q1, Q2, R1) + sidebar própria + banner global de impersonation, todas com mocks determinísticos cobrindo carregando/vazio/erro/dados. Sem chamadas reais. Sem novas dependências.
 
 ## Arquitetura de rotas
 
-`src/routes/portal.tsx` deixa de ser um shell trivial. Vira o **shell autenticado do portal** com guard próprio (sessão de cliente em `localStorage`, chave `paladino_portal_session`, separada do auth do operador). Sem sessão → redireciona para `/portal/login`.
-
-Novas rotas:
-
-```
+```text
 src/routes/
-  portal-auth.tsx                 layout sem nav (login/magic)
-  portal-auth.login.tsx           /portal/login
-  portal-auth.magic.$token.tsx    /portal/magic/$token
-  portal.tsx                      shell autenticado (guard + nav)
-  portal.index.tsx                redireciona /portal → /portal/dashboard
-  portal.dashboard.tsx
-  portal.historico.tsx
-  portal.cotas.tsx
-  portal.assinaturas.tsx
-  portal.pagamentos.tsx
-  portal.consentimentos.tsx
-  portal.perfil.tsx
+  owner.tsx                          (guard PLATFORM_OWNER + OwnerShell + Provider)
+  owner.index.tsx                    (redirect → /owner/tenants)
+  owner.tenants.index.tsx            O1 — Tenants (lista)
+  owner.tenants.$id.index.tsx        O2 — Tenant detalhe + saúde
+  owner.tenants.$id.flags.tsx        P1 — Feature flags
+  owner.impersonation.tsx            P2 — Impersonation
+  owner.sistema.tsx                  Q1 — Reenvio + dead-letter (mock)
+  owner.settings.tsx                 Q2 — Configurações globais
+  owner.audit.tsx                    R1 — Auditoria cross-tenant
 ```
 
-Usa rota irmã `portal-auth.*` (não filha de `portal`) para que o guard do `portal.tsx` não bloqueie o login. `/portal/login` e `/portal/magic/...` continuam acessíveis via redireciono no `portal-auth` que mapeia URLs `/portal/login` e `/portal/magic/$token` — alternativa mais simples adotada: usar `portal.login.tsx` e `portal.magic.$token.tsx` como filhos, mas o guard fica em `portal.index` + páginas internas (não no layout). Vou adotar a forma **explícita**: o guard vive dentro de cada página autenticada via um helper `<RequirePortalAuth>` que envolve o conteúdo — assim login/magic ficam livres mesmo sob `/portal/*`.
+## Camada de dados (mock determinístico, isolada)
 
-Arquivos finais:
-```
-portal.tsx                       (shell mínimo, só <Outlet/>)
-portal.login.tsx
-portal.magic.$token.tsx
-portal.index.tsx                 (redirect → /portal/dashboard)
-portal.dashboard.tsx
-portal.historico.tsx
-portal.cotas.tsx
-portal.assinaturas.tsx
-portal.pagamentos.tsx
-portal.consentimentos.tsx
-portal.perfil.tsx
-```
+`src/lib/owner/` — pasta nova, NÃO toca `lib/portal/`, `lib/mock/` ou `lib/api/`:
 
-## Camada de dados (mock)
+- `types.ts` — espelha contratos `/platform/*` (TenantStatus, TenantSummary, TenantHealth, ImpersonationGrant, AuditItem, FlagsDict, SettingsDict, DeadLetterItem).
+- `constants.ts` — `TENANT_STATUS_LABELS`, `IMPERSONATION_MODE_LABELS`, `FINANCIAL_MODULES = ['PaymentsEngine','CommissionEngine','FinancialCore']`.
+- `mock.ts` — dataset determinístico in-memory:
+  - ~10 tenants cobrindo os 4 status (TRIAL/ACTIVE/SUSPENDED/CHURNED).
+  - Health por tenant (um saudável, um em risco, um sem integrações).
+  - Flags por tenant misturando boolean, número, objeto.
+  - 2 grants ativos + grants revogados.
+  - ~30 entradas de audit com `before/after_snapshot`; alguns `action=impersonated_request`.
+  - Settings globais (3 chaves de tipos mistos).
+  - ~5 itens de dead-letter (cobrindo módulos financeiros e não-financeiros).
+- `api.ts` — funções async `setTimeout(300ms)`. Estado in-memory (module-level) para que suspender/reativar, criar/encerrar grant, toggle de flag, edit de setting reflitam inline entre telas. Cada função aceita opção `{ simulate?: 'empty'|'error' }` (controlada por toggle interno na tela; não exposto na UI).
+- `session.tsx` — `OwnerImpersonationProvider` (React context): grant ativo (`null | { grantId, tenantName, mode, expiresAt }`), `startGrant`, `endGrant`. Persiste em `localStorage` (`paladino_owner_impersonation`). Tick de 1s para countdown; auto-encerra quando expira.
 
-`src/lib/portal/` (novo):
-- `session.tsx` — `PortalSessionProvider`, `usePortalSession()`, `loginPassword`, `requestMagicLink`, `consumeMagicToken`, `logout`. Storage `paladino_portal_session`. Regras determinísticas:
-  - magic link com e-mail terminando em `x@...` → estado "enviado" mas o link gerado é inválido (token termina em `x`).
-  - magic token terminando em `x` → erro na landing.
-  - senha igual a `errada` → 401 inline.
-  - qualquer outro → sucesso, cria sessão `{ id, name, email, phone }`.
-- `mock.ts` — agendamentos (próximos + histórico longo para filtros/paginação), cotas (uma ativa cheia, uma quase no fim ~20%, uma expirada, uma zerada), assinaturas (ativa, pausada, uma que não permite pausa), consentimentos agrupados, pagamentos (2 cartões), perfil. Inclui múltiplos estabelecimentos.
-- `api.ts` — funções assíncronas com `setTimeout` simulando latência; uma função opcional `simulate401()` para o guard demonstrar expiração (botão "Simular sessão expirada" no menu do usuário, opcional/discreto).
+## Shell (`src/components/owner/`)
 
-## Shell autenticado
+- `owner-shell.tsx` — layout 2 colunas (sidebar fixa ~240px + main). Em mobile vira `Sheet`. Renderiza `<ImpersonationBanner />` no topo do main, sempre que houver grant ativo (em TODAS as 7 telas).
+- `owner-sidebar.tsx` — nav própria: Tenants · Impersonation · Sistema · Configurações · Auditoria. Topo com label "Plataforma" em `font-display`. Footer com wordmark Paladino + Sair (`auth.logout` + redirect `/login`). Item ativo via `useRouterState`.
+- `impersonation-banner.tsx` — faixa fixa `bg-destructive text-destructive-foreground`. Texto: `Acessando como PLATFORM_OWNER em [tenant] · {modo} · Expira em mm:ss · [Encerrar]`. Countdown live. Botão "Encerrar" → Dialog de confirmação → `endGrant()`. **Nunca dismissável (sem botão X)**.
+- `tenant-status-badge.tsx` — mapeia status → Badge variant via tokens semânticos (secondary/default/destructive/muted). Nenhuma cor hardcoded.
+- `json-editor-dialog.tsx` — Dialog reutilizável: Textarea JSON + parse + erro inline. Usado em flags (não-boolean) e settings.
+- `reason-dialog.tsx` — Dialog reutilizável: Textarea de motivo obrigatório, com `minLength` opcional (20 para ELEVATED). Usado em Suspender, Reenviar comunicação, Replay.
 
-`PortalShell` componente em `src/components/portal/portal-shell.tsx`:
-- Sidebar fixa em `md+` (largura ~260px, marca, navegação, rodapé com nome + Sair).
-- Bottom nav fixa no mobile com 5 itens principais (Início, Histórico, Cotas, Assinaturas, Perfil) + "Mais" abrindo sheet com Consentimentos e Pagamentos.
-- Header mobile com título da seção atual.
-- Guard: se `!session`, `<Navigate to="/portal/login" />`.
+Reaproveita `PageHeader`, `EmptyState`, `ErrorState`, `Skeleton` já existentes em `src/components/app/`. Reaproveita primitivos shadcn: Card, Table, Badge, Dialog, Select, Switch, Tabs, Tooltip, Input, Label, Textarea, Button. **Não usa** AlertDialog, RadioGroup, Progress.
 
-## Telas (resumo)
+## Telas (resumo funcional)
 
-- **Login** — card central, tabs "Magic link" / "E-mail e senha". Estados explícitos. Mensagem genérica no sucesso do magic link.
-- **Magic landing** — consome token automático, verifica → sucesso (redirect dashboard) ou erro com "Pedir novo link".
-- **Dashboard** — duas seções (Próximos agendamentos, Cotas ativas) com skeleton/vazio/erro independentes. Banner opcional de completar perfil.
-- **Histórico** — tabela em md+, cards no mobile. Filtros por status e estabelecimento (Select). Paginação 10/página.
-- **Cotas** — cards expansíveis com barra colorida (>50% primary, 25–50% neutro, <25% âmbar, 0/expirada vermelha). Histórico de consumo carregado on-expand (skeleton dentro).
-- **Assinaturas** — cards com selo, ações Pausar/Cancelar via `Dialog` de confirmação; estado muda inline; assinatura "fidelidade-12m" tem Pausar desabilitado com tooltip.
-- **Pagamentos** — aviso "em breve", 1–2 cartões mock, "Remover" inline, "Adicionar" abre Dialog com radios de autorização ("Apenas esta vez" / "Permitir sempre" / "Cancelar").
-- **Consentimentos** — Switches agrupados; toggle otimista com revert em "falha" simulada (e-mail marketing falha 1x e reverte). Desligar "Tratamento de dados" mostra card de aviso inline.
-- **Perfil** — form (nome, e-mail, telefone com máscara BR). Estado salvar inline sob o botão.
+**O1 — Tenants list**
+PageHeader + Select status + Input busca. Table densa: Nome · Slug · Status · Criado em · Ativo. Linha → O2. Ações: Suspender (`reason-dialog`) e Reativar (Dialog confirmação). Mutação inline. 4 estados.
 
-## Componentes UI
+**O2 — Tenant detalhe**
+PageHeader com nome + Badge + ações Suspender/Reativar. Seção Dados (card). Seção Saúde (grid KPI cards) carrega independente — erro só na saúde mostra ErrorState no card sem derrubar dados. Integrações exibidas SÓ como Badge "Conectado/Não conectado" (sem segredos). Link "Feature flags →" para P1.
 
-Reaproveita shadcn já no projeto: `Card`, `Button`, `Input`, `Label`, `Tabs`, `Dialog`, `Select`, `Switch`, `Progress`, `Badge`, `Skeleton`, `Tooltip`, `Separator`, `RadioGroup`. Selos de status via `Badge` com variantes por tokens (sucesso/atenção/erro/neutro) já definidos em `styles.css`.
+**P1 — Feature flags**
+Itera dicionário livre: boolean → Switch (toggle otimista; erro reverte + mensagem inline). Não-boolean → linha com valor (code/Badge) + Editar → `json-editor-dialog`. Empty "Nenhuma flag configurada"; error 404 "Config não encontrada".
 
-## Atalhos na landing
+**P2 — Impersonation**
+Card "Criar acesso": Select tenant · Textarea motivo · Select modo (READ_ONLY default / ELEVATED) · Input number duração (1–480, default 30). Validação inline: ELEVATED exige motivo ≥ 20 chars. Submit → `startGrant()` → banner aparece em todas as telas.
+Table "Grants ativos": tenant · modo · motivo · expira em · criado em · Encerrar (Dialog).
 
-Atualiza `src/routes/index.tsx` (atalho "Painel do cliente") para apontar para `/portal/login` (em vez de `/portal`) e adiciona uma dica curta com os mocks: senha `errada` = 401, e-mail `*x@...` = magic inválido, token `...x` = expirado.
+**Q1 — Sistema**
+Card "Reenviar comunicação" (real-shape): Input log_id (UUID) + Textarea motivo + botão. Resultado inline (`new_log_id` + status).
+Card "Dead-letter / workers" marcado visualmente como "Em breve · mock". Table: módulo · evento · erro · Replay. Replay DESABILITADO com Tooltip para `PaymentsEngine|CommissionEngine|FinancialCore`. Demais → `reason-dialog`.
 
-## Detalhes técnicos
+**Q2 — Configurações globais**
+Table chave/valor genérica. Editar → `json-editor-dialog`. Mutação inline. 4 estados.
 
-- Sessão separada: chave `paladino_portal_session`, contexto `PortalSessionProvider` montado **apenas** sob rotas `/portal/*` (via `portal.tsx`).
-- Não toca em `src/lib/auth.tsx` (operador).
-- Toda cor por token (`bg-primary`, `text-foreground`, `bg-destructive`, `bg-amber-*` evitado → usa token `--warning` se existir, senão cria em `styles.css`).
-- Datas com `Intl.DateTimeFormat('pt-BR')`; valores com `format.ts` existente (ou `Intl.NumberFormat`).
-- Sem chamadas reais, sem novas dependências.
+**R1 — Auditoria**
+PageHeader + Tabs "Tudo" / "Impersonation" (preset `action=impersonated_request`). Filtros: company_id · actor_id · action · período. Table: company_id (sempre visível) · ator · action · resource_type · resource_id · motivo · ocorrido em. Linha → Dialog expandindo `before/after_snapshot` (JSON). Paginação com envelope `{total, page, limit, items}` + Select limit (25/50/100). Sem editar/criar/excluir/export. Sem coluna IP.
+
+## Regras de ouro — mapeamento
+
+1. PLATFORM_OWNER único → guard em `owner.tsx` (já existente, mantido). Shell sem qualquer import de `components/app/app-sidebar` ou `components/portal/*`.
+2. Banner persistente → `OwnerImpersonationProvider` + `ImpersonationBanner` no shell, sem botão X.
+3. Credenciais mascaradas → O2 só renderiza booleano.
+4. Replay com motivo + financeiros desabilitados → `reason-dialog` + `FINANCIAL_MODULES`.
+5. Audit append-only → R1 sem mutações nem export.
+6. Mocks determinísticos cobrindo 4 estados.
+7. Confirmações via `Dialog` (não AlertDialog). Sem RadioGroup/Progress.
+
+## Tokens e visual
+
+Apenas tokens semânticos (`bg-card`, `border-border`, `text-muted-foreground`, `bg-primary`, `bg-destructive`, `text-destructive-foreground`). `font-display` (Cormorant) em PageHeaders, label "Plataforma" e wordmark. Ícones Lucide 16px stroke 1.5. Tabelas densas.
+
+## Arquivos a criar
+
+- `src/lib/owner/{types.ts, constants.ts, mock.ts, api.ts, session.tsx}`
+- `src/components/owner/{owner-shell.tsx, owner-sidebar.tsx, impersonation-banner.tsx, tenant-status-badge.tsx, json-editor-dialog.tsx, reason-dialog.tsx}`
+- 7 arquivos de rota listados acima
+
+## Arquivos a editar
+
+- `src/routes/owner.tsx` — envolver com `OwnerImpersonationProvider` + `OwnerShell` (guard PLATFORM_OWNER mantido).
+- `src/routes/owner.index.tsx` — redirect para `/owner/tenants`.
+
+## Fora de escopo
+
+Não tocar: `routes/portal.*`, `routes/_authenticated.*`, `routes/_public.*`, `routes/b.$slug.*`, `routes/index.tsx`, `routes/login.tsx`. Não importar nada do shell do tenant nem do portal. Sem novas dependências. Sem chamadas reais.
