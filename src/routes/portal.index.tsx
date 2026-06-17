@@ -1,14 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { usePortalSession } from "@/lib/portal/session";
 
 export const Route = createFileRoute("/portal/")({
-  component: PortalHome,
+  component: PortalIndex,
 });
 
-function PortalHome() {
+function PortalIndex() {
+  const { hydrated, session } = usePortalSession();
+  if (!hydrated) return null;
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
-      <h1 className="font-display text-5xl tracking-wide">Portal do Cliente</h1>
-      <p className="mt-3 text-sm text-muted-foreground">Shell reservado — Fase 1.</p>
-    </div>
+    <Navigate to={session ? "/portal/dashboard" : "/portal/login"} />
   );
 }
