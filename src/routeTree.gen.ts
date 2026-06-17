@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PortalRouteImport } from './routes/portal'
 import { Route as OwnerRouteImport } from './routes/owner'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
@@ -42,8 +43,8 @@ import { Route as AuthenticatedComissoesIndexRouteImport } from './routes/_authe
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated.clientes.index'
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
 import { Route as AuthenticatedAgendaIndexRouteImport } from './routes/_authenticated.agenda.index'
-import { Route as NpsRespondSurveyIdRouteImport } from './routes/nps.respond.$surveyId'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
+import { Route as PublicManageTokenRouteImport } from './routes/_public.manage.$token'
 import { Route as AuthenticatedProfissionaisIdRouteImport } from './routes/_authenticated.profissionais.$id'
 import { Route as AuthenticatedPagamentosNovoRouteImport } from './routes/_authenticated.pagamentos.novo'
 import { Route as AuthenticatedPagamentosIdRouteImport } from './routes/_authenticated.pagamentos.$id'
@@ -73,6 +74,7 @@ import { Route as AuthenticatedCatalogoCategoriasRouteImport } from './routes/_a
 import { Route as AuthenticatedAssinaturasPlanosRouteImport } from './routes/_authenticated.assinaturas.planos'
 import { Route as AuthenticatedAgendaNovoRouteImport } from './routes/_authenticated.agenda.novo'
 import { Route as BSlugConfirmacaoIdRouteImport } from './routes/b.$slug.confirmacao.$id'
+import { Route as PublicNpsRespondSurveyIdRouteImport } from './routes/_public.nps.respond.$surveyId'
 import { Route as AuthenticatedPromocoesIdCuponsRouteImport } from './routes/_authenticated.promocoes.$id.cupons'
 
 const PortalRoute = PortalRouteImport.update({
@@ -88,6 +90,10 @@ const OwnerRoute = OwnerRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicRoute = PublicRouteImport.update({
+  id: '/_public',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
@@ -252,15 +258,15 @@ const AuthenticatedAgendaIndexRoute =
     path: '/agenda/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const NpsRespondSurveyIdRoute = NpsRespondSurveyIdRouteImport.update({
-  id: '/nps/respond/$surveyId',
-  path: '/nps/respond/$surveyId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BSlugAgendarRoute = BSlugAgendarRouteImport.update({
   id: '/agendar',
   path: '/agendar',
   getParentRoute: () => BSlugRoute,
+} as any)
+const PublicManageTokenRoute = PublicManageTokenRouteImport.update({
+  id: '/manage/$token',
+  path: '/manage/$token',
+  getParentRoute: () => PublicRoute,
 } as any)
 const AuthenticatedProfissionaisIdRoute =
   AuthenticatedProfissionaisIdRouteImport.update({
@@ -432,6 +438,12 @@ const BSlugConfirmacaoIdRoute = BSlugConfirmacaoIdRouteImport.update({
   path: '/confirmacao/$id',
   getParentRoute: () => BSlugRoute,
 } as any)
+const PublicNpsRespondSurveyIdRoute =
+  PublicNpsRespondSurveyIdRouteImport.update({
+    id: '/nps/respond/$surveyId',
+    path: '/nps/respond/$surveyId',
+    getParentRoute: () => PublicRoute,
+  } as any)
 const AuthenticatedPromocoesIdCuponsRoute =
   AuthenticatedPromocoesIdCuponsRouteImport.update({
     id: '/promocoes/$id/cupons',
@@ -486,8 +498,8 @@ export interface FileRoutesByFullPath {
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
+  '/manage/$token': typeof PublicManageTokenRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
-  '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
@@ -503,6 +515,7 @@ export interface FileRoutesByFullPath {
   '/promocoes/': typeof AuthenticatedPromocoesIndexRoute
   '/b/$slug/': typeof BSlugIndexRoute
   '/promocoes/$id/cupons': typeof AuthenticatedPromocoesIdCuponsRoute
+  '/nps/respond/$surveyId': typeof PublicNpsRespondSurveyIdRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
 export interface FileRoutesByTo {
@@ -549,8 +562,8 @@ export interface FileRoutesByTo {
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
+  '/manage/$token': typeof PublicManageTokenRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
-  '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/agenda': typeof AuthenticatedAgendaIndexRoute
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
@@ -566,12 +579,14 @@ export interface FileRoutesByTo {
   '/promocoes': typeof AuthenticatedPromocoesIndexRoute
   '/b/$slug': typeof BSlugIndexRoute
   '/promocoes/$id/cupons': typeof AuthenticatedPromocoesIdCuponsRoute
+  '/nps/respond/$surveyId': typeof PublicNpsRespondSurveyIdRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/_public': typeof PublicRouteWithChildren
   '/login': typeof LoginRoute
   '/owner': typeof OwnerRouteWithChildren
   '/portal': typeof PortalRouteWithChildren
@@ -617,8 +632,8 @@ export interface FileRoutesById {
   '/_authenticated/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/_authenticated/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/_authenticated/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
+  '/_public/manage/$token': typeof PublicManageTokenRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
-  '/nps/respond/$surveyId': typeof NpsRespondSurveyIdRoute
   '/_authenticated/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
@@ -634,6 +649,7 @@ export interface FileRoutesById {
   '/_authenticated/promocoes/': typeof AuthenticatedPromocoesIndexRoute
   '/b/$slug/': typeof BSlugIndexRoute
   '/_authenticated/promocoes/$id/cupons': typeof AuthenticatedPromocoesIdCuponsRoute
+  '/_public/nps/respond/$surveyId': typeof PublicNpsRespondSurveyIdRoute
   '/b/$slug/confirmacao/$id': typeof BSlugConfirmacaoIdRoute
 }
 export interface FileRouteTypes {
@@ -685,8 +701,8 @@ export interface FileRouteTypes {
     | '/pagamentos/$id'
     | '/pagamentos/novo'
     | '/profissionais/$id'
+    | '/manage/$token'
     | '/b/$slug/agendar'
-    | '/nps/respond/$surveyId'
     | '/agenda/'
     | '/assinaturas/'
     | '/clientes/'
@@ -702,6 +718,7 @@ export interface FileRouteTypes {
     | '/promocoes/'
     | '/b/$slug/'
     | '/promocoes/$id/cupons'
+    | '/nps/respond/$surveyId'
     | '/b/$slug/confirmacao/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -748,8 +765,8 @@ export interface FileRouteTypes {
     | '/pagamentos/$id'
     | '/pagamentos/novo'
     | '/profissionais/$id'
+    | '/manage/$token'
     | '/b/$slug/agendar'
-    | '/nps/respond/$surveyId'
     | '/agenda'
     | '/assinaturas'
     | '/clientes'
@@ -765,11 +782,13 @@ export interface FileRouteTypes {
     | '/promocoes'
     | '/b/$slug'
     | '/promocoes/$id/cupons'
+    | '/nps/respond/$surveyId'
     | '/b/$slug/confirmacao/$id'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/_public'
     | '/login'
     | '/owner'
     | '/portal'
@@ -815,8 +834,8 @@ export interface FileRouteTypes {
     | '/_authenticated/pagamentos/$id'
     | '/_authenticated/pagamentos/novo'
     | '/_authenticated/profissionais/$id'
+    | '/_public/manage/$token'
     | '/b/$slug/agendar'
-    | '/nps/respond/$surveyId'
     | '/_authenticated/agenda/'
     | '/_authenticated/assinaturas/'
     | '/_authenticated/clientes/'
@@ -832,17 +851,18 @@ export interface FileRouteTypes {
     | '/_authenticated/promocoes/'
     | '/b/$slug/'
     | '/_authenticated/promocoes/$id/cupons'
+    | '/_public/nps/respond/$surveyId'
     | '/b/$slug/confirmacao/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  PublicRoute: typeof PublicRouteWithChildren
   LoginRoute: typeof LoginRoute
   OwnerRoute: typeof OwnerRouteWithChildren
   PortalRoute: typeof PortalRouteWithChildren
   BSlugRoute: typeof BSlugRouteWithChildren
-  NpsRespondSurveyIdRoute: typeof NpsRespondSurveyIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -866,6 +886,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof PublicRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -1078,19 +1105,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgendaIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/nps/respond/$surveyId': {
-      id: '/nps/respond/$surveyId'
-      path: '/nps/respond/$surveyId'
-      fullPath: '/nps/respond/$surveyId'
-      preLoaderRoute: typeof NpsRespondSurveyIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/b/$slug/agendar': {
       id: '/b/$slug/agendar'
       path: '/agendar'
       fullPath: '/b/$slug/agendar'
       preLoaderRoute: typeof BSlugAgendarRouteImport
       parentRoute: typeof BSlugRoute
+    }
+    '/_public/manage/$token': {
+      id: '/_public/manage/$token'
+      path: '/manage/$token'
+      fullPath: '/manage/$token'
+      preLoaderRoute: typeof PublicManageTokenRouteImport
+      parentRoute: typeof PublicRoute
     }
     '/_authenticated/profissionais/$id': {
       id: '/_authenticated/profissionais/$id'
@@ -1295,6 +1322,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BSlugConfirmacaoIdRouteImport
       parentRoute: typeof BSlugRoute
     }
+    '/_public/nps/respond/$surveyId': {
+      id: '/_public/nps/respond/$surveyId'
+      path: '/nps/respond/$surveyId'
+      fullPath: '/nps/respond/$surveyId'
+      preLoaderRoute: typeof PublicNpsRespondSurveyIdRouteImport
+      parentRoute: typeof PublicRoute
+    }
     '/_authenticated/promocoes/$id/cupons': {
       id: '/_authenticated/promocoes/$id/cupons'
       path: '/promocoes/$id/cupons'
@@ -1428,6 +1462,19 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface PublicRouteChildren {
+  PublicManageTokenRoute: typeof PublicManageTokenRoute
+  PublicNpsRespondSurveyIdRoute: typeof PublicNpsRespondSurveyIdRoute
+}
+
+const PublicRouteChildren: PublicRouteChildren = {
+  PublicManageTokenRoute: PublicManageTokenRoute,
+  PublicNpsRespondSurveyIdRoute: PublicNpsRespondSurveyIdRoute,
+}
+
+const PublicRouteWithChildren =
+  PublicRoute._addFileChildren(PublicRouteChildren)
+
 interface OwnerRouteChildren {
   OwnerIndexRoute: typeof OwnerIndexRoute
 }
@@ -1466,22 +1513,12 @@ const BSlugRouteWithChildren = BSlugRoute._addFileChildren(BSlugRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  PublicRoute: PublicRouteWithChildren,
   LoginRoute: LoginRoute,
   OwnerRoute: OwnerRouteWithChildren,
   PortalRoute: PortalRouteWithChildren,
   BSlugRoute: BSlugRouteWithChildren,
-  NpsRespondSurveyIdRoute: NpsRespondSurveyIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
