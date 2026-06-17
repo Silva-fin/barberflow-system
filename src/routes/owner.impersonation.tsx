@@ -36,6 +36,7 @@ function fmt(iso: string) {
 function ImpersonationPage() {
   const { startGrant } = useOwnerImpersonation();
   const [tenants, setTenants] = useState<TenantSummary[]>([]);
+  const [tenantsErr, setTenantsErr] = useState<string | null>(null);
   const [companyId, setCompanyId] = useState<string>("");
   const [reason, setReason] = useState("");
   const [mode, setMode] = useState<ImpersonationMode>("READ_ONLY");
@@ -56,10 +57,17 @@ function ImpersonationPage() {
     finally { setLoading(false); }
   }
 
+  async function loadTenants() {
+    setTenantsErr(null);
+    try {
+      setTenants((await listTenants()).items);
+    } catch (e) {
+      setTenantsErr(e instanceof Error ? e.message : "Falha ao carregar tenants");
+    }
+  }
+
   useEffect(() => {
-    (async () => {
-      try { setTenants((await listTenants()).items); } catch { /* ignore */ }
-    })();
+    loadTenants();
     loadGrants();
   }, []);
 
@@ -108,6 +116,14 @@ function ImpersonationPage() {
                 ))}
               </SelectContent>
             </Select>
+            {tenantsErr && (
+              <p className="text-xs text-destructive">
+                Falha ao carregar tenants.{" "}
+                <button type="button" className="underline" onClick={loadTenants}>
+                  Tentar novamente
+                </button>
+              </p>
+            )}
           </div>
           <div className="space-y-1.5">
             <Label>Modo</Label>
