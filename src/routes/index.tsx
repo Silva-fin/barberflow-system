@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calendar, BarChart3, Wallet, Users, Store, CalendarCheck, Star, ExternalLink } from "lucide-react";
+import { Calendar, BarChart3, Wallet, Users, Store, CalendarCheck, Star, ExternalLink, UserCircle } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Wordmark } from "@/components/app/wordmark";
 
@@ -82,6 +82,16 @@ function Landing() {
             >
               <Star size={16} strokeWidth={1.5} />
               Pesquisa NPS
+              <ExternalLink size={12} strokeWidth={1.5} className="text-muted-foreground" />
+            </a>
+            <a
+              href="/portal"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-3 text-sm hover:bg-muted"
+            >
+              <UserCircle size={16} strokeWidth={1.5} />
+              Painel do cliente
               <ExternalLink size={12} strokeWidth={1.5} className="text-muted-foreground" />
             </a>
           </div>
