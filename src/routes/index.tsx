@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calendar, BarChart3, Wallet, Users, Store, CalendarCheck, Star, ExternalLink, UserCircle } from "lucide-react";
+import { Calendar, BarChart3, Wallet, Users, Store, CalendarCheck, Star, ExternalLink, UserCircle, ShieldCheck } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Wordmark } from "@/components/app/wordmark";
 
@@ -94,6 +94,16 @@ function Landing() {
               Painel do cliente
               <ExternalLink size={12} strokeWidth={1.5} className="text-muted-foreground" />
             </a>
+            <a
+              href="/owner"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-3 text-sm hover:bg-muted"
+            >
+              <ShieldCheck size={16} strokeWidth={1.5} />
+              Painel da plataforma
+              <ExternalLink size={12} strokeWidth={1.5} className="text-muted-foreground" />
+            </a>
           </div>
           <div className="mt-4 space-y-1 text-xs text-muted-foreground">
             <p>
@@ -108,6 +118,10 @@ function Landing() {
             <p>
               <span className="font-medium text-foreground">portal:</span>{" "}
               senha <code>errada</code> = 401 · e-mail <code>*x@…</code> = magic inválido · token <code>…x</code> = expirado
+            </p>
+            <p>
+              <span className="font-medium text-foreground">platform:</span>{" "}
+              requer login com role <code>PLATFORM_OWNER</code> (seletor de role em /login)
             </p>
           </div>
         </div>
