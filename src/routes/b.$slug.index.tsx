@@ -292,3 +292,80 @@ function InfoCard({ title, children }: { title: string; children: React.ReactNod
     </section>
   );
 }
+
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  image: string | null;
+  available: boolean;
+};
+
+const MOCK_PRODUCTS: Product[] = [
+  { id: "p1", name: "Pomada Modeladora Matte", price: 4990, description: "Fixação forte, efeito seco", image: null, available: true },
+  { id: "p2", name: "Óleo para Barba 30ml", price: 3590, description: "Hidrata e amacia os fios", image: null, available: true },
+  { id: "p3", name: "Shampoo Anticaspa 250ml", price: 2990, description: "Uso diário", image: null, available: false },
+  { id: "p4", name: "Kit Navalha + Lâminas", price: 7900, description: "Acabamento profissional", image: null, available: true },
+  { id: "p5", name: "Talco Pós-Barba", price: 1990, description: "Sensação refrescante", image: null, available: true },
+  { id: "p6", name: "Cera Capilar 100g", price: 4290, description: "Brilho leve, reaplicável", image: null, available: false },
+];
+
+function ProductsTab({ whatsappPhone }: { whatsappPhone: string }) {
+  const products = MOCK_PRODUCTS;
+
+  if (products.length === 0) {
+    return (
+      <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+        Nenhum produto disponível
+      </div>
+    );
+  }
+
+  const waNumber = whatsappPhone.replace(/\D/g, "");
+
+  return (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {products.map((p) => {
+        const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(`Olá! Tenho interesse no produto: ${p.name}`)}`;
+        return (
+          <article
+            key={p.id}
+            className={`rounded-lg border border-border bg-card p-4 flex flex-col gap-3 transition-colors hover:border-primary/60 ${
+              !p.available ? "opacity-60" : ""
+            }`}
+          >
+            <div className="relative aspect-square w-full overflow-hidden rounded-md bg-muted/40 flex items-center justify-center">
+              {p.image ? (
+                <img src={p.image} alt={p.name} className="h-full w-full object-cover" loading="lazy" />
+              ) : (
+                <Package className="h-10 w-10 text-muted-foreground" strokeWidth={1.5} />
+              )}
+              {!p.available && (
+                <Badge variant="secondary" className="absolute top-2 right-2">Esgotado</Badge>
+              )}
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold leading-tight">{p.name}</h3>
+              <p className="mt-1 text-xs text-muted-foreground line-clamp-1">{p.description}</p>
+            </div>
+            <div className="flex items-center justify-between gap-2 pt-1 border-t border-border">
+              <span className="font-display text-lg text-primary">{formatBRL(p.price)}</span>
+              {p.available && waNumber && (
+                <a
+                  href={waUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
+                  WhatsApp
+                </a>
+              )}
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  );
+}
