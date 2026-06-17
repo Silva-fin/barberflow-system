@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   Clock, MapPin, Phone, Scissors, Star, CreditCard,
-  Instagram, Facebook, MessageCircle, ChevronRight,
+  Instagram, Facebook, MessageCircle, ChevronRight, Package,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { api } from "@/lib/api";
@@ -139,6 +139,7 @@ function ShopProfilePage() {
             <TabsList>
               <TabsTrigger value="services">Serviços</TabsTrigger>
               <TabsTrigger value="barbers">Profissionais</TabsTrigger>
+              <TabsTrigger value="products">Produtos</TabsTrigger>
               <TabsTrigger value="reviews">Avaliações</TabsTrigger>
             </TabsList>
 
@@ -186,6 +187,10 @@ function ShopProfilePage() {
                   </article>
                 ))}
               </div>
+            </TabsContent>
+
+            <TabsContent value="products" className="mt-6">
+              <ProductsTab whatsappPhone={shop.phone} />
             </TabsContent>
 
             <TabsContent value="reviews" className="mt-6">

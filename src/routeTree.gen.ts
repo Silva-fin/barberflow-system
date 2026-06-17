@@ -44,6 +44,7 @@ import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
 import { Route as AuthenticatedAgendaIndexRouteImport } from './routes/_authenticated.agenda.index'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
+import { Route as PublicManageTokenRouteImport } from './routes/_public.manage.$token'
 import { Route as AuthenticatedProfissionaisIdRouteImport } from './routes/_authenticated.profissionais.$id'
 import { Route as AuthenticatedPagamentosNovoRouteImport } from './routes/_authenticated.pagamentos.novo'
 import { Route as AuthenticatedPagamentosIdRouteImport } from './routes/_authenticated.pagamentos.$id'
@@ -261,6 +262,11 @@ const BSlugAgendarRoute = BSlugAgendarRouteImport.update({
   id: '/agendar',
   path: '/agendar',
   getParentRoute: () => BSlugRoute,
+} as any)
+const PublicManageTokenRoute = PublicManageTokenRouteImport.update({
+  id: '/manage/$token',
+  path: '/manage/$token',
+  getParentRoute: () => PublicRoute,
 } as any)
 const AuthenticatedProfissionaisIdRoute =
   AuthenticatedProfissionaisIdRouteImport.update({
@@ -492,6 +498,7 @@ export interface FileRoutesByFullPath {
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
+  '/manage/$token': typeof PublicManageTokenRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
@@ -555,6 +562,7 @@ export interface FileRoutesByTo {
   '/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
+  '/manage/$token': typeof PublicManageTokenRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/agenda': typeof AuthenticatedAgendaIndexRoute
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
@@ -624,6 +632,7 @@ export interface FileRoutesById {
   '/_authenticated/pagamentos/$id': typeof AuthenticatedPagamentosIdRoute
   '/_authenticated/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/_authenticated/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
+  '/_public/manage/$token': typeof PublicManageTokenRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/_authenticated/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
@@ -692,6 +701,7 @@ export interface FileRouteTypes {
     | '/pagamentos/$id'
     | '/pagamentos/novo'
     | '/profissionais/$id'
+    | '/manage/$token'
     | '/b/$slug/agendar'
     | '/agenda/'
     | '/assinaturas/'
@@ -755,6 +765,7 @@ export interface FileRouteTypes {
     | '/pagamentos/$id'
     | '/pagamentos/novo'
     | '/profissionais/$id'
+    | '/manage/$token'
     | '/b/$slug/agendar'
     | '/agenda'
     | '/assinaturas'
@@ -823,6 +834,7 @@ export interface FileRouteTypes {
     | '/_authenticated/pagamentos/$id'
     | '/_authenticated/pagamentos/novo'
     | '/_authenticated/profissionais/$id'
+    | '/_public/manage/$token'
     | '/b/$slug/agendar'
     | '/_authenticated/agenda/'
     | '/_authenticated/assinaturas/'
@@ -1099,6 +1111,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/b/$slug/agendar'
       preLoaderRoute: typeof BSlugAgendarRouteImport
       parentRoute: typeof BSlugRoute
+    }
+    '/_public/manage/$token': {
+      id: '/_public/manage/$token'
+      path: '/manage/$token'
+      fullPath: '/manage/$token'
+      preLoaderRoute: typeof PublicManageTokenRouteImport
+      parentRoute: typeof PublicRoute
     }
     '/_authenticated/profissionais/$id': {
       id: '/_authenticated/profissionais/$id'
@@ -1444,10 +1463,12 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 )
 
 interface PublicRouteChildren {
+  PublicManageTokenRoute: typeof PublicManageTokenRoute
   PublicNpsRespondSurveyIdRoute: typeof PublicNpsRespondSurveyIdRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
+  PublicManageTokenRoute: PublicManageTokenRoute,
   PublicNpsRespondSurveyIdRoute: PublicNpsRespondSurveyIdRoute,
 }
 
