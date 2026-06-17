@@ -18,6 +18,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as OwnerIndexRouteImport } from './routes/owner.index'
 import { Route as PortalLoginRouteImport } from './routes/portal.login'
+import { Route as PortalDashboardRouteImport } from './routes/portal.dashboard'
 import { Route as BSlugRouteImport } from './routes/b.$slug'
 import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated.usuarios'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated.relatorios'
@@ -120,6 +121,11 @@ const OwnerIndexRoute = OwnerIndexRouteImport.update({
 const PortalLoginRoute = PortalLoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalDashboardRoute = PortalDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => PortalRoute,
 } as any)
 const BSlugRoute = BSlugRouteImport.update({
@@ -480,6 +486,7 @@ export interface FileRoutesByFullPath {
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/b/$slug': typeof BSlugRouteWithChildren
+  '/portal/dashboard': typeof PortalDashboardRoute
   '/portal/login': typeof PortalLoginRoute
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -546,6 +553,7 @@ export interface FileRoutesByTo {
   '/payables': typeof AuthenticatedPayablesRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
+  '/portal/dashboard': typeof PortalDashboardRoute
   '/portal/login': typeof PortalLoginRoute
   '/owner': typeof OwnerIndexRoute
   '/portal': typeof PortalIndexRoute
@@ -618,6 +626,7 @@ export interface FileRoutesById {
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
   '/b/$slug': typeof BSlugRouteWithChildren
+  '/portal/dashboard': typeof PortalDashboardRoute
   '/portal/login': typeof PortalLoginRoute
   '/owner/': typeof OwnerIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -689,6 +698,7 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/usuarios'
     | '/b/$slug'
+    | '/portal/dashboard'
     | '/portal/login'
     | '/owner/'
     | '/portal/'
@@ -755,6 +765,7 @@ export interface FileRouteTypes {
     | '/payables'
     | '/relatorios'
     | '/usuarios'
+    | '/portal/dashboard'
     | '/portal/login'
     | '/owner'
     | '/portal'
@@ -826,6 +837,7 @@ export interface FileRouteTypes {
     | '/_authenticated/relatorios'
     | '/_authenticated/usuarios'
     | '/b/$slug'
+    | '/portal/dashboard'
     | '/portal/login'
     | '/owner/'
     | '/portal/'
@@ -952,6 +964,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/portal/login'
       preLoaderRoute: typeof PortalLoginRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/dashboard': {
+      id: '/portal/dashboard'
+      path: '/dashboard'
+      fullPath: '/portal/dashboard'
+      preLoaderRoute: typeof PortalDashboardRouteImport
       parentRoute: typeof PortalRoute
     }
     '/b/$slug': {
@@ -1524,12 +1543,14 @@ const OwnerRouteChildren: OwnerRouteChildren = {
 const OwnerRouteWithChildren = OwnerRoute._addFileChildren(OwnerRouteChildren)
 
 interface PortalRouteChildren {
+  PortalDashboardRoute: typeof PortalDashboardRoute
   PortalLoginRoute: typeof PortalLoginRoute
   PortalIndexRoute: typeof PortalIndexRoute
   PortalMagicTokenRoute: typeof PortalMagicTokenRoute
 }
 
 const PortalRouteChildren: PortalRouteChildren = {
+  PortalDashboardRoute: PortalDashboardRoute,
   PortalLoginRoute: PortalLoginRoute,
   PortalIndexRoute: PortalIndexRoute,
   PortalMagicTokenRoute: PortalMagicTokenRoute,
