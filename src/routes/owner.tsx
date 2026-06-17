@@ -1,6 +1,8 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
+import { OwnerImpersonationProvider } from "@/lib/owner/session";
+import { OwnerShell } from "@/components/owner/owner-shell";
 
 export const Route = createFileRoute("/owner")({
   component: OwnerLayout,
@@ -19,8 +21,10 @@ function OwnerLayout() {
   if (!hydrated || !isAuthenticated || role !== "PLATFORM_OWNER") return null;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Outlet />
-    </div>
+    <OwnerImpersonationProvider>
+      <OwnerShell>
+        <Outlet />
+      </OwnerShell>
+    </OwnerImpersonationProvider>
   );
 }
