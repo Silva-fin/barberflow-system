@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Wordmark } from "@/components/app/wordmark";
 
-export const Route = createFileRoute("/nps/respond/$surveyId")({
+export const Route = createFileRoute("/_public/nps/respond/$surveyId")({
   head: () => ({ meta: [{ title: "Avalie sua experiência" }] }),
   component: NpsPublicRespondPage,
 });
