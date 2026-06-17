@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calendar, BarChart3, Wallet, Users } from "lucide-react";
+import { Calendar, BarChart3, Wallet, Users, Store, CalendarCheck, Star, ExternalLink } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Wordmark } from "@/components/app/wordmark";
 
@@ -54,6 +54,47 @@ function Landing() {
             >
               Acessar painel
             </Link>
+            <a
+              href="/b/barbearia-paladino"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-3 text-sm hover:bg-muted"
+            >
+              <Store size={16} strokeWidth={1.5} />
+              Vitrine
+              <ExternalLink size={12} strokeWidth={1.5} className="text-muted-foreground" />
+            </a>
+            <a
+              href="/manage/abc123"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-3 text-sm hover:bg-muted"
+            >
+              <CalendarCheck size={16} strokeWidth={1.5} />
+              Gerenciar agendamento
+              <ExternalLink size={12} strokeWidth={1.5} className="text-muted-foreground" />
+            </a>
+            <a
+              href="/nps/respond/survey-1"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-3 text-sm hover:bg-muted"
+            >
+              <Star size={16} strokeWidth={1.5} />
+              Pesquisa NPS
+              <ExternalLink size={12} strokeWidth={1.5} className="text-muted-foreground" />
+            </a>
+          </div>
+          <div className="mt-4 space-y-1 text-xs text-muted-foreground">
+            <p>
+              <span className="font-medium text-foreground">manage:</span>{" "}
+              <code>abc123</code> ativo · <code>abc123x</code> inválido ·{" "}
+              <code>abc123d</code> depósito retido · <code>abc123r</code> erro remarcação
+            </p>
+            <p>
+              <span className="font-medium text-foreground">nps:</span>{" "}
+              <code>survey-1</code> normal · <code>survey-x</code> indisponível
+            </p>
           </div>
         </div>
 
