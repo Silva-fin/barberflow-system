@@ -30,6 +30,7 @@ function SistemaPage() {
   const [result, setResult] = useState<RedispatchResult | null>(null);
   const [redispatchErr, setRedispatchErr] = useState<string | null>(null);
   const [redispatching, setRedispatching] = useState(false);
+  const canRedispatch = logId.trim().length > 0 && reason.trim().length > 0;
 
   const [items, setItems] = useState<DeadLetterItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -93,7 +94,9 @@ function SistemaPage() {
           </div>
         )}
         <div className="mt-4 flex justify-end">
-          <Button onClick={handleRedispatch} disabled={redispatching}>{redispatching ? "Enviando…" : "Reenviar"}</Button>
+          <Button onClick={handleRedispatch} disabled={redispatching || !canRedispatch}>
+            {redispatching ? "Enviando…" : "Reenviar"}
+          </Button>
         </div>
       </Card>
 
