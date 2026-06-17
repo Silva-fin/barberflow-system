@@ -142,23 +142,8 @@ function QuotasSection() {
   );
 }
 
-export function quotaPercent(used: number, total: number) {
-  if (total === 0) return 0;
-  return Math.max(0, Math.min(100, ((total - used) / total) * 100));
-}
-
-export function quotaProgressColor(remaining: number, total: number) {
-  if (total === 0) return "bg-muted-foreground";
-  const pct = (remaining / total) * 100;
-  if (remaining === 0) return "bg-muted-foreground/60";
-  if (pct < 25) return "bg-warning";
-  if (pct < 50) return "bg-primary/60";
-  return "bg-primary";
-}
-
 function QuotaMini({ quota }: { quota: Quota }) {
   const remaining = quota.total - quota.used;
-  const pct = quotaPercent(quota.used, quota.total);
   const expired = new Date(quota.validUntil) < new Date();
   return (
     <Card className="p-4">
