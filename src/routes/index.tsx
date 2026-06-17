@@ -55,7 +55,7 @@ function Landing() {
               Acessar painel
             </Link>
             <a
-              href="/b/barbearia-paladino"
+              href="/b/barbearia-do-zeca"
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-3 text-sm hover:bg-muted"
