@@ -1,45 +1,58 @@
-# Plano — Fase 1: Catálogo público completo em `/b/$slug` (revisado)
+# Plano — Fase 2: Carrinho + Checkout Unificado (revisado)
 
-**Escopo**: Estender a vitrine pública com **5 tabs de catálogo + Avaliações (placeholder)**, somente leitura, sem carrinho/checkout/agendamento novo. Toda a leitura de dados públicos (profile + catálogo) passa a vir da nova camada `bookingApi`, deixando a Fase 2 (conectar Railway) como troca cirúrgica do corpo das funções.
+**Escopo**: Compra unificada de qualquer item do catálogo, com carrinho persistido, cupom, dados do cliente e confirmação com manage URL + CTA portal. Inclui **cross-sell contextual na Tela 4** do fluxo de agendamento e **atalho "só agendar"** para preservar o caminho rápido.
 
-Fluxo de agendamento (`/b/$slug/agendar` → `/b/$slug/confirmacao/$id`) fica intocado nesta fase.
+## Ajustes vs revisão
 
-## Mudanças aplicadas vs revisão
+1. **Cross-sell contextual (Tela 4)** entra antes da confirmação do agendamento, sugerindo apenas **pacotes** que contêm o serviço escolhido e **assinaturas** relacionadas (match por `items[]`). Sem produtos, sem promoções.
+2. **Atalho "só agendar"** preservado: se o cliente não adicionar nada na Tela 4, segue pelo fluxo curto atual (`createAppointment` direto). Se adicionar pacote/assinatura, o serviço entra no carrinho como `kind:"service"` (com snapshot de barbeiro/slot) junto com o item extra, e o fluxo migra para `/b/$slug/checkout`.
+3. Cross-sell **pós-checkout** continua na confirmação como upsell secundário (1 pacote + 1 assinatura).
 
-- **Avaliações** entra como 6ª tab, sempre visível, com `EmptyState` "Em breve" (sem dados, sem chamada de API). Mantém consistência com o `/b/$slug` atual e evita regressão visual.
-- **Profile unificado**: hero + sidebar passam a consumir `bookingApi.getProfile(slug)` — fim do paralelismo entre `api.getBarbershopBySlug` e `bookingApi.*`. Na Fase 2, todo o `/b/$slug` aponta para o Railway trocando só o corpo do `bookingApi`.
+## Camada de dados
 
-## O que muda
+- `src/lib/booking/types.ts` — `CartItem` (discriminated union por `kind: "service" | "package" | "subscription" | "product"`); `kind:"service"` carrega `barber_id?`, `slot_iso`, `duration_min`, `service_id`. `Cart` (`items`, `subtotal_cents`, `discount_cents`, `total_cents`, `coupon?`). `CouponValidationResult`. `CrossSellSuggestion` (`kind:"package"|"subscription"`, item completo). `CheckoutPayload`, `CheckoutResult` (`order_id`, `manage_url`, `portal_signup_hint`).
+- `src/lib/booking/api.ts` — `validateCoupon(slug, code, cart)`: `PALADINO10` = 10% off geral, `BEMVINDO` = R$15 off em itens de pacote/assinatura, outros = `{valid:false, reason}`. `listContextualCrossSell(slug, serviceId)`: filtra pacotes/assinaturas cujo `items[]` contém o `serviceId` (match por nome no mock). `listPostCheckoutCrossSell(slug, cart)`: 1 pacote + 1 assinatura mais vendidos. `createOrder(slug, payload)`: gera `order_id` determinístico + `manage_url = /manage/{token}`.
+- `src/lib/booking/cart.tsx` — `CartProvider` com `localStorage` (`paladino_cart_v1_{slug}`). API: `addItem`, `updateQty`, `removeItem`, `applyCoupon`, `clearCoupon`, `clear`, `hasServiceBooking()`. Cálculos puros derivados.
 
-### Novos arquivos
-- `src/lib/booking/types.ts` — `PublicProfile` (nome, slug, descrição, logo_url, cover_url, endereço, telefone/WhatsApp, horários, redes), `PublicService`, `Package` (`items[]`, `total_cotas`, `validity_days`, `price`), `SubscriptionPlan` (`items[]`, `total_cotas`, `cycle`, `price`), `PublicProduct` (`price`, `stock`, `image_url`), `Promotion` (`auto` vs `coupon`, `valid_until`).
-- `src/lib/booking/mock.ts` — dataset determinístico do slug `barbearia-do-zeca` (mantém slug atual pra não quebrar links existentes): profile completo + 6 serviços + 3 pacotes + 2 assinaturas + 6 produtos (2 esgotados) + 3 promoções (2 auto, 1 cupom).
-- `src/lib/booking/api.ts` — `bookingApi.getProfile/listServices/listPackages/listSubscriptions/listProducts/listPromotions(slug)`. Implementação atual = mock + `setTimeout(250)`. Header comenta `BASE_URL = https://labs-production-86f9.up.railway.app` e mapeia 1:1 cada função ao endpoint real, para a Fase 2 trocar apenas o corpo.
-- `src/components/booking/catalog-tabs.tsx` — wrapper das 6 tabs (Serviços | Pacotes | Assinaturas | Produtos | Promoções | Avaliações), estado via search param `?tab=`.
-- `src/components/booking/service-card.tsx` — nome, duração, preço, botão "Agendar" navega para `/b/$slug/agendar` (comportamento atual).
-- `src/components/booking/package-card.tsx` — chips dos `items[]` (cor por tipo), total de cotas, preço, validade, botão "Adicionar ao carrinho" desabilitado com tooltip "Em breve".
-- `src/components/booking/subscription-card.tsx` — igual ao pacote, preço `R$ X / ciclo`, "Assinar" desabilitado.
-- `src/components/booking/product-card.tsx` — imagem/placeholder, preço, badge "Esgotado", botão "Adicionar" desabilitado.
-- `src/components/booking/promotion-card.tsx` — informativo: nome, descrição, validade, badge "Automático" ou "Use o cupom: CÓDIGO".
-- `src/components/booking/item-chip.tsx` — chip `Nx Nome` com variantes serviço/produto.
+## Componentes
 
-### Arquivos editados
-- `src/routes/b.$slug.index.tsx`:
-  - Substituir leitura atual (`api.getBarbershopBySlug` + `api.listServices` + `api.listBarbers` + `ProductsTab` inline) por consumo único do `bookingApi`.
-  - Hero/sidebar leem `bookingApi.getProfile(slug)`; catálogo lê os 5 `list*`.
-  - Renderizar `<CatalogTabs>` com as 6 tabs. Avaliações = `EmptyState` "Em breve".
-  - Estados: skeleton por tab, empty ("Nenhum pacote disponível"), erro inline com retry.
-  - Remover `ProductsTab` antiga (mocks inline + WhatsApp) — substituída por `ProductCard` padronizado.
-- Nenhuma alteração em `/b/$slug/agendar`, `/b/$slug/confirmacao/$id`, `src/lib/api/index.ts`, ou qualquer outro shell. O `api.getBarbershopBySlug` continua disponível para quem o usa fora desta tela.
+- `src/components/booking/cart-drawer.tsx` — `Sheet` lateral; lista de itens com chip de tipo, stepper de qty (exceto `service`, que é 1), remover; campo cupom inline; totais; CTA "Ir para checkout".
+- `src/components/booking/cart-button.tsx` — botão flutuante no shell de `/b/$slug` com badge de qty (visível em todas as tabs).
+- `src/components/booking/cross-sell-card.tsx` — card compacto (pacote/assinatura) com chips de `items[]`, preço, CTA "Adicionar".
+- `src/components/booking/contextual-crosssell.tsx` — wrapper da Tela 4 com header "Aproveite e leve mais por menos" + grid de `CrossSellCard` + 2 CTAs: **"Confirmar só o agendamento"** e **"Continuar para checkout"** (este aparece se algo foi adicionado).
+- Cards do catálogo (`PackageCard`, `SubscriptionCard`, `ProductCard`): botões habilitados, chamam `cart.addItem` com toast e abrem o drawer.
+
+## Rotas
+
+- `src/routes/b.$slug.tsx` — envolve Outlet com `CartProvider` e renderiza `CartButton`.
+- `src/routes/b.$slug.agendar.tsx` — **insere Tela 4 (cross-sell contextual)** entre o atual step 3 (horário) e o step 4 (dados do cliente). Renumera para 5 steps:
+  1. Serviço · 2. Barbeiro · 3. Horário · **4. Cross-sell contextual** · 5. Dados/Confirmação.
+  Step 4 chama `listContextualCrossSell(slug, serviceId)`; se vazio, pula direto para step 5. Botões:
+  - "Confirmar só o agendamento" → fluxo atual (`createAppointment` no step 5, sem carrinho).
+  - "Continuar para checkout" (só aparece se o usuário adicionou algo) → faz `cart.addItem` do serviço (snapshot de slot/barbeiro) + redireciona para `/b/$slug/checkout`.
+- `src/routes/b.$slug.checkout.tsx` *(nova)* — 2 sub-steps:
+  1. **Revisão**: itens (com slot/barbeiro nos itens `kind:"service"`), qty, cupom, totais.
+  2. **Dados do cliente**: nome, telefone (máscara BR), email, observação. Zod inline.
+  CTA "Confirmar pedido" → `createOrder`, `cart.clear`, navega para `/b/$slug/confirmacao/$id`. Carrinho vazio → empty state com CTA "Voltar ao catálogo".
+- `src/routes/b.$slug.confirmacao.$id.tsx` — refator:
+  - Resumo do pedido derivado de mock determinístico por `id` (ou de `useNavigate({ state })`).
+  - Bloco "Gerencie seu pedido" com `manage_url` (rota pública existente `/manage/$token`).
+  - Bloco "Crie sua conta no Painel do Cliente" → `/portal/login`.
+  - `CrossSellList` pós-checkout (`listPostCheckoutCrossSell`).
+  - Mantém compat com fluxo legado de agendamento simples (sem cart).
+
+## Fora desta fase
+
+Conexão real com Railway, pagamento real, avaliações reais, persistência de pedido após reload (confirmação usa mock determinístico).
 
 ## Design
-- Tokens existentes (petrol/dourado, `font-display` Cormorant em preços e títulos de card, `rounded-2xl` em cards grandes / `rounded-lg` em chips).
-- Mobile-first: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3` para pacotes/assinaturas/produtos/promoções; serviços em lista larga (mantém padrão atual).
-- Botões "Em breve" usam `disabled` + tooltip — sinalizam Fase 2 sem quebrar nada.
 
-## Fora desta fase (Fase 2)
-Carrinho drawer, `/b/$slug/checkout`, step de dados do cliente, `POST /coupon/validate`, confirmação unificada com cross-sell + manage URL + CTA portal, troca dos mocks por `fetch` real apontando para o Railway, dados reais de avaliações.
+Tokens existentes; Sheet/Drawer do shadcn; mobile-first; checkout em coluna única no mobile, 2 colunas (itens / resumo sticky) em ≥`lg`.
 
 ## Validação
+
 - `bun run build` limpo.
-- `/b/barbearia-do-zeca`: 6 tabs renderizam, "Agendar" segue funcionando, botões "Em breve" desabilitados, tab Avaliações mostra placeholder.
+- **Atalho**: `/b/barbearia-do-zeca/agendar` → serviço → barbeiro → horário → Tela 4 → "Confirmar só o agendamento" → confirmação direta (fluxo legado).
+- **Unificado**: mesmo fluxo, mas adiciona pacote na Tela 4 → checkout com 2 itens (serviço + pacote) → cupom `PALADINO10` → confirmação com manage link + CTA portal + cross-sell.
+- **Catálogo direto**: `/b/barbearia-do-zeca` → adiciona produto via card → drawer → checkout sem agendamento.
+- Cupom inválido mostra erro inline; carrinho vazio bloqueia checkout.
