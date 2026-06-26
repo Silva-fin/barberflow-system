@@ -57,6 +57,7 @@ import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
 import { Route as AuthenticatedAgendaIndexRouteImport } from './routes/_authenticated.agenda.index'
 import { Route as PortalMagicTokenRouteImport } from './routes/portal.magic.$token'
+import { Route as BSlugCheckoutRouteImport } from './routes/b.$slug.checkout'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
 import { Route as PublicManageTokenRouteImport } from './routes/_public.manage.$token'
 import { Route as AuthenticatedProfissionaisIdRouteImport } from './routes/_authenticated.profissionais.$id'
@@ -344,6 +345,11 @@ const PortalMagicTokenRoute = PortalMagicTokenRouteImport.update({
   path: '/magic/$token',
   getParentRoute: () => PortalRoute,
 } as any)
+const BSlugCheckoutRoute = BSlugCheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => BSlugRoute,
+} as any)
 const BSlugAgendarRoute = BSlugAgendarRouteImport.update({
   id: '/agendar',
   path: '/agendar',
@@ -608,6 +614,7 @@ export interface FileRoutesByFullPath {
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/manage/$token': typeof PublicManageTokenRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
+  '/b/$slug/checkout': typeof BSlugCheckoutRoute
   '/portal/magic/$token': typeof PortalMagicTokenRoute
   '/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
@@ -688,6 +695,7 @@ export interface FileRoutesByTo {
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/manage/$token': typeof PublicManageTokenRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
+  '/b/$slug/checkout': typeof BSlugCheckoutRoute
   '/portal/magic/$token': typeof PortalMagicTokenRoute
   '/agenda': typeof AuthenticatedAgendaIndexRoute
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
@@ -774,6 +782,7 @@ export interface FileRoutesById {
   '/_authenticated/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/_public/manage/$token': typeof PublicManageTokenRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
+  '/b/$slug/checkout': typeof BSlugCheckoutRoute
   '/portal/magic/$token': typeof PortalMagicTokenRoute
   '/_authenticated/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
@@ -859,6 +868,7 @@ export interface FileRouteTypes {
     | '/profissionais/$id'
     | '/manage/$token'
     | '/b/$slug/agendar'
+    | '/b/$slug/checkout'
     | '/portal/magic/$token'
     | '/agenda/'
     | '/assinaturas/'
@@ -939,6 +949,7 @@ export interface FileRouteTypes {
     | '/profissionais/$id'
     | '/manage/$token'
     | '/b/$slug/agendar'
+    | '/b/$slug/checkout'
     | '/portal/magic/$token'
     | '/agenda'
     | '/assinaturas'
@@ -1024,6 +1035,7 @@ export interface FileRouteTypes {
     | '/_authenticated/profissionais/$id'
     | '/_public/manage/$token'
     | '/b/$slug/agendar'
+    | '/b/$slug/checkout'
     | '/portal/magic/$token'
     | '/_authenticated/agenda/'
     | '/_authenticated/assinaturas/'
@@ -1394,6 +1406,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/portal/magic/$token'
       preLoaderRoute: typeof PortalMagicTokenRouteImport
       parentRoute: typeof PortalRoute
+    }
+    '/b/$slug/checkout': {
+      id: '/b/$slug/checkout'
+      path: '/checkout'
+      fullPath: '/b/$slug/checkout'
+      preLoaderRoute: typeof BSlugCheckoutRouteImport
+      parentRoute: typeof BSlugRoute
     }
     '/b/$slug/agendar': {
       id: '/b/$slug/agendar'
@@ -1834,12 +1853,14 @@ const PortalRouteWithChildren =
 
 interface BSlugRouteChildren {
   BSlugAgendarRoute: typeof BSlugAgendarRoute
+  BSlugCheckoutRoute: typeof BSlugCheckoutRoute
   BSlugIndexRoute: typeof BSlugIndexRoute
   BSlugConfirmacaoIdRoute: typeof BSlugConfirmacaoIdRoute
 }
 
 const BSlugRouteChildren: BSlugRouteChildren = {
   BSlugAgendarRoute: BSlugAgendarRoute,
+  BSlugCheckoutRoute: BSlugCheckoutRoute,
   BSlugIndexRoute: BSlugIndexRoute,
   BSlugConfirmacaoIdRoute: BSlugConfirmacaoIdRoute,
 }
@@ -1858,13 +1879,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

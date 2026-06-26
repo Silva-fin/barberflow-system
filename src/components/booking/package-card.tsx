@@ -1,11 +1,28 @@
 import { CalendarClock, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatBRL } from "@/lib/format";
 import type { Package } from "@/lib/booking/types";
 import { ItemChip } from "./item-chip";
+import { useCart } from "@/lib/booking/cart";
+import { toast } from "sonner";
 
 export function PackageCard({ pkg }: { pkg: Package }) {
+  const { addItem, openDrawer } = useCart();
+  function handleAdd() {
+    addItem({
+      kind: "package",
+      package_id: pkg.id,
+      name: pkg.name,
+      description: pkg.description,
+      qty: 1,
+      unit_price_cents: pkg.price_cents,
+      items: pkg.items,
+      total_cotas: pkg.total_cotas,
+      validity_days: pkg.validity_days,
+    });
+    toast.success(`${pkg.name} adicionado ao carrinho`);
+    openDrawer();
+  }
   return (
     <article className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-4 transition-colors hover:border-primary/60">
       <header>
@@ -32,14 +49,7 @@ export function PackageCard({ pkg }: { pkg: Package }) {
 
       <div className="mt-auto flex items-center justify-between gap-3 pt-3 border-t border-border">
         <span className="font-display text-2xl text-primary">{formatBRL(pkg.price_cents)}</span>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span tabIndex={0}>
-              <Button size="sm" disabled>Adicionar ao carrinho</Button>
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>Em breve</TooltipContent>
-        </Tooltip>
+        <Button size="sm" onClick={handleAdd}>Adicionar ao carrinho</Button>
       </div>
     </article>
   );

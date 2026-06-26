@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { addDays, format, isSameDay, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ArrowLeft, ArrowRight, Check, Clock, Scissors, User } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Clock, Scissors, Sparkles, User } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,9 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
+import { bookingApi } from "@/lib/booking/api";
+import { useCart } from "@/lib/booking/cart";
+import { CrossSellCard } from "@/components/booking/cross-sell-card";
 import paladinoWordmark from "@/assets/paladino-wordmark-tight.png";
 
 type BookingSearch = { service?: string; barber?: string };
@@ -26,12 +29,13 @@ export const Route = createFileRoute("/b/$slug/agendar")({
   component: BookingPage,
 });
 
-type Step = 1 | 2 | 3 | 4;
+type Step = 1 | 2 | 3 | 4 | 5;
 
 function BookingPage() {
   const { slug } = Route.useParams();
   const search = Route.useSearch();
   const navigate = useNavigate();
+  const { addItem, cart } = useCart();
 
   const { data: shop, isLoading } = useQuery({ queryKey: ["shop", slug], queryFn: () => api.getBarbershopBySlug(slug) });
   const { data: services = [] } = useQuery({
@@ -73,6 +77,14 @@ function BookingPage() {
     enabled: !!shop && !!serviceId && !!barberId,
   });
 
+  // Cross-sell suggestions for the chosen service.
+  const crossSellQ = useQuery({
+    queryKey: ["booking", slug, "crosssell", serviceId],
+    queryFn: () => bookingApi.listContextualCrossSell(slug, serviceId!),
+    enabled: !!serviceId && step === 4,
+  });
+  const [addedSuggestions, setAddedSuggestions] = useState<Set<string>>(new Set());
+
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center bg-background text-muted-foreground">Carregando...</div>;
   }
@@ -88,6 +100,65 @@ function BookingPage() {
   }
 
   const days = Array.from({ length: 14 }, (_, i) => addDays(startOfDay(new Date()), i));
+
+  function buildServiceCartItem() {
+    if (!service || !slot || !shop) return null;
+    const finalBarberId = barberId === "any" ? eligibleBarbers[0]?.id : barberId ?? undefined;
+    const finalBarberName = finalBarberId
+      ? barbers.find((b) => b.id === finalBarberId)?.name
+      : "Qualquer disponível";
+    return {
+      kind: "service" as const,
+      service_id: service.id,
+      name: service.name,
+      description: service.description,
+      qty: 1,
+      unit_price_cents: service.priceCents,
+      duration_min: service.durationMin,
+      slot_iso: slot,
+      barber_id: finalBarberId ?? undefined,
+      barber_name: finalBarberName,
+    };
+  }
+
+  function handleAddSuggestion(idx: number) {
+    const list = crossSellQ.data ?? [];
+    const s = list[idx];
+    if (!s) return;
+    if (s.kind === "package") {
+      addItem({
+        kind: "package",
+        package_id: s.item.id,
+        name: s.item.name,
+        description: s.item.description,
+        qty: 1,
+        unit_price_cents: s.item.price_cents,
+        items: s.item.items,
+        total_cotas: s.item.total_cotas,
+        validity_days: s.item.validity_days,
+      });
+    } else {
+      addItem({
+        kind: "subscription",
+        plan_id: s.item.id,
+        name: s.item.name,
+        description: s.item.description,
+        qty: 1,
+        unit_price_cents: s.item.price_cents,
+        items: s.item.items,
+        total_cotas: s.item.total_cotas,
+        cycle: s.item.cycle,
+      });
+    }
+    setAddedSuggestions((prev) => new Set(prev).add(s.item.id));
+    toast.success(`${s.item.name} adicionado ao carrinho`);
+  }
+
+  function continueToCheckout() {
+    const svc = buildServiceCartItem();
+    if (svc) addItem(svc);
+    navigate({ to: "/b/$slug/checkout", params: { slug } });
+  }
 
   async function confirmBooking() {
     if (!service || !slot || !shop) return;
@@ -261,6 +332,57 @@ function BookingPage() {
 
           {step === 4 && service && slot && (
             <div className="space-y-6">
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <Sparkles className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="font-display text-2xl tracking-wide">Aproveite e leve mais por menos</h2>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Pacotes e assinaturas que incluem <span className="text-foreground">{service.name}</span>. Adicione agora e economize.
+                  </p>
+                </div>
+              </div>
+
+              {crossSellQ.isLoading ? (
+                <p className="text-sm text-muted-foreground">Carregando sugestões...</p>
+              ) : (crossSellQ.data ?? []).length === 0 ? (
+                <div className="rounded-lg border border-dashed border-border bg-muted/30 p-6 text-center text-sm text-muted-foreground">
+                  Nenhuma oferta extra para este serviço hoje.
+                </div>
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {(crossSellQ.data ?? []).map((s, i) => (
+                    <CrossSellCard
+                      key={s.item.id}
+                      suggestion={s}
+                      added={addedSuggestions.has(s.item.id)}
+                      onAdd={() => handleAddSuggestion(i)}
+                    />
+                  ))}
+                </div>
+              )}
+
+              <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 pt-2">
+                <Button variant="ghost" onClick={() => setStep(3)}>
+                  <ArrowLeft className="mr-1 h-4 w-4" /> Voltar
+                </Button>
+                <div className="flex flex-col-reverse sm:flex-row gap-2">
+                  <Button variant="outline" onClick={() => setStep(5)}>
+                    Confirmar só o agendamento
+                  </Button>
+                  {cart.items.length > 0 && (
+                    <Button onClick={continueToCheckout}>
+                      Continuar para checkout <ArrowRight className="ml-1 h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {step === 5 && service && slot && (
+            <div className="space-y-6">
               <h2 className="font-display text-2xl tracking-wide">Seus dados</h2>
 
               <Card className="p-4">
@@ -279,7 +401,7 @@ function BookingPage() {
               </div>
 
               <div className="flex justify-between pt-2">
-                <Button variant="ghost" onClick={() => setStep(3)}><ArrowLeft className="mr-1 h-4 w-4" /> Voltar</Button>
+                <Button variant="ghost" onClick={() => setStep(4)}><ArrowLeft className="mr-1 h-4 w-4" /> Voltar</Button>
                 <Button onClick={confirmBooking} disabled={!client.name || !client.phone || submitting}>
                   {submitting ? "Confirmando..." : <>Confirmar agendamento <Check className="ml-1 h-4 w-4" /></>}
                 </Button>
@@ -293,7 +415,7 @@ function BookingPage() {
 }
 
 function Stepper({ step }: { step: number }) {
-  const labels = ["Serviço", "Barbeiro", "Horário", "Confirmar"];
+  const labels = ["Serviço", "Barbeiro", "Horário", "Aproveite", "Confirmar"];
   return (
     <div className="flex items-center gap-2">
       {labels.map((l, i) => {
