@@ -1,12 +1,27 @@
 import { Package as PackageIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatBRL } from "@/lib/format";
 import type { PublicProduct } from "@/lib/booking/types";
+import { useCart } from "@/lib/booking/cart";
+import { toast } from "sonner";
 
 export function ProductCard({ product }: { product: PublicProduct }) {
   const outOfStock = product.stock <= 0;
+  const { addItem, openDrawer } = useCart();
+  function handleAdd() {
+    addItem({
+      kind: "product",
+      product_id: product.id,
+      name: product.name,
+      description: product.description,
+      qty: 1,
+      unit_price_cents: product.price_cents,
+      image_url: product.image_url,
+    });
+    toast.success(`${product.name} adicionado ao carrinho`);
+    openDrawer();
+  }
   return (
     <article
       className={`rounded-2xl border border-border bg-card p-4 flex flex-col gap-3 transition-colors hover:border-primary/60 ${
@@ -31,14 +46,9 @@ export function ProductCard({ product }: { product: PublicProduct }) {
       </div>
       <div className="flex items-center justify-between gap-2 pt-2 border-t border-border">
         <span className="font-display text-lg text-primary">{formatBRL(product.price_cents)}</span>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span tabIndex={0}>
-              <Button size="sm" variant="outline" disabled>Adicionar</Button>
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>{outOfStock ? "Esgotado" : "Em breve"}</TooltipContent>
-        </Tooltip>
+        <Button size="sm" variant="outline" onClick={handleAdd} disabled={outOfStock}>
+          {outOfStock ? "Esgotado" : "Adicionar"}
+        </Button>
       </div>
     </article>
   );

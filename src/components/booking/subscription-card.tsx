@@ -1,9 +1,10 @@
 import { Layers, Repeat } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatBRL } from "@/lib/format";
 import type { SubscriptionPlan } from "@/lib/booking/types";
 import { ItemChip } from "./item-chip";
+import { useCart } from "@/lib/booking/cart";
+import { toast } from "sonner";
 
 const CYCLE_LABEL: Record<SubscriptionPlan["cycle"], string> = {
   monthly: "mês",
@@ -12,6 +13,22 @@ const CYCLE_LABEL: Record<SubscriptionPlan["cycle"], string> = {
 };
 
 export function SubscriptionCard({ plan }: { plan: SubscriptionPlan }) {
+  const { addItem, openDrawer } = useCart();
+  function handleAdd() {
+    addItem({
+      kind: "subscription",
+      plan_id: plan.id,
+      name: plan.name,
+      description: plan.description,
+      qty: 1,
+      unit_price_cents: plan.price_cents,
+      items: plan.items,
+      total_cotas: plan.total_cotas,
+      cycle: plan.cycle,
+    });
+    toast.success(`${plan.name} adicionado ao carrinho`);
+    openDrawer();
+  }
   return (
     <article className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-4 transition-colors hover:border-primary/60">
       <header>
@@ -41,14 +58,7 @@ export function SubscriptionCard({ plan }: { plan: SubscriptionPlan }) {
           {formatBRL(plan.price_cents)}
           <span className="ml-1 text-xs text-muted-foreground font-sans">/ {CYCLE_LABEL[plan.cycle]}</span>
         </span>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span tabIndex={0}>
-              <Button size="sm" disabled>Assinar</Button>
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>Em breve</TooltipContent>
-        </Tooltip>
+        <Button size="sm" onClick={handleAdd}>Assinar</Button>
       </div>
     </article>
   );
