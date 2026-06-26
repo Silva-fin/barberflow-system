@@ -89,3 +89,103 @@ export interface Promotion {
   coupon_code?: string;
   valid_until?: string;
 }
+
+// ---------- Cart & checkout ----------
+
+export type CartItemKind = "service" | "package" | "subscription" | "product";
+
+interface CartItemBase {
+  /** Unique line id (random per add). */
+  id: string;
+  kind: CartItemKind;
+  name: string;
+  description?: string;
+  qty: number;
+  unit_price_cents: number;
+}
+
+export interface CartItemService extends CartItemBase {
+  kind: "service";
+  service_id: string;
+  duration_min: number;
+  slot_iso: string;
+  barber_id?: string;
+  barber_name?: string;
+}
+
+export interface CartItemPackage extends CartItemBase {
+  kind: "package";
+  package_id: string;
+  items: PackageItem[];
+  total_cotas: number;
+  validity_days: number;
+}
+
+export interface CartItemSubscription extends CartItemBase {
+  kind: "subscription";
+  plan_id: string;
+  items: PackageItem[];
+  total_cotas: number;
+  cycle: SubscriptionCycle;
+}
+
+export interface CartItemProduct extends CartItemBase {
+  kind: "product";
+  product_id: string;
+  image_url?: string;
+}
+
+export type CartItem =
+  | CartItemService
+  | CartItemPackage
+  | CartItemSubscription
+  | CartItemProduct;
+
+export interface AppliedCoupon {
+  code: string;
+  discount_cents: number;
+}
+
+export interface Cart {
+  items: CartItem[];
+  subtotal_cents: number;
+  discount_cents: number;
+  total_cents: number;
+  coupon?: AppliedCoupon;
+}
+
+export interface CouponValidationResult {
+  valid: boolean;
+  code: string;
+  discount_cents: number;
+  reason?: string;
+}
+
+export type CrossSellSuggestion =
+  | { kind: "package"; item: Package }
+  | { kind: "subscription"; item: SubscriptionPlan };
+
+export interface CheckoutCustomer {
+  name: string;
+  phone: string;
+  email?: string;
+  notes?: string;
+}
+
+export interface CheckoutPayload {
+  items: CartItem[];
+  customer: CheckoutCustomer;
+  coupon_code?: string;
+}
+
+export interface CheckoutResult {
+  order_id: string;
+  manage_url: string;
+  portal_signup_hint: boolean;
+  items: CartItem[];
+  subtotal_cents: number;
+  discount_cents: number;
+  total_cents: number;
+  customer: CheckoutCustomer;
+  coupon?: AppliedCoupon;
+}
