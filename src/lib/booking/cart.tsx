@@ -1,10 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { AppliedCoupon, Cart, CartItem } from "./types";
 
+type DistributiveOmit<T, K extends keyof any> = T extends unknown ? Omit<T, K> : never;
+export type CartItemInput = DistributiveOmit<CartItem, "id"> & { id?: string };
+
 interface CartContextValue {
   cart: Cart;
   slug: string;
-  addItem: (item: Omit<CartItem, "id"> & { id?: string }) => CartItem;
+  addItem: (item: CartItemInput) => CartItem;
   updateQty: (id: string, qty: number) => void;
   removeItem: (id: string) => void;
   clear: () => void;
@@ -78,7 +81,7 @@ export function CartProvider({ slug, children }: { slug: string; children: React
   }, [slug, items, coupon]);
 
   const addItem = useCallback<CartContextValue["addItem"]>((input) => {
-    const item = { ...input, id: input.id ?? randomId() } as CartItem;
+    const item = { ...input, id: input.id ?? randomId() } as unknown as CartItem;
     setItems((prev) => [...prev, item]);
     return item;
   }, []);
