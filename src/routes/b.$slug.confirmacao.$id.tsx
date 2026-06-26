@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -9,6 +9,9 @@ import { bookingApi } from "@/lib/booking/api";
 import { formatBRL } from "@/lib/format";
 import { CrossSellCard } from "@/components/booking/cross-sell-card";
 import type { CartItem } from "@/lib/booking/types";
+import { useCart } from "@/lib/booking/cart";
+import { toast } from "sonner";
+import { useState } from "react";
 
 export const Route = createFileRoute("/b/$slug/confirmacao/$id")({
   head: () => ({ meta: [{ title: "Pedido confirmado" }] }),
@@ -24,6 +27,9 @@ const KIND_LABEL: Record<CartItem["kind"], string> = {
 
 function ConfirmationPage() {
   const { slug, id } = Route.useParams();
+  const navigate = useNavigate();
+  const { addItem } = useCart();
+  const [added, setAdded] = useState<Set<string>>(new Set());
   const order = bookingApi.getStoredOrder(id);
 
   const crossSellQ = useQuery({
@@ -148,7 +154,41 @@ function ConfirmationPage() {
             <h2 className="font-display text-2xl tracking-wide">Talvez você goste</h2>
             <div className="grid gap-4 sm:grid-cols-2">
               {(crossSellQ.data ?? []).map((s) => (
-                <CrossSellCard key={s.item.id} suggestion={s} added={false} onAdd={() => {/* navigate via catalog */}} />
+                <CrossSellCard
+                  key={s.item.id}
+                  suggestion={s}
+                  added={added.has(s.item.id)}
+                  onAdd={() => {
+                    if (s.kind === "package") {
+                      addItem({
+                        kind: "package",
+                        package_id: s.item.id,
+                        name: s.item.name,
+                        description: s.item.description,
+                        qty: 1,
+                        unit_price_cents: s.item.price_cents,
+                        items: s.item.items,
+                        total_cotas: s.item.total_cotas,
+                        validity_days: s.item.validity_days,
+                      });
+                    } else {
+                      addItem({
+                        kind: "subscription",
+                        plan_id: s.item.id,
+                        name: s.item.name,
+                        description: s.item.description,
+                        qty: 1,
+                        unit_price_cents: s.item.price_cents,
+                        items: s.item.items,
+                        total_cotas: s.item.total_cotas,
+                        cycle: s.item.cycle,
+                      });
+                    }
+                    setAdded((p) => new Set(p).add(s.item.id));
+                    toast.success(`${s.item.name} adicionado ao carrinho`);
+                    setTimeout(() => navigate({ to: "/b/$slug/checkout", params: { slug } }), 400);
+                  }}
+                />
               ))}
             </div>
             <div className="text-center">
