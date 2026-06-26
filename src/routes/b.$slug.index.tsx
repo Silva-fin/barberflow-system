@@ -1,15 +1,22 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Clock, MapPin, Phone, Scissors, Star, CreditCard,
-  Instagram, Facebook, MessageCircle, ChevronRight, Package,
+  MapPin, Phone, Star, CreditCard,
+  Instagram, Facebook, MessageCircle, ChevronRight, Sparkles,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatBRL } from "@/lib/format";
+import { Skeleton } from "@/components/ui/skeleton";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { EmptyState } from "@/components/app/empty-state";
+import { CatalogTabs, type CatalogTabKey } from "@/components/booking/catalog-tabs";
+import { ServiceCard } from "@/components/booking/service-card";
+import { PackageCard } from "@/components/booking/package-card";
+import { SubscriptionCard } from "@/components/booking/subscription-card";
+import { ProductCard } from "@/components/booking/product-card";
+import { PromotionCard } from "@/components/booking/promotion-card";
+import { bookingApi } from "@/lib/booking/api";
 import paladinoWordmark from "@/assets/paladino-wordmark-tight.png";
 
 export const Route = createFileRoute("/b/$slug/")({
@@ -28,17 +35,41 @@ function ShopProfilePage() {
   const { slug } = Route.useParams();
   const navigate = useNavigate();
 
-  const { data: shop, isLoading } = useQuery({ queryKey: ["shop", slug], queryFn: () => api.getBarbershopBySlug(slug) });
-  const { data: services = [] } = useQuery({
-    queryKey: ["services-pub", shop?.id], queryFn: () => api.listServices(shop!.id), enabled: !!shop,
+  const profileQ = useQuery({
+    queryKey: ["booking", slug, "profile"],
+    queryFn: () => bookingApi.getProfile(slug),
+    retry: false,
   });
-  const { data: barbers = [] } = useQuery({
-    queryKey: ["barbers-pub", shop?.id], queryFn: () => api.listBarbers(shop!.id), enabled: !!shop,
+  const servicesQ = useQuery({
+    queryKey: ["booking", slug, "services"],
+    queryFn: () => bookingApi.listServices(slug),
+    enabled: profileQ.isSuccess,
+  });
+  const packagesQ = useQuery({
+    queryKey: ["booking", slug, "packages"],
+    queryFn: () => bookingApi.listPackages(slug),
+    enabled: profileQ.isSuccess,
+  });
+  const subscriptionsQ = useQuery({
+    queryKey: ["booking", slug, "subscriptions"],
+    queryFn: () => bookingApi.listSubscriptions(slug),
+    enabled: profileQ.isSuccess,
+  });
+  const productsQ = useQuery({
+    queryKey: ["booking", slug, "products"],
+    queryFn: () => bookingApi.listProducts(slug),
+    enabled: profileQ.isSuccess,
+  });
+  const promotionsQ = useQuery({
+    queryKey: ["booking", slug, "promotions"],
+    queryFn: () => bookingApi.listPromotions(slug),
+    enabled: profileQ.isSuccess,
   });
 
-  if (isLoading) {
+  if (profileQ.isLoading) {
     return <div className="min-h-screen flex items-center justify-center bg-background text-muted-foreground">Carregando...</div>;
   }
+  const shop = profileQ.data;
   if (!shop) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -58,6 +89,75 @@ function ShopProfilePage() {
 
   const bookService = (serviceId: string) =>
     navigate({ to: "/b/$slug/agendar", params: { slug }, search: { service: serviceId } });
+
+  const panels: Record<CatalogTabKey, React.ReactNode> = {
+    servicos: (
+      <QueryGrid
+        query={servicesQ}
+        emptyTitle="Nenhum serviço disponível"
+        skeletonVariant="row"
+        render={(items) => (
+          <div className="grid gap-3">
+            {items.map((s) => (
+              <ServiceCard key={s.id} service={s} onBook={bookService} />
+            ))}
+          </div>
+        )}
+      />
+    ),
+    pacotes: (
+      <QueryGrid
+        query={packagesQ}
+        emptyTitle="Nenhum pacote disponível"
+        render={(items) => (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((p) => <PackageCard key={p.id} pkg={p} />)}
+          </div>
+        )}
+      />
+    ),
+    assinaturas: (
+      <QueryGrid
+        query={subscriptionsQ}
+        emptyTitle="Nenhuma assinatura disponível"
+        render={(items) => (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((p) => <SubscriptionCard key={p.id} plan={p} />)}
+          </div>
+        )}
+      />
+    ),
+    produtos: (
+      <QueryGrid
+        query={productsQ}
+        emptyTitle="Nenhum produto disponível"
+        render={(items) => (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((p) => <ProductCard key={p.id} product={p} />)}
+          </div>
+        )}
+      />
+    ),
+    promocoes: (
+      <QueryGrid
+        query={promotionsQ}
+        emptyTitle="Nenhuma promoção ativa"
+        emptyIcon={<Sparkles size={28} strokeWidth={1.5} />}
+        render={(items) => (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((p) => <PromotionCard key={p.id} promo={p} />)}
+          </div>
+        )}
+      />
+    ),
+    avaliacoes: (
+      <EmptyState
+        icon={<Star size={28} strokeWidth={1.5} />}
+        title="Avaliações em breve"
+        description="Em breve você poderá ler e deixar avaliações sobre o atendimento."
+      />
+    ),
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -87,9 +187,9 @@ function ShopProfilePage() {
               <h1 className="font-display text-4xl tracking-wide leading-tight">{shop.name}</h1>
               {shop.rating && (
                 <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-                  <Star className="h-4 w-4 fill-primary text-primary" />
+                  <Star size={16} className="fill-primary text-primary" />
                   <span className="font-medium text-foreground">{shop.rating.toFixed(1)}</span>
-                  {shop.reviewsCount && <span>· {shop.reviewsCount} avaliações</span>}
+                  {shop.reviews_count && <span>· {shop.reviews_count} avaliações</span>}
                 </div>
               )}
               {shop.description && (
@@ -101,7 +201,7 @@ function ShopProfilePage() {
                 onClick={() => navigate({ to: "/b/$slug/agendar", params: { slug }, search: {} })}
               >
                 Agendar agora
-                <ChevronRight className="ml-1 h-4 w-4" />
+                <ChevronRight size={16} className="ml-1" />
               </Button>
             </div>
           </section>
@@ -134,71 +234,9 @@ function ShopProfilePage() {
             </section>
           )}
 
-          {/* Tabs */}
-          <Tabs defaultValue="services" className="w-full">
-            <TabsList>
-              <TabsTrigger value="services">Serviços</TabsTrigger>
-              <TabsTrigger value="barbers">Profissionais</TabsTrigger>
-              <TabsTrigger value="products">Produtos</TabsTrigger>
-              <TabsTrigger value="reviews">Avaliações</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="services" className="mt-6">
-              <div className="grid gap-3">
-                {services.map(s => (
-                  <article
-                    key={s.id}
-                    className="rounded-lg border border-border bg-card p-5 flex items-center gap-4 transition-colors hover:border-primary/60"
-                  >
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
-                      <Scissors className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold">{s.name}</h3>
-                      {s.description && (
-                        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{s.description}</p>
-                      )}
-                      <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                        <span className="inline-flex items-center gap-1">
-                          <Clock className="h-3 w-3" /> {s.durationMin} min
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <span className="font-display text-lg text-primary">{formatBRL(s.priceCents)}</span>
-                      <Button size="sm" onClick={() => bookService(s.id)}>Agendar</Button>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="barbers" className="mt-6">
-              <div className="grid gap-3 sm:grid-cols-2">
-                {barbers.map(b => (
-                  <article key={b.id} className="rounded-lg border border-border bg-card p-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary">
-                      {b.name.split(" ").map(n => n[0]).slice(0, 2).join("")}
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold">{b.name}</p>
-                      <p className="text-xs text-muted-foreground">{b.specialties.join(" · ")}</p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="products" className="mt-6">
-              <ProductsTab whatsappPhone={shop.phone} />
-            </TabsContent>
-
-            <TabsContent value="reviews" className="mt-6">
-              <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-                Avaliações em breve.
-              </div>
-            </TabsContent>
-          </Tabs>
+          <TooltipProvider delayDuration={200}>
+            <CatalogTabs panels={panels} />
+          </TooltipProvider>
         </main>
 
         {/* SIDE COLUMN */}
@@ -210,7 +248,7 @@ function ShopProfilePage() {
               rel="noreferrer"
               className="flex items-start gap-2 text-sm hover:text-primary transition-colors"
             >
-              <MapPin className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
+              <MapPin size={16} className="mt-0.5 shrink-0 text-primary" />
               <span>{shop.address}</span>
             </a>
           </InfoCard>
@@ -245,7 +283,7 @@ function ShopProfilePage() {
                   key={p}
                   className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/30 px-2.5 py-1 text-xs text-muted-foreground"
                 >
-                  <CreditCard className="h-3 w-3" /> {p}
+                  <CreditCard size={12} /> {p}
                 </span>
               ))}
             </div>
@@ -253,7 +291,7 @@ function ShopProfilePage() {
 
           <InfoCard title="Contato">
             <a href={`tel:${shop.phone.replace(/\D/g, "")}`} className="flex items-center gap-2 text-sm hover:text-primary transition-colors">
-              <Phone className="h-4 w-4 text-primary" />
+              <Phone size={16} className="text-primary" />
               {shop.phone}
             </a>
           </InfoCard>
@@ -267,7 +305,7 @@ function ShopProfilePage() {
                   className="flex h-9 w-9 items-center justify-center rounded-md border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                   aria-label="Rede social"
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon size={16} />
                 </a>
               ))}
             </div>
@@ -293,79 +331,50 @@ function InfoCard({ title, children }: { title: string; children: React.ReactNod
   );
 }
 
-type Product = {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  image: string | null;
-  available: boolean;
-};
-
-const MOCK_PRODUCTS: Product[] = [
-  { id: "p1", name: "Pomada Modeladora Matte", price: 4990, description: "Fixação forte, efeito seco", image: null, available: true },
-  { id: "p2", name: "Óleo para Barba 30ml", price: 3590, description: "Hidrata e amacia os fios", image: null, available: true },
-  { id: "p3", name: "Shampoo Anticaspa 250ml", price: 2990, description: "Uso diário", image: null, available: false },
-  { id: "p4", name: "Kit Navalha + Lâminas", price: 7900, description: "Acabamento profissional", image: null, available: true },
-  { id: "p5", name: "Talco Pós-Barba", price: 1990, description: "Sensação refrescante", image: null, available: true },
-  { id: "p6", name: "Cera Capilar 100g", price: 4290, description: "Brilho leve, reaplicável", image: null, available: false },
-];
-
-function ProductsTab({ whatsappPhone }: { whatsappPhone: string }) {
-  const products = MOCK_PRODUCTS;
-
-  if (products.length === 0) {
+function QueryGrid<T>({
+  query,
+  render,
+  emptyTitle,
+  emptyIcon,
+  skeletonVariant = "card",
+}: {
+  query: { isLoading: boolean; isError: boolean; data: T[] | undefined; refetch: () => void };
+  render: (items: T[]) => React.ReactNode;
+  emptyTitle: string;
+  emptyIcon?: React.ReactNode;
+  skeletonVariant?: "card" | "row";
+}) {
+  if (query.isLoading) {
+    if (skeletonVariant === "row") {
+      return (
+        <div className="grid gap-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 w-full rounded-lg" />
+          ))}
+        </div>
+      );
+    }
     return (
-      <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-        Nenhum produto disponível
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Skeleton key={i} className="h-48 w-full rounded-2xl" />
+        ))}
       </div>
     );
   }
-
-  const waNumber = whatsappPhone.replace(/\D/g, "");
-
-  return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {products.map((p) => {
-        const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(`Olá! Tenho interesse no produto: ${p.name}`)}`;
-        return (
-          <article
-            key={p.id}
-            className={`rounded-lg border border-border bg-card p-4 flex flex-col gap-3 transition-colors hover:border-primary/60 ${
-              !p.available ? "opacity-60" : ""
-            }`}
-          >
-            <div className="relative aspect-square w-full overflow-hidden rounded-md bg-muted/40 flex items-center justify-center">
-              {p.image ? (
-                <img src={p.image} alt={p.name} className="h-full w-full object-cover" loading="lazy" />
-              ) : (
-                <Package className="h-10 w-10 text-muted-foreground" strokeWidth={1.5} />
-              )}
-              {!p.available && (
-                <Badge variant="secondary" className="absolute top-2 right-2">Esgotado</Badge>
-              )}
-            </div>
-            <div className="min-w-0 flex-1">
-              <h3 className="font-semibold leading-tight">{p.name}</h3>
-              <p className="mt-1 text-xs text-muted-foreground line-clamp-1">{p.description}</p>
-            </div>
-            <div className="flex items-center justify-between gap-2 pt-1 border-t border-border">
-              <span className="font-display text-lg text-primary">{formatBRL(p.price)}</span>
-              {p.available && waNumber && (
-                <a
-                  href={waUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
-                  WhatsApp
-                </a>
-              )}
-            </div>
-          </article>
-        );
-      })}
-    </div>
-  );
+  if (query.isError) {
+    return (
+      <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-6 text-center text-sm">
+        <p className="text-destructive">Não foi possível carregar.</p>
+        <Button size="sm" variant="outline" className="mt-3" onClick={() => query.refetch()}>
+          Tentar novamente
+        </Button>
+      </div>
+    );
+  }
+  const items = query.data ?? [];
+  if (items.length === 0) {
+    return <EmptyState icon={emptyIcon} title={emptyTitle} />;
+  }
+  return <>{render(items)}</>;
 }
