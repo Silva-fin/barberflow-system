@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CalendarCheck, CheckCircle2, ExternalLink, Sparkles, UserPlus } from "lucide-react";
+import { CheckCircle2, Smartphone, Sparkles, UserPlus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { bookingApi } from "@/lib/booking/api";
@@ -117,19 +117,15 @@ function ConfirmationPage() {
 
         {/* Gerencie + Portal */}
         <section className="grid gap-4 sm:grid-cols-2">
-          <div className="rounded-lg border border-border bg-card p-5">
+          <div className="rounded-lg border border-border bg-muted/40 p-5">
             <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
-              <CalendarCheck className="h-5 w-5" />
+              <Smartphone className="h-5 w-5" />
             </div>
-            <h3 className="mt-3 font-semibold">Gerencie seu pedido</h3>
+            <h3 className="mt-3 font-semibold">Link de gestão no WhatsApp</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              Acesse, remarque ou cancele sem precisar criar conta.
+              Enviamos o link para gerenciar, remarcar ou cancelar seu pedido para{" "}
+              <span className="font-medium text-foreground">{order.customer.phone}</span>.
             </p>
-            <Button asChild className="mt-4 w-full" variant="outline">
-              <a href={order.manage_url} target="_blank" rel="noreferrer">
-                Abrir gestão <ExternalLink className="ml-2 h-4 w-4" />
-              </a>
-            </Button>
           </div>
 
           {order.portal_signup_hint && (
