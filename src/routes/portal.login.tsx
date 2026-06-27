@@ -13,14 +13,31 @@ import {
 } from "@/lib/portal/session";
 
 export const Route = createFileRoute("/portal/login")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    redirect: typeof s.redirect === "string" ? s.redirect : undefined,
+  }),
   component: LoginPage,
 });
 
 function LoginPage() {
   const { hydrated, session, setSession } = usePortalSession();
   const navigate = useNavigate();
+  const { redirect } = Route.useSearch();
+  const goNext = () => {
+    if (redirect && redirect.startsWith("/")) {
+      window.location.href = redirect;
+    } else {
+      navigate({ to: "/portal/dashboard" });
+    }
+  };
 
-  if (hydrated && session) return <Navigate to="/portal/dashboard" />;
+  if (hydrated && session) {
+    if (redirect && redirect.startsWith("/")) {
+      if (typeof window !== "undefined") window.location.href = redirect;
+      return null;
+    }
+    return <Navigate to="/portal/dashboard" />;
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
@@ -60,7 +77,7 @@ function LoginPage() {
                     email,
                     phone: "(11) 98123-4567",
                   });
-                  navigate({ to: "/portal/dashboard" });
+                  goNext();
                 }}
               />
             </TabsContent>
