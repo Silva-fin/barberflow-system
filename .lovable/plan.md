@@ -1,58 +1,52 @@
-# Plano — Fase 2: Carrinho + Checkout Unificado (revisado)
+## Mudanças
 
-**Escopo**: Compra unificada de qualquer item do catálogo, com carrinho persistido, cupom, dados do cliente e confirmação com manage URL + CTA portal. Inclui **cross-sell contextual na Tela 4** do fluxo de agendamento e **atalho "só agendar"** para preservar o caminho rápido.
+### 1) Tornar `PortalSession` acessível no checkout público
+- `src/routes/__root.tsx`: envolver os providers atuais com `PortalSessionProvider` (de `@/lib/portal/session`) para que `/b/$slug/checkout` (rota pública) e `/portal/*` compartilhem a mesma sessão de cliente.
+- Sem efeitos colaterais: o provider já hidrata de `localStorage` e fica `null` quando deslogado.
 
-## Ajustes vs revisão
+### 2) Checkout `/b/$slug/checkout` — step "Seus dados"
+Editar `src/routes/b.$slug.checkout.tsx`:
 
-1. **Cross-sell contextual (Tela 4)** entra antes da confirmação do agendamento, sugerindo apenas **pacotes** que contêm o serviço escolhido e **assinaturas** relacionadas (match por `items[]`). Sem produtos, sem promoções.
-2. **Atalho "só agendar"** preservado: se o cliente não adicionar nada na Tela 4, segue pelo fluxo curto atual (`createAppointment` direto). Se adicionar pacote/assinatura, o serviço entra no carrinho como `kind:"service"` (com snapshot de barbeiro/slot) junto com o item extra, e o fluxo migra para `/b/$slug/checkout`.
-3. Cross-sell **pós-checkout** continua na confirmação como upsell secundário (1 pacote + 1 assinatura).
+- Ler `usePortalSession()`.
+- **Se `session` é `null`** (visitante):
+  - No topo do step `customer`, antes do título, adicionar bloco:
+    ```
+    Já tem conta? [Entrar no Painel do Cliente]
+    ── ou continue como visitante ──
+    ```
+    Botão é um `Link` para `/portal/login?redirect=/b/{slug}/checkout` (variant `outline`, ícone `LogIn`).
+  - Manter o formulário atual (nome, telefone, e-mail, observação).
+- **Se `session` existe** (logado):
+  - Substituir o formulário por um card de confirmação direta:
+    ```
+    Olá, {session.name}
+    {session.phone}
+    [Confirmar pedido →]
+    ```
+  - Pré-preencher `customer` no submit a partir da `session` (nome, telefone, email). Manter campo de "observação" opcional? **Não** — conforme spec, "um botão só, sem formulário".
+  - `handleConfirm` usa os dados da sessão.
+  - Manter botão "Voltar" para revisão.
 
-## Camada de dados
+### 3) Checkout `/portal/login` — suportar `redirect`
+Pequeno ajuste em `src/routes/portal.login.tsx` (e `portal.magic.$token.tsx` se aplicável): após login bem-sucedido, se houver query param `redirect`, navegar para essa URL em vez do dashboard. Permite o ciclo "Entrar" → voltar ao checkout já logado.
 
-- `src/lib/booking/types.ts` — `CartItem` (discriminated union por `kind: "service" | "package" | "subscription" | "product"`); `kind:"service"` carrega `barber_id?`, `slot_iso`, `duration_min`, `service_id`. `Cart` (`items`, `subtotal_cents`, `discount_cents`, `total_cents`, `coupon?`). `CouponValidationResult`. `CrossSellSuggestion` (`kind:"package"|"subscription"`, item completo). `CheckoutPayload`, `CheckoutResult` (`order_id`, `manage_url`, `portal_signup_hint`).
-- `src/lib/booking/api.ts` — `validateCoupon(slug, code, cart)`: `PALADINO10` = 10% off geral, `BEMVINDO` = R$15 off em itens de pacote/assinatura, outros = `{valid:false, reason}`. `listContextualCrossSell(slug, serviceId)`: filtra pacotes/assinaturas cujo `items[]` contém o `serviceId` (match por nome no mock). `listPostCheckoutCrossSell(slug, cart)`: 1 pacote + 1 assinatura mais vendidos. `createOrder(slug, payload)`: gera `order_id` determinístico + `manage_url = /manage/{token}`.
-- `src/lib/booking/cart.tsx` — `CartProvider` com `localStorage` (`paladino_cart_v1_{slug}`). API: `addItem`, `updateQty`, `removeItem`, `applyCoupon`, `clearCoupon`, `clear`, `hasServiceBooking()`. Cálculos puros derivados.
+### 4) Confirmação `/b/$slug/confirmacao/$id`
+Editar `src/routes/b.$slug.confirmacao.$id.tsx`:
 
-## Componentes
+- Remover o card "Gerencie seu pedido" (com botão "Abrir gestão" para `order.manage_url`).
+- Substituir por um bloco informativo simples (sem botão, sem link):
+  ```
+  📱 Enviamos o link de gestão para {order.customer.phone}
+  ```
+  Usar ícone `Smartphone` do lucide, fundo `bg-muted/50`, mesma altura visual do card removido para preservar o grid `sm:grid-cols-2` ao lado de "Crie sua conta no Painel".
+- Manter intacto: card "Crie sua conta no Painel", seção "Talvez você goste" (cross-sell pós-checkout), código do pedido, itens, totais, footer.
 
-- `src/components/booking/cart-drawer.tsx` — `Sheet` lateral; lista de itens com chip de tipo, stepper de qty (exceto `service`, que é 1), remover; campo cupom inline; totais; CTA "Ir para checkout".
-- `src/components/booking/cart-button.tsx` — botão flutuante no shell de `/b/$slug` com badge de qty (visível em todas as tabs).
-- `src/components/booking/cross-sell-card.tsx` — card compacto (pacote/assinatura) com chips de `items[]`, preço, CTA "Adicionar".
-- `src/components/booking/contextual-crosssell.tsx` — wrapper da Tela 4 com header "Aproveite e leve mais por menos" + grid de `CrossSellCard` + 2 CTAs: **"Confirmar só o agendamento"** e **"Continuar para checkout"** (este aparece se algo foi adicionado).
-- Cards do catálogo (`PackageCard`, `SubscriptionCard`, `ProductCard`): botões habilitados, chamam `cart.addItem` com toast e abrem o drawer.
-
-## Rotas
-
-- `src/routes/b.$slug.tsx` — envolve Outlet com `CartProvider` e renderiza `CartButton`.
-- `src/routes/b.$slug.agendar.tsx` — **insere Tela 4 (cross-sell contextual)** entre o atual step 3 (horário) e o step 4 (dados do cliente). Renumera para 5 steps:
-  1. Serviço · 2. Barbeiro · 3. Horário · **4. Cross-sell contextual** · 5. Dados/Confirmação.
-  Step 4 chama `listContextualCrossSell(slug, serviceId)`; se vazio, pula direto para step 5. Botões:
-  - "Confirmar só o agendamento" → fluxo atual (`createAppointment` no step 5, sem carrinho).
-  - "Continuar para checkout" (só aparece se o usuário adicionou algo) → faz `cart.addItem` do serviço (snapshot de slot/barbeiro) + redireciona para `/b/$slug/checkout`.
-- `src/routes/b.$slug.checkout.tsx` *(nova)* — 2 sub-steps:
-  1. **Revisão**: itens (com slot/barbeiro nos itens `kind:"service"`), qty, cupom, totais.
-  2. **Dados do cliente**: nome, telefone (máscara BR), email, observação. Zod inline.
-  CTA "Confirmar pedido" → `createOrder`, `cart.clear`, navega para `/b/$slug/confirmacao/$id`. Carrinho vazio → empty state com CTA "Voltar ao catálogo".
-- `src/routes/b.$slug.confirmacao.$id.tsx` — refator:
-  - Resumo do pedido derivado de mock determinístico por `id` (ou de `useNavigate({ state })`).
-  - Bloco "Gerencie seu pedido" com `manage_url` (rota pública existente `/manage/$token`).
-  - Bloco "Crie sua conta no Painel do Cliente" → `/portal/login`.
-  - `CrossSellList` pós-checkout (`listPostCheckoutCrossSell`).
-  - Mantém compat com fluxo legado de agendamento simples (sem cart).
-
-## Fora desta fase
-
-Conexão real com Railway, pagamento real, avaliações reais, persistência de pedido após reload (confirmação usa mock determinístico).
-
-## Design
-
-Tokens existentes; Sheet/Drawer do shadcn; mobile-first; checkout em coluna única no mobile, 2 colunas (itens / resumo sticky) em ≥`lg`.
+## Fora de escopo
+- Carrinho, drawer, cupom, revisão, Tela 4 cross-sell contextual, atalho "só agendar" e telas `/manage/$token` permanecem inalterados.
+- Sem mudanças em `bookingApi.createOrder` nem em `cart.tsx`.
 
 ## Validação
-
+- Visitante: `/b/barbearia-do-zeca/checkout` mostra CTA de login + formulário; submit funciona.
+- Logado (via `/portal/login`): mesmo checkout mostra "Olá, {nome}" + um botão; submit gera pedido com os dados da sessão.
+- Confirmação: card de gestão substituído por linha informativa com o telefone; cross-sell e CTA do painel continuam visíveis.
 - `bun run build` limpo.
-- **Atalho**: `/b/barbearia-do-zeca/agendar` → serviço → barbeiro → horário → Tela 4 → "Confirmar só o agendamento" → confirmação direta (fluxo legado).
-- **Unificado**: mesmo fluxo, mas adiciona pacote na Tela 4 → checkout com 2 itens (serviço + pacote) → cupom `PALADINO10` → confirmação com manage link + CTA portal + cross-sell.
-- **Catálogo direto**: `/b/barbearia-do-zeca` → adiciona produto via card → drawer → checkout sem agendamento.
-- Cupom inválido mostra erro inline; carrinho vazio bloqueia checkout.
