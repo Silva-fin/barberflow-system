@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import { AuthProvider } from "@/lib/auth";
+import { PortalSessionProvider } from "@/lib/portal/session";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider, themeInitScript } from "@/lib/theme";
 import appCss from "../styles.css?url";
@@ -114,8 +115,10 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
-          <Outlet />
-          <Toaster richColors position="top-right" />
+          <PortalSessionProvider>
+            <Outlet />
+            <Toaster richColors position="top-right" />
+          </PortalSessionProvider>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
