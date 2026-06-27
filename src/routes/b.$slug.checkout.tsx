@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ArrowLeft, ArrowRight, Check, Loader2, ShoppingBag, Tag, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Loader2, LogIn, ShoppingBag, Tag, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +14,7 @@ import { useCart } from "@/lib/booking/cart";
 import { bookingApi } from "@/lib/booking/api";
 import { formatBRL } from "@/lib/format";
 import type { CartItem, CheckoutCustomer } from "@/lib/booking/types";
+import { usePortalSession } from "@/lib/portal/session";
 import paladinoWordmark from "@/assets/paladino-wordmark-tight.png";
 
 export const Route = createFileRoute("/b/$slug/checkout")({
@@ -42,6 +43,7 @@ function CheckoutPage() {
   const { slug } = Route.useParams();
   const navigate = useNavigate();
   const { cart, updateQty, removeItem, applyCoupon, clearCoupon, clear } = useCart();
+  const { session } = usePortalSession();
   const [sub, setSub] = useState<SubStep>("review");
   const [code, setCode] = useState(cart.coupon?.code ?? "");
   const [couponError, setCouponError] = useState<string | null>(null);
@@ -87,12 +89,15 @@ function CheckoutPage() {
   }
 
   async function handleConfirm() {
-    if (!validCustomer()) return;
+    const payloadCustomer: CheckoutCustomer = session
+      ? { name: session.name, phone: session.phone, email: session.email, notes: "" }
+      : customer;
+    if (!session && !validCustomer()) return;
     setSubmitting(true);
     try {
       const res = await bookingApi.createOrder(slug, {
         items: cart.items,
-        customer,
+        customer: payloadCustomer,
         coupon_code: cart.coupon?.code,
       });
       clear();
@@ -163,8 +168,43 @@ function CheckoutPage() {
 
           {sub === "customer" && (
             <section className="space-y-4">
-              <h2 className="font-display text-2xl tracking-wide">Seus dados</h2>
-              <div className="grid gap-4 sm:grid-cols-2">
+              {session ? (
+                <>
+                  <h2 className="font-display text-2xl tracking-wide">Confirme seu pedido</h2>
+                  <div className="rounded-lg border border-border bg-card p-5">
+                    <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Logado como</p>
+                    <p className="mt-2 font-display text-2xl tracking-wide">Olá, {session.name}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{session.phone}</p>
+                  </div>
+                  <div className="flex justify-between pt-2">
+                    <Button variant="ghost" onClick={() => setSub("review")}>
+                      <ArrowLeft className="mr-1 h-4 w-4" /> Voltar
+                    </Button>
+                    <Button onClick={handleConfirm} disabled={submitting}>
+                      {submitting ? "Confirmando..." : <>Confirmar pedido <ArrowRight className="ml-1 h-4 w-4" /></>}
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex flex-col gap-3 rounded-lg border border-primary/30 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-sm">Já tem conta?</p>
+                    <Button asChild variant="outline" size="sm">
+                      <Link
+                        to="/portal/login"
+                        search={{ redirect: `/b/${slug}/checkout` }}
+                      >
+                        <LogIn className="mr-2 h-4 w-4" /> Entrar no Painel do Cliente
+                      </Link>
+                    </Button>
+                  </div>
+                  <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                    <div className="h-px flex-1 bg-border" />
+                    ou continue como visitante
+                    <div className="h-px flex-1 bg-border" />
+                  </div>
+                  <h2 className="font-display text-2xl tracking-wide">Seus dados</h2>
+                  <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2 sm:col-span-2">
                   <Label htmlFor="name">Nome completo *</Label>
                   <Input id="name" value={customer.name}
@@ -189,13 +229,15 @@ function CheckoutPage() {
                     onChange={(e) => setCustomer({ ...customer, notes: e.target.value })}
                     placeholder="Alguma preferência ou alergia?" />
                 </div>
-              </div>
-              <div className="flex justify-between pt-2">
-                <Button variant="ghost" onClick={() => setSub("review")}><ArrowLeft className="mr-1 h-4 w-4" /> Voltar</Button>
-                <Button onClick={handleConfirm} disabled={!validCustomer() || submitting}>
-                  {submitting ? "Confirmando..." : <>Confirmar pedido <Check className="ml-1 h-4 w-4" /></>}
-                </Button>
-              </div>
+                  </div>
+                  <div className="flex justify-between pt-2">
+                    <Button variant="ghost" onClick={() => setSub("review")}><ArrowLeft className="mr-1 h-4 w-4" /> Voltar</Button>
+                    <Button onClick={handleConfirm} disabled={!validCustomer() || submitting}>
+                      {submitting ? "Confirmando..." : <>Confirmar pedido <Check className="ml-1 h-4 w-4" /></>}
+                    </Button>
+                  </div>
+                </>
+              )}
             </section>
           )}
         </main>
