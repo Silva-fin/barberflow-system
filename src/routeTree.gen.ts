@@ -57,6 +57,7 @@ import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedAssinaturasIndexRouteImport } from './routes/_authenticated.assinaturas.index'
 import { Route as AuthenticatedAgendaIndexRouteImport } from './routes/_authenticated.agenda.index'
 import { Route as PortalMagicTokenRouteImport } from './routes/portal.magic.$token'
+import { Route as PortalAgendamentoIdRouteImport } from './routes/portal.agendamento.$id'
 import { Route as BSlugCheckoutRouteImport } from './routes/b.$slug.checkout'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
 import { Route as PublicManageTokenRouteImport } from './routes/_public.manage.$token'
@@ -345,6 +346,11 @@ const PortalMagicTokenRoute = PortalMagicTokenRouteImport.update({
   path: '/magic/$token',
   getParentRoute: () => PortalRoute,
 } as any)
+const PortalAgendamentoIdRoute = PortalAgendamentoIdRouteImport.update({
+  id: '/agendamento/$id',
+  path: '/agendamento/$id',
+  getParentRoute: () => PortalRoute,
+} as any)
 const BSlugCheckoutRoute = BSlugCheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
@@ -615,6 +621,7 @@ export interface FileRoutesByFullPath {
   '/manage/$token': typeof PublicManageTokenRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/b/$slug/checkout': typeof BSlugCheckoutRoute
+  '/portal/agendamento/$id': typeof PortalAgendamentoIdRoute
   '/portal/magic/$token': typeof PortalMagicTokenRoute
   '/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
@@ -696,6 +703,7 @@ export interface FileRoutesByTo {
   '/manage/$token': typeof PublicManageTokenRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/b/$slug/checkout': typeof BSlugCheckoutRoute
+  '/portal/agendamento/$id': typeof PortalAgendamentoIdRoute
   '/portal/magic/$token': typeof PortalMagicTokenRoute
   '/agenda': typeof AuthenticatedAgendaIndexRoute
   '/assinaturas': typeof AuthenticatedAssinaturasIndexRoute
@@ -783,6 +791,7 @@ export interface FileRoutesById {
   '/_public/manage/$token': typeof PublicManageTokenRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/b/$slug/checkout': typeof BSlugCheckoutRoute
+  '/portal/agendamento/$id': typeof PortalAgendamentoIdRoute
   '/portal/magic/$token': typeof PortalMagicTokenRoute
   '/_authenticated/agenda/': typeof AuthenticatedAgendaIndexRoute
   '/_authenticated/assinaturas/': typeof AuthenticatedAssinaturasIndexRoute
@@ -869,6 +878,7 @@ export interface FileRouteTypes {
     | '/manage/$token'
     | '/b/$slug/agendar'
     | '/b/$slug/checkout'
+    | '/portal/agendamento/$id'
     | '/portal/magic/$token'
     | '/agenda/'
     | '/assinaturas/'
@@ -950,6 +960,7 @@ export interface FileRouteTypes {
     | '/manage/$token'
     | '/b/$slug/agendar'
     | '/b/$slug/checkout'
+    | '/portal/agendamento/$id'
     | '/portal/magic/$token'
     | '/agenda'
     | '/assinaturas'
@@ -1036,6 +1047,7 @@ export interface FileRouteTypes {
     | '/_public/manage/$token'
     | '/b/$slug/agendar'
     | '/b/$slug/checkout'
+    | '/portal/agendamento/$id'
     | '/portal/magic/$token'
     | '/_authenticated/agenda/'
     | '/_authenticated/assinaturas/'
@@ -1405,6 +1417,13 @@ declare module '@tanstack/react-router' {
       path: '/magic/$token'
       fullPath: '/portal/magic/$token'
       preLoaderRoute: typeof PortalMagicTokenRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/agendamento/$id': {
+      id: '/portal/agendamento/$id'
+      path: '/agendamento/$id'
+      fullPath: '/portal/agendamento/$id'
+      preLoaderRoute: typeof PortalAgendamentoIdRouteImport
       parentRoute: typeof PortalRoute
     }
     '/b/$slug/checkout': {
@@ -1832,6 +1851,7 @@ interface PortalRouteChildren {
   PortalPagamentosRoute: typeof PortalPagamentosRoute
   PortalPerfilRoute: typeof PortalPerfilRoute
   PortalIndexRoute: typeof PortalIndexRoute
+  PortalAgendamentoIdRoute: typeof PortalAgendamentoIdRoute
   PortalMagicTokenRoute: typeof PortalMagicTokenRoute
 }
 
@@ -1845,6 +1865,7 @@ const PortalRouteChildren: PortalRouteChildren = {
   PortalPagamentosRoute: PortalPagamentosRoute,
   PortalPerfilRoute: PortalPerfilRoute,
   PortalIndexRoute: PortalIndexRoute,
+  PortalAgendamentoIdRoute: PortalAgendamentoIdRoute,
   PortalMagicTokenRoute: PortalMagicTokenRoute,
 }
 
