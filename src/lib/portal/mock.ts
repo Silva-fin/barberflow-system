@@ -299,3 +299,138 @@ export const CONSENT_GROUPS: ConsentGroup[] = [
     ],
   },
 ];
+// ---------------------------------------------------------------------------
+// Produtos
+// ---------------------------------------------------------------------------
+export type ProductStatus = "reservado" | "comprado" | "retirado";
+
+export interface Product {
+  id: string;
+  name: string;
+  quantity: number;
+  unitPriceBRL: number;
+  status: ProductStatus;
+  establishment: Establishment;
+  date: string; // ISO
+}
+
+export const PRODUCTS: Product[] = [
+  {
+    id: "pr-1",
+    name: "Pomada Modeladora Matte",
+    quantity: 1,
+    unitPriceBRL: 49.9,
+    status: "reservado",
+    establishment: ESTAB.zeca,
+    date: addDays(-1),
+  },
+  {
+    id: "pr-2",
+    name: "Óleo para Barba",
+    quantity: 1,
+    unitPriceBRL: 35.9,
+    status: "reservado",
+    establishment: ESTAB.paladino,
+    date: addDays(-3),
+  },
+  {
+    id: "pr-3",
+    name: "Talco Pós-Barba",
+    quantity: 1,
+    unitPriceBRL: 22.5,
+    status: "retirado",
+    establishment: ESTAB.zeca,
+    date: addDays(-25),
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Cupons
+// ---------------------------------------------------------------------------
+export interface Coupon {
+  id: string;
+  code: string;
+  description: string;
+  discountLabel: string;
+  validUntil: string;
+  establishment: Establishment;
+  personal: boolean;
+}
+
+export const COUPONS: Coupon[] = [
+  {
+    id: "cp-1",
+    code: "INDICA10",
+    description: "Desconto por indicação de amigo",
+    discountLabel: "R$ 10 de desconto",
+    validUntil: addDays(45),
+    establishment: ESTAB.zeca,
+    personal: true,
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Pagamentos (histórico)
+// ---------------------------------------------------------------------------
+export type PaymentMethod = "dinheiro" | "pix" | "cartao";
+export type PaymentStatus = "pago" | "pendente";
+
+export interface PaymentEntry {
+  id: string;
+  description: string;
+  amountBRL: number;
+  method: PaymentMethod;
+  status: PaymentStatus;
+  date: string;
+  establishment: Establishment;
+  couponCode?: string;
+}
+
+export const PAYMENT_HISTORY: PaymentEntry[] = [
+  {
+    id: "pay-1",
+    description: "Corte + barba",
+    amountBRL: 85,
+    method: "pix",
+    status: "pago",
+    date: addDays(-10),
+    establishment: ESTAB.zeca,
+    couponCode: "INDICA10",
+  },
+  {
+    id: "pay-2",
+    description: "Pacote 5 cortes",
+    amountBRL: 220,
+    method: "cartao",
+    status: "pago",
+    date: addDays(-30),
+    establishment: ESTAB.zeca,
+  },
+  {
+    id: "pay-3",
+    description: "Barba",
+    amountBRL: 50,
+    method: "dinheiro",
+    status: "pago",
+    date: addDays(-42),
+    establishment: ESTAB.paladino,
+  },
+  {
+    id: "pay-4",
+    description: "Talco Pós-Barba",
+    amountBRL: 22.5,
+    method: "pix",
+    status: "pago",
+    date: addDays(-25),
+    establishment: ESTAB.zeca,
+  },
+  {
+    id: "pay-5",
+    description: "Assinatura Clube Zeca — julho",
+    amountBRL: 89.9,
+    method: "cartao",
+    status: "pendente",
+    date: addDays(-2),
+    establishment: ESTAB.zeca,
+  },
+];
