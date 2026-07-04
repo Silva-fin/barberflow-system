@@ -14,16 +14,22 @@ export const APPOINTMENT_STATUS_LABEL: Record<AppointmentStatus, string> = {
 export interface Establishment {
   id: string;
   name: string;
+  address?: string;
+  phone?: string;
+  mapUrl?: string;
 }
 
 export interface Appointment {
   id: string;
   service: string;
+  duration?: number; // minutes
   professional: string;
   establishment: Establishment;
   when: string; // ISO
   status: AppointmentStatus;
   amountBRL: number;
+  hasDeposit?: boolean;
+  notes?: string;
 }
 
 export type QuotaStatus = "ativa" | "encerrada" | "expirada";
@@ -54,6 +60,7 @@ export interface Subscription {
   nextRenewal: string;
   priceBRL: number;
   allowPause: boolean;
+  items?: string[];
 }
 
 export interface PaymentCard {
@@ -79,9 +86,27 @@ export interface ConsentGroup {
 }
 
 const ESTAB = {
-  zeca: { id: "shop-1", name: "Barbearia do Zeca" } as Establishment,
-  paladino: { id: "shop-2", name: "Studio Paladino" } as Establishment,
-  oasis: { id: "shop-3", name: "Oásis Estética" } as Establishment,
+  zeca: {
+    id: "shop-1",
+    name: "Barbearia do Zeca",
+    address: "Rua das Palmeiras, 128 · Vila Mariana, São Paulo/SP",
+    phone: "(11) 3555-1200",
+    mapUrl: "https://maps.google.com/?q=Rua+das+Palmeiras+128",
+  } as Establishment,
+  paladino: {
+    id: "shop-2",
+    name: "Studio Alpha",
+    address: "Av. Rebouças, 940 · Pinheiros, São Paulo/SP",
+    phone: "(11) 3222-8877",
+    mapUrl: "https://maps.google.com/?q=Av+Reboucas+940",
+  } as Establishment,
+  oasis: {
+    id: "shop-3",
+    name: "Barber King",
+    address: "Rua Augusta, 2010 · Consolação, São Paulo/SP",
+    phone: "(11) 3777-4433",
+    mapUrl: "https://maps.google.com/?q=Rua+Augusta+2010",
+  } as Establishment,
 };
 
 export const ESTABLISHMENTS: Establishment[] = Object.values(ESTAB);
