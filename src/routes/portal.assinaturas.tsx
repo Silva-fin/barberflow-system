@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { AlertCircle, PauseCircle, Play, Repeat, RotateCw, XCircle } from "lucide-react";
+import { toast } from "sonner";
+import { PauseCircle, Play, Repeat, XCircle } from "lucide-react";
 import { RequirePortalAuth } from "@/components/portal/guard";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,16 +15,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { StatusBadge, subscriptionTone } from "@/components/portal/status-badge";
+import { CompanyCta } from "@/components/portal/company-chips";
 import { fetchSubscriptions, updateSubscriptionStatus } from "@/lib/portal/api";
 import type { Subscription, SubscriptionStatus } from "@/lib/portal/mock";
 import { formatBRLFromDecimal, formatDate } from "@/lib/format";
+import { matchesCompany, useCompanyFilter } from "@/lib/portal/company-filter";
 
 export const Route = createFileRoute("/portal/assinaturas")({
   component: () => (
@@ -34,6 +31,7 @@ export const Route = createFileRoute("/portal/assinaturas")({
 });
 
 function SubscriptionsPage() {
+  const { selected } = useCompanyFilter();
   const qc = useQueryClient();
   const q = useQuery({
     queryKey: ["portal", "subscriptions"],
@@ -44,6 +42,10 @@ function SubscriptionsPage() {
     action: "pause" | "cancel" | "resume";
   } | null>(null);
   const [busy, setBusy] = useState(false);
+
+  const items = (q.data ?? []).filter((s) =>
+    matchesCompany(selected, s.establishment.id),
+  );
 
   const handleConfirm = async () => {
     if (!dialog) return;
@@ -57,6 +59,13 @@ function SubscriptionsPage() {
     try {
       await updateSubscriptionStatus(dialog.sub.id, next);
       qc.invalidateQueries({ queryKey: ["portal", "subscriptions"] });
+      toast.success(
+        next === "cancelada"
+          ? "Assinatura cancelada"
+          : next === "pausada"
+            ? "Assinatura pausada"
+            : "Assinatura retomada",
+      );
       setDialog(null);
     } finally {
       setBusy(false);
@@ -66,55 +75,69 @@ function SubscriptionsPage() {
   if (q.isLoading)
     return (
       <div className="space-y-3">
-        {Array.from({ length: 3 }).map((_, i) => (
+        {Array.from({ length: 2 }).map((_, i) => (
           <Skeleton key={i} className="h-28 w-full" />
         ))}
       </div>
     );
 
-  if (q.isError)
-    return (
-      <div className="rounded-md border border-destructive/30 bg-destructive/5 p-6 text-center">
-        <AlertCircle size={20} strokeWidth={1.5} className="mx-auto text-destructive" />
-        <Button size="sm" variant="outline" className="mt-3" onClick={() => q.refetch()}>
-          <RotateCw size={14} strokeWidth={1.5} className="mr-2" />
-          Tentar novamente
-        </Button>
-      </div>
-    );
-
-  if (!q.data || q.data.length === 0)
-    return (
-      <div className="rounded-md border border-dashed border-border p-10 text-center">
-        <Repeat size={20} strokeWidth={1.5} className="mx-auto text-muted-foreground" />
-        <p className="mt-2 text-sm text-muted-foreground">Você não tem assinaturas.</p>
-      </div>
-    );
-
   return (
-    <TooltipProvider>
-      <div className="space-y-3">
-        {q.data.map((s) => (
-          <Card key={s.id} className="p-4">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium">{s.plan}</p>
-                <p className="truncate text-xs text-primary">{s.establishment.name}</p>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  Próxima renovação: {formatDate(s.nextRenewal)} ·{" "}
-                  {formatBRLFromDecimal(s.priceBRL)}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
+    <div className="space-y-4">
+      <CompanyCta />
+
+      {items.length === 0 ? (
+        <Card className="border-dashed p-10 text-center">
+          <Repeat
+            size={20}
+            strokeWidth={1.5}
+            className="mx-auto text-muted-foreground"
+          />
+          <p className="mt-2 text-sm text-muted-foreground">
+            {selected === "all"
+              ? "Você não tem assinaturas."
+              : "Nenhuma assinatura nesta empresa."}
+          </p>
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          {items.map((s) => (
+            <Card key={s.id} className="p-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
+                  <p className="font-display text-lg leading-tight">{s.plan}</p>
+                  {selected === "all" && (
+                    <p className="text-[11px] uppercase tracking-widest text-primary/80">
+                      {s.establishment.name}
+                    </p>
+                  )}
+                  {s.items && s.items.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {s.items.map((it) => (
+                        <span
+                          key={it}
+                          className="rounded-full border border-border px-2 py-0.5 text-[11px] text-muted-foreground"
+                        >
+                          {it}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    Renova em {formatDate(s.nextRenewal)} ·{" "}
+                    {formatBRLFromDecimal(s.priceBRL)}
+                  </p>
+                </div>
                 <StatusBadge tone={subscriptionTone(s.status)}>
-                  {s.status === "ativa" ? "Ativa" : s.status === "pausada" ? "Pausada" : "Cancelada"}
+                  {s.status === "ativa"
+                    ? "Ativa"
+                    : s.status === "pausada"
+                      ? "Pausada"
+                      : "Cancelada"}
                 </StatusBadge>
               </div>
-            </div>
 
-            <div className="mt-3 flex flex-wrap gap-2">
-              {s.status === "ativa" &&
-                (s.allowPause ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {s.status === "ativa" && s.allowPause && (
                   <Button
                     size="sm"
                     variant="outline"
@@ -123,44 +146,33 @@ function SubscriptionsPage() {
                     <PauseCircle size={14} strokeWidth={1.5} className="mr-2" />
                     Pausar
                   </Button>
-                ) : (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span tabIndex={0}>
-                        <Button size="sm" variant="outline" disabled>
-                          <PauseCircle size={14} strokeWidth={1.5} className="mr-2" />
-                          Pausar
-                        </Button>
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>Este plano não permite pausa.</TooltipContent>
-                  </Tooltip>
-                ))}
-              {s.status === "pausada" && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setDialog({ sub: s, action: "resume" })}
-                >
-                  <Play size={14} strokeWidth={1.5} className="mr-2" />
-                  Retomar
-                </Button>
-              )}
-              {s.status !== "cancelada" && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="text-destructive hover:text-destructive"
-                  onClick={() => setDialog({ sub: s, action: "cancel" })}
-                >
-                  <XCircle size={14} strokeWidth={1.5} className="mr-2" />
-                  Cancelar
-                </Button>
-              )}
-            </div>
-          </Card>
-        ))}
-      </div>
+                )}
+                {s.status === "pausada" && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setDialog({ sub: s, action: "resume" })}
+                  >
+                    <Play size={14} strokeWidth={1.5} className="mr-2" />
+                    Retomar
+                  </Button>
+                )}
+                {s.status !== "cancelada" && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-destructive hover:text-destructive"
+                    onClick={() => setDialog({ sub: s, action: "cancel" })}
+                  >
+                    <XCircle size={14} strokeWidth={1.5} className="mr-2" />
+                    Cancelar
+                  </Button>
+                )}
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
 
       <Dialog open={!!dialog} onOpenChange={(o) => !o && setDialog(null)}>
         <DialogContent>
@@ -194,6 +206,6 @@ function SubscriptionsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </TooltipProvider>
+    </div>
   );
 }
