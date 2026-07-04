@@ -14,16 +14,22 @@ export const APPOINTMENT_STATUS_LABEL: Record<AppointmentStatus, string> = {
 export interface Establishment {
   id: string;
   name: string;
+  address?: string;
+  phone?: string;
+  mapUrl?: string;
 }
 
 export interface Appointment {
   id: string;
   service: string;
+  duration?: number; // minutes
   professional: string;
   establishment: Establishment;
   when: string; // ISO
   status: AppointmentStatus;
   amountBRL: number;
+  hasDeposit?: boolean;
+  notes?: string;
 }
 
 export type QuotaStatus = "ativa" | "encerrada" | "expirada";
@@ -54,6 +60,7 @@ export interface Subscription {
   nextRenewal: string;
   priceBRL: number;
   allowPause: boolean;
+  items?: string[];
 }
 
 export interface PaymentCard {
@@ -79,9 +86,27 @@ export interface ConsentGroup {
 }
 
 const ESTAB = {
-  zeca: { id: "shop-1", name: "Barbearia do Zeca" } as Establishment,
-  paladino: { id: "shop-2", name: "Studio Paladino" } as Establishment,
-  oasis: { id: "shop-3", name: "Oásis Estética" } as Establishment,
+  zeca: {
+    id: "shop-1",
+    name: "Barbearia do Zeca",
+    address: "Rua das Palmeiras, 128 · Vila Mariana, São Paulo/SP",
+    phone: "(11) 3555-1200",
+    mapUrl: "https://maps.google.com/?q=Rua+das+Palmeiras+128",
+  } as Establishment,
+  paladino: {
+    id: "shop-2",
+    name: "Studio Alpha",
+    address: "Av. Rebouças, 940 · Pinheiros, São Paulo/SP",
+    phone: "(11) 3222-8877",
+    mapUrl: "https://maps.google.com/?q=Av+Reboucas+940",
+  } as Establishment,
+  oasis: {
+    id: "shop-3",
+    name: "Barber King",
+    address: "Rua Augusta, 2010 · Consolação, São Paulo/SP",
+    phone: "(11) 3777-4433",
+    mapUrl: "https://maps.google.com/?q=Rua+Augusta+2010",
+  } as Establishment,
 };
 
 export const ESTABLISHMENTS: Establishment[] = Object.values(ESTAB);
@@ -97,29 +122,23 @@ export const UPCOMING_APPOINTMENTS: Appointment[] = [
   {
     id: "ap-100",
     service: "Corte + barba",
+    duration: 60,
     professional: "Zeca",
     establishment: ESTAB.zeca,
     when: addDays(2),
     status: "agendado",
     amountBRL: 95,
+    hasDeposit: true,
   },
   {
     id: "ap-101",
-    service: "Limpeza de pele",
-    professional: "Carla",
-    establishment: ESTAB.oasis,
+    service: "Barba",
+    duration: 30,
+    professional: "Rafael",
+    establishment: ESTAB.paladino,
     when: addDays(7),
     status: "agendado",
-    amountBRL: 180,
-  },
-  {
-    id: "ap-102",
-    service: "Massagem relaxante",
-    professional: "Beto",
-    establishment: ESTAB.paladino,
-    when: addDays(12),
-    status: "agendado",
-    amountBRL: 220,
+    amountBRL: 50,
   },
 ];
 
@@ -214,30 +233,13 @@ export const QUOTA_USAGE: Record<string, QuotaUsage[]> = {
 export const SUBSCRIPTIONS: Subscription[] = [
   {
     id: "sub-1",
-    plan: "Clube do Corte — mensal",
+    plan: "Clube Zeca — mensal",
     establishment: ESTAB.zeca,
     status: "ativa",
     nextRenewal: addDays(18),
     priceBRL: 89.9,
     allowPause: true,
-  },
-  {
-    id: "sub-2",
-    plan: "Plano Bem-estar",
-    establishment: ESTAB.paladino,
-    status: "pausada",
-    nextRenewal: addDays(45),
-    priceBRL: 149,
-    allowPause: true,
-  },
-  {
-    id: "sub-3",
-    plan: "Fidelidade Anual",
-    establishment: ESTAB.oasis,
-    status: "ativa",
-    nextRenewal: addDays(210),
-    priceBRL: 1290,
-    allowPause: false,
+    items: ["2x Corte", "1x Barba"],
   },
 ];
 
@@ -295,5 +297,140 @@ export const CONSENT_GROUPS: ConsentGroup[] = [
         ],
       },
     ],
+  },
+];
+// ---------------------------------------------------------------------------
+// Produtos
+// ---------------------------------------------------------------------------
+export type ProductStatus = "reservado" | "comprado" | "retirado";
+
+export interface Product {
+  id: string;
+  name: string;
+  quantity: number;
+  unitPriceBRL: number;
+  status: ProductStatus;
+  establishment: Establishment;
+  date: string; // ISO
+}
+
+export const PRODUCTS: Product[] = [
+  {
+    id: "pr-1",
+    name: "Pomada Modeladora Matte",
+    quantity: 1,
+    unitPriceBRL: 49.9,
+    status: "reservado",
+    establishment: ESTAB.zeca,
+    date: addDays(-1),
+  },
+  {
+    id: "pr-2",
+    name: "Óleo para Barba",
+    quantity: 1,
+    unitPriceBRL: 35.9,
+    status: "reservado",
+    establishment: ESTAB.paladino,
+    date: addDays(-3),
+  },
+  {
+    id: "pr-3",
+    name: "Talco Pós-Barba",
+    quantity: 1,
+    unitPriceBRL: 22.5,
+    status: "retirado",
+    establishment: ESTAB.zeca,
+    date: addDays(-25),
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Cupons
+// ---------------------------------------------------------------------------
+export interface Coupon {
+  id: string;
+  code: string;
+  description: string;
+  discountLabel: string;
+  validUntil: string;
+  establishment: Establishment;
+  personal: boolean;
+}
+
+export const COUPONS: Coupon[] = [
+  {
+    id: "cp-1",
+    code: "INDICA10",
+    description: "Desconto por indicação de amigo",
+    discountLabel: "R$ 10 de desconto",
+    validUntil: addDays(45),
+    establishment: ESTAB.zeca,
+    personal: true,
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Pagamentos (histórico)
+// ---------------------------------------------------------------------------
+export type PaymentMethod = "dinheiro" | "pix" | "cartao";
+export type PaymentStatus = "pago" | "pendente";
+
+export interface PaymentEntry {
+  id: string;
+  description: string;
+  amountBRL: number;
+  method: PaymentMethod;
+  status: PaymentStatus;
+  date: string;
+  establishment: Establishment;
+  couponCode?: string;
+}
+
+export const PAYMENT_HISTORY: PaymentEntry[] = [
+  {
+    id: "pay-1",
+    description: "Corte + barba",
+    amountBRL: 85,
+    method: "pix",
+    status: "pago",
+    date: addDays(-10),
+    establishment: ESTAB.zeca,
+    couponCode: "INDICA10",
+  },
+  {
+    id: "pay-2",
+    description: "Pacote 5 cortes",
+    amountBRL: 220,
+    method: "cartao",
+    status: "pago",
+    date: addDays(-30),
+    establishment: ESTAB.zeca,
+  },
+  {
+    id: "pay-3",
+    description: "Barba",
+    amountBRL: 50,
+    method: "dinheiro",
+    status: "pago",
+    date: addDays(-42),
+    establishment: ESTAB.paladino,
+  },
+  {
+    id: "pay-4",
+    description: "Talco Pós-Barba",
+    amountBRL: 22.5,
+    method: "pix",
+    status: "pago",
+    date: addDays(-25),
+    establishment: ESTAB.zeca,
+  },
+  {
+    id: "pay-5",
+    description: "Assinatura Clube Zeca — julho",
+    amountBRL: 89.9,
+    method: "cartao",
+    status: "pendente",
+    date: addDays(-2),
+    establishment: ESTAB.zeca,
   },
 ];

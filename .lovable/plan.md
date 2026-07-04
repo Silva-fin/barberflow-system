@@ -1,52 +1,95 @@
-## Mudanças
 
-### 1) Tornar `PortalSession` acessível no checkout público
-- `src/routes/__root.tsx`: envolver os providers atuais com `PortalSessionProvider` (de `@/lib/portal/session`) para que `/b/$slug/checkout` (rota pública) e `/portal/*` compartilhem a mesma sessão de cliente.
-- Sem efeitos colaterais: o provider já hidrata de `localStorage` e fica `null` quando deslogado.
+# Portal do Cliente — Redesign v1
 
-### 2) Checkout `/b/$slug/checkout` — step "Seus dados"
-Editar `src/routes/b.$slug.checkout.tsx`:
+Reescreve o portal (`/portal/*`) como hub multi-empresa mobile-first. Todos os dados são mock (hardcoded). Nada de API real, sem novos endpoints.
 
-- Ler `usePortalSession()`.
-- **Se `session` é `null`** (visitante):
-  - No topo do step `customer`, antes do título, adicionar bloco:
-    ```
-    Já tem conta? [Entrar no Painel do Cliente]
-    ── ou continue como visitante ──
-    ```
-    Botão é um `Link` para `/portal/login?redirect=/b/{slug}/checkout` (variant `outline`, ícone `LogIn`).
-  - Manter o formulário atual (nome, telefone, e-mail, observação).
-- **Se `session` existe** (logado):
-  - Substituir o formulário por um card de confirmação direta:
-    ```
-    Olá, {session.name}
-    {session.phone}
-    [Confirmar pedido →]
-    ```
-  - Pré-preencher `customer` no submit a partir da `session` (nome, telefone, email). Manter campo de "observação" opcional? **Não** — conforme spec, "um botão só, sem formulário".
-  - `handleConfirm` usa os dados da sessão.
-  - Manter botão "Voltar" para revisão.
+## Escopo
 
-### 3) Checkout `/portal/login` — suportar `redirect`
-Pequeno ajuste em `src/routes/portal.login.tsx` (e `portal.magic.$token.tsx` se aplicável): após login bem-sucedido, se houver query param `redirect`, navegar para essa URL em vez do dashboard. Permite o ciclo "Entrar" → voltar ao checkout já logado.
+- Manter rotas atuais em `src/routes/portal.*.tsx` (nomes preservados para não quebrar links já existentes).
+- Reescrever visualmente e reestruturar o shell + home + seções conforme brief.
+- Adicionar 3 rotas novas: `portal.agendamento.$id.tsx` (Tela 2), `portal.produtos.tsx` (Tela 5), `portal.cupons.tsx` (Tela 6).
+- Ampliar mocks em `src/lib/portal/mock.ts` para suportar multi-empresa + produtos + cupons + pagamentos.
 
-### 4) Confirmação `/b/$slug/confirmacao/$id`
-Editar `src/routes/b.$slug.confirmacao.$id.tsx`:
+## Design system (já disponível)
 
-- Remover o card "Gerencie seu pedido" (com botão "Abrir gestão" para `order.manage_url`).
-- Substituir por um bloco informativo simples (sem botão, sem link):
-  ```
-  📱 Enviamos o link de gestão para {order.customer.phone}
-  ```
-  Usar ícone `Smartphone` do lucide, fundo `bg-muted/50`, mesma altura visual do card removido para preservar o grid `sm:grid-cols-2` ao lado de "Crie sua conta no Painel".
-- Manter intacto: card "Crie sua conta no Painel", seção "Talvez você goste" (cross-sell pós-checkout), código do pedido, itens, totais, footer.
+- Dark por padrão (respeita `ThemeProvider` existente, toggle no header).
+- Wordmark PALADINO texto dourado, `tracking [0.3em]`.
+- Cards `bg-card rounded-xl`, dourado como accent (`--brand-accent`).
+- Fonte display: Cormorant Garamond (já configurada).
+
+## Estrutura de arquivos
+
+**Novos componentes** (`src/components/portal/`):
+- `portal-header.tsx` — wordmark + saudação + avatar + toggle tema (substitui header do shell no mobile).
+- `company-chips.tsx` — chips roláveis horizontal (`overflow-x-auto`) com filtro `[Todas] [Empresa A] ...`. Estado global via novo hook `useCompanyFilter` (Context em `src/lib/portal/company-filter.tsx`, sem localStorage — só sessão).
+- `company-cta.tsx` — CTA destacado que aparece quando uma empresa está selecionada ("Agendar / Ver catálogo" → toast placeholder).
+- `home-block.tsx` — card genérico (ícone + título + resumo + link), clicável.
+- `appointment-card.tsx` — card de agendamento (usado em Home e Histórico).
+- `quota-card.tsx`, `subscription-card.tsx`, `product-card.tsx`, `coupon-card.tsx`, `payment-row.tsx`.
+- `empty-block.tsx` — reutiliza padrão existente para estados vazio/filtrado.
+
+**Refatorar shell** (`src/components/portal/portal-shell.tsx`):
+- Remover sidebar desktop e bottom-nav mobile antigos (navegação agora é hub-based: home + seções abertas em tela cheia com botão "Voltar").
+- Novo shell: header sticky (wordmark + avatar dropdown com Perfil/Sair + toggle tema) + chips de empresa fixos abaixo + `<main>` scrollável.
+- Botão "voltar" (`ChevronLeft`) nas seções != home.
+
+## Rotas / Telas
+
+| Rota | Tela |
+|---|---|
+| `portal.dashboard.tsx` | **Tela 1** — Home hub (reescrita) |
+| `portal.agendamento.$id.tsx` (nova) | **Tela 2** — Detalhe do agendamento + modais Remarcar/Cancelar |
+| `portal.cotas.tsx` | **Tela 3** — Lista + drill-down inline (accordion/Sheet) |
+| `portal.assinaturas.tsx` | **Tela 4** — Lista + ações Pausar/Retomar/Cancelar |
+| `portal.produtos.tsx` (nova) | **Tela 5** — Tabs Histórico/Reservados/Comprados |
+| `portal.cupons.tsx` (nova) | **Tela 6** — Lista de cupons |
+| `portal.historico.tsx` | **Tela 7** — Histórico com filtro por status |
+| `portal.pagamentos.tsx` | **Tela 8** — Reescrita: histórico read-only (remove gestão de cartões) |
+| `portal.perfil.tsx` | **Tela 9** — Perfil + consentimentos + logout (consolidada; `portal.consentimentos.tsx` vira redirect) |
+
+## Mock data (expandir `src/lib/portal/mock.ts`)
+
+- Manter tipos existentes (`Appointment`, `Quota`, `Subscription`, `Establishment`).
+- Adicionar:
+  - `Product` com `status: "reservado" | "comprado" | "retirado"`, `quantity`, `unitPriceBRL`, `establishment`, `date`.
+  - `Coupon` com `code`, `description`, `discountLabel`, `validUntil`, `establishment`, `personal: boolean`.
+  - `Payment` com `description`, `amountBRL`, `method: "dinheiro" | "pix" | "cartao"`, `status: "pago" | "pendente"`, `date`, `establishment`, `couponCode?`.
+- Mocks conforme brief: 2 agendamentos futuros em empresas diferentes, 3 cotas, 1 assinatura ativa, 2 produtos reservados + 1 retirado, 1 cupom pessoal, 4-5 pagamentos, 5-6 agendamentos passados.
+- 3 empresas: Barbearia do Zeca, Studio Alpha, Barber King (substituem os 3 estabelecimentos atuais).
+
+## Filtro de empresa
+
+- Context `CompanyFilterProvider` no `portal.tsx` layout.
+- Selector: `"all" | establishmentId`.
+- Cada tela consome `useCompanyFilter()` e filtra sua lista/resumo.
+- Quando != "all", esconde o badge de empresa nos cards (redundante) e mostra `CompanyCta`.
+- Quando "all", cada card exibe badge `[Nome da Empresa]`.
+
+## Estados por tela
+
+Cada seção implementa 3 estados:
+1. Com dados (mock principal).
+2. Vazio geral (empty state amigável).
+3. Filtrado por empresa sem dados (mensagem contextual: "Nenhuma X nesta empresa").
+
+## Fluxos transacionais (mock)
+
+- **Remarcar**: modal com date picker + hora → confirma → toast "Agendamento remarcado" + atualiza card local (state).
+- **Cancelar agendamento**: modal → confirma → toast + status vira `cancelado`. Um agendamento do mock tem flag `hasDeposit: true` → mostra aviso sobre retenção de sinal.
+- **Pausar/Retomar/Cancelar assinatura**: usa `updateSubscriptionStatus` existente (já mock).
+- **Salvar perfil**: já existe.
+- **Toggle consentimento**: já existe.
 
 ## Fora de escopo
-- Carrinho, drawer, cupom, revisão, Tela 4 cross-sell contextual, atalho "só agendar" e telas `/manage/$token` permanecem inalterados.
-- Sem mudanças em `bookingApi.createOrder` nem em `cart.tsx`.
+
+- Login/magic link (mantém telas atuais).
+- Vitrine da empresa (CTA leva a toast "Em breve" ou navega para `/b/barbearia-do-zeca` se slug conhecido).
+- Backend, integrações reais, pagamentos online, gestão de cartões.
 
 ## Validação
-- Visitante: `/b/barbearia-do-zeca/checkout` mostra CTA de login + formulário; submit funciona.
-- Logado (via `/portal/login`): mesmo checkout mostra "Olá, {nome}" + um botão; submit gera pedido com os dados da sessão.
-- Confirmação: card de gestão substituído por linha informativa com o telefone; cross-sell e CTA do painel continuam visíveis.
+
 - `bun run build` limpo.
+- Navegação entre home e todas as seções funciona; botão voltar retorna à home.
+- Filtro de empresa reflete em todas as seções.
+- 3 estados visíveis alternando mocks (para vazio, comentário no código indicando como testar).
+- Mobile 375px: chips rolam, blocos empilham em 2 colunas, seções ocupam tela cheia.

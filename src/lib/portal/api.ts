@@ -138,3 +138,64 @@ export async function setConsent(
     it.enabled = enabled;
   }
 }
+// ---------------------------------------------------------------------------
+// Fase 2 — mocks adicionais (produtos, cupons, pagamentos, agendamento)
+// ---------------------------------------------------------------------------
+import {
+  PRODUCTS,
+  COUPONS,
+  PAYMENT_HISTORY,
+  type Product,
+  type Coupon,
+  type PaymentEntry,
+} from "./mock";
+
+const upcomingState: Appointment[] = UPCOMING_APPOINTMENTS.map((a) => ({ ...a }));
+
+export async function fetchAppointmentById(id: string): Promise<Appointment | null> {
+  await sleep(300);
+  return (
+    upcomingState.find((a) => a.id === id) ??
+    ALL_APPOINTMENTS.find((a) => a.id === id) ??
+    null
+  );
+}
+
+export async function rescheduleAppointment(
+  id: string,
+  whenISO: string,
+): Promise<Appointment> {
+  await sleep(500);
+  const a = upcomingState.find((x) => x.id === id);
+  if (!a) throw new Error("Agendamento não encontrado");
+  a.when = whenISO;
+  return { ...a };
+}
+
+export async function cancelAppointment(id: string): Promise<Appointment> {
+  await sleep(500);
+  const a = upcomingState.find((x) => x.id === id);
+  if (!a) throw new Error("Agendamento não encontrado");
+  a.status = "cancelado";
+  return { ...a };
+}
+
+export async function fetchUpcomingAppointmentsMutable(): Promise<Appointment[]> {
+  await sleep(400);
+  return upcomingState.filter((a) => a.status === "agendado").map((a) => ({ ...a }));
+}
+
+export async function fetchProducts(): Promise<Product[]> {
+  await sleep(400);
+  return PRODUCTS.map((p) => ({ ...p }));
+}
+
+export async function fetchCoupons(): Promise<Coupon[]> {
+  await sleep(400);
+  return COUPONS.map((c) => ({ ...c }));
+}
+
+export async function fetchPayments(): Promise<PaymentEntry[]> {
+  await sleep(400);
+  return PAYMENT_HISTORY.map((p) => ({ ...p }));
+}
