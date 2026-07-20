@@ -29,7 +29,8 @@ export const Route = createFileRoute("/_public/modulos/$slug")({
 });
 
 function ModuleDetail() {
-  const { module: m } = Route.useLoaderData();
+  const data = Route.useLoaderData() as { module: CatalogModule };
+  const m = data.module;
   const Icon = m.icon;
   const related = [
     ...(m.dependsOn ?? []),
