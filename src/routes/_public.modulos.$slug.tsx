@@ -3,10 +3,10 @@ import { ArrowRight, Check, ChevronLeft, ExternalLink } from "lucide-react";
 import { LandingHeader } from "@/components/marketing/landing-header";
 import { LandingFooter } from "@/components/marketing/landing-footer";
 import { ModuleCard } from "@/components/marketing/module-card";
-import { CATALOG, CATALOG_BY_SLUG, CATEGORY_LABELS, reverseDependents } from "@/lib/marketing/catalog";
+import { CATALOG, CATALOG_BY_SLUG, CATEGORY_LABELS, reverseDependents, type CatalogModule } from "@/lib/marketing/catalog";
 
 export const Route = createFileRoute("/_public/modulos/$slug")({
-  loader: ({ params }) => {
+  loader: ({ params }): { module: CatalogModule } => {
     const m = CATALOG_BY_SLUG.get(params.slug);
     if (!m) throw notFound();
     return { module: m };
