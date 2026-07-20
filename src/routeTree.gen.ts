@@ -32,6 +32,9 @@ import { Route as OwnerSettingsRouteImport } from './routes/owner.settings'
 import { Route as OwnerImpersonationRouteImport } from './routes/owner.impersonation'
 import { Route as OwnerAuditRouteImport } from './routes/owner.audit'
 import { Route as BSlugRouteImport } from './routes/b.$slug'
+import { Route as PublicPrecosRouteImport } from './routes/_public.precos'
+import { Route as PublicMontarRouteImport } from './routes/_public.montar'
+import { Route as PublicModulosRouteImport } from './routes/_public.modulos'
 import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated.usuarios'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated.relatorios'
 import { Route as AuthenticatedPayablesRouteImport } from './routes/_authenticated.payables'
@@ -62,6 +65,7 @@ import { Route as PortalMagicTokenRouteImport } from './routes/portal.magic.$tok
 import { Route as PortalAgendamentoIdRouteImport } from './routes/portal.agendamento.$id'
 import { Route as BSlugCheckoutRouteImport } from './routes/b.$slug.checkout'
 import { Route as BSlugAgendarRouteImport } from './routes/b.$slug.agendar'
+import { Route as PublicModulosSlugRouteImport } from './routes/_public.modulos.$slug'
 import { Route as PublicManageTokenRouteImport } from './routes/_public.manage.$token'
 import { Route as AuthenticatedProfissionaisIdRouteImport } from './routes/_authenticated.profissionais.$id'
 import { Route as AuthenticatedPagamentosNovoRouteImport } from './routes/_authenticated.pagamentos.novo'
@@ -209,6 +213,21 @@ const BSlugRoute = BSlugRouteImport.update({
   id: '/b/$slug',
   path: '/b/$slug',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PublicPrecosRoute = PublicPrecosRouteImport.update({
+  id: '/precos',
+  path: '/precos',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicMontarRoute = PublicMontarRouteImport.update({
+  id: '/montar',
+  path: '/montar',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicModulosRoute = PublicModulosRouteImport.update({
+  id: '/modulos',
+  path: '/modulos',
+  getParentRoute: () => PublicRoute,
 } as any)
 const AuthenticatedUsuariosRoute = AuthenticatedUsuariosRouteImport.update({
   id: '/usuarios',
@@ -372,6 +391,11 @@ const BSlugAgendarRoute = BSlugAgendarRouteImport.update({
   id: '/agendar',
   path: '/agendar',
   getParentRoute: () => BSlugRoute,
+} as any)
+const PublicModulosSlugRoute = PublicModulosSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => PublicModulosRoute,
 } as any)
 const PublicManageTokenRoute = PublicManageTokenRouteImport.update({
   id: '/manage/$token',
@@ -587,6 +611,9 @@ export interface FileRoutesByFullPath {
   '/payables': typeof AuthenticatedPayablesRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
+  '/modulos': typeof PublicModulosRouteWithChildren
+  '/montar': typeof PublicMontarRoute
+  '/precos': typeof PublicPrecosRoute
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/audit': typeof OwnerAuditRoute
   '/owner/impersonation': typeof OwnerImpersonationRoute
@@ -633,6 +660,7 @@ export interface FileRoutesByFullPath {
   '/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/manage/$token': typeof PublicManageTokenRoute
+  '/modulos/$slug': typeof PublicModulosSlugRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/b/$slug/checkout': typeof BSlugCheckoutRoute
   '/portal/agendamento/$id': typeof PortalAgendamentoIdRoute
@@ -672,6 +700,9 @@ export interface FileRoutesByTo {
   '/payables': typeof AuthenticatedPayablesRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
+  '/modulos': typeof PublicModulosRouteWithChildren
+  '/montar': typeof PublicMontarRoute
+  '/precos': typeof PublicPrecosRoute
   '/owner/audit': typeof OwnerAuditRoute
   '/owner/impersonation': typeof OwnerImpersonationRoute
   '/owner/settings': typeof OwnerSettingsRoute
@@ -717,6 +748,7 @@ export interface FileRoutesByTo {
   '/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/manage/$token': typeof PublicManageTokenRoute
+  '/modulos/$slug': typeof PublicModulosSlugRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/b/$slug/checkout': typeof BSlugCheckoutRoute
   '/portal/agendamento/$id': typeof PortalAgendamentoIdRoute
@@ -761,6 +793,9 @@ export interface FileRoutesById {
   '/_authenticated/payables': typeof AuthenticatedPayablesRoute
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
+  '/_public/modulos': typeof PublicModulosRouteWithChildren
+  '/_public/montar': typeof PublicMontarRoute
+  '/_public/precos': typeof PublicPrecosRoute
   '/b/$slug': typeof BSlugRouteWithChildren
   '/owner/audit': typeof OwnerAuditRoute
   '/owner/impersonation': typeof OwnerImpersonationRoute
@@ -807,6 +842,7 @@ export interface FileRoutesById {
   '/_authenticated/pagamentos/novo': typeof AuthenticatedPagamentosNovoRoute
   '/_authenticated/profissionais/$id': typeof AuthenticatedProfissionaisIdRoute
   '/_public/manage/$token': typeof PublicManageTokenRoute
+  '/_public/modulos/$slug': typeof PublicModulosSlugRoute
   '/b/$slug/agendar': typeof BSlugAgendarRoute
   '/b/$slug/checkout': typeof BSlugCheckoutRoute
   '/portal/agendamento/$id': typeof PortalAgendamentoIdRoute
@@ -850,6 +886,9 @@ export interface FileRouteTypes {
     | '/payables'
     | '/relatorios'
     | '/usuarios'
+    | '/modulos'
+    | '/montar'
+    | '/precos'
     | '/b/$slug'
     | '/owner/audit'
     | '/owner/impersonation'
@@ -896,6 +935,7 @@ export interface FileRouteTypes {
     | '/pagamentos/novo'
     | '/profissionais/$id'
     | '/manage/$token'
+    | '/modulos/$slug'
     | '/b/$slug/agendar'
     | '/b/$slug/checkout'
     | '/portal/agendamento/$id'
@@ -935,6 +975,9 @@ export interface FileRouteTypes {
     | '/payables'
     | '/relatorios'
     | '/usuarios'
+    | '/modulos'
+    | '/montar'
+    | '/precos'
     | '/owner/audit'
     | '/owner/impersonation'
     | '/owner/settings'
@@ -980,6 +1023,7 @@ export interface FileRouteTypes {
     | '/pagamentos/novo'
     | '/profissionais/$id'
     | '/manage/$token'
+    | '/modulos/$slug'
     | '/b/$slug/agendar'
     | '/b/$slug/checkout'
     | '/portal/agendamento/$id'
@@ -1023,6 +1067,9 @@ export interface FileRouteTypes {
     | '/_authenticated/payables'
     | '/_authenticated/relatorios'
     | '/_authenticated/usuarios'
+    | '/_public/modulos'
+    | '/_public/montar'
+    | '/_public/precos'
     | '/b/$slug'
     | '/owner/audit'
     | '/owner/impersonation'
@@ -1069,6 +1116,7 @@ export interface FileRouteTypes {
     | '/_authenticated/pagamentos/novo'
     | '/_authenticated/profissionais/$id'
     | '/_public/manage/$token'
+    | '/_public/modulos/$slug'
     | '/b/$slug/agendar'
     | '/b/$slug/checkout'
     | '/portal/agendamento/$id'
@@ -1267,6 +1315,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/b/$slug'
       preLoaderRoute: typeof BSlugRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_public/precos': {
+      id: '/_public/precos'
+      path: '/precos'
+      fullPath: '/precos'
+      preLoaderRoute: typeof PublicPrecosRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/montar': {
+      id: '/_public/montar'
+      path: '/montar'
+      fullPath: '/montar'
+      preLoaderRoute: typeof PublicMontarRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/modulos': {
+      id: '/_public/modulos'
+      path: '/modulos'
+      fullPath: '/modulos'
+      preLoaderRoute: typeof PublicModulosRouteImport
+      parentRoute: typeof PublicRoute
     }
     '/_authenticated/usuarios': {
       id: '/_authenticated/usuarios'
@@ -1477,6 +1546,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/b/$slug/agendar'
       preLoaderRoute: typeof BSlugAgendarRouteImport
       parentRoute: typeof BSlugRoute
+    }
+    '/_public/modulos/$slug': {
+      id: '/_public/modulos/$slug'
+      path: '/$slug'
+      fullPath: '/modulos/$slug'
+      preLoaderRoute: typeof PublicModulosSlugRouteImport
+      parentRoute: typeof PublicModulosRoute
     }
     '/_public/manage/$token': {
       id: '/_public/manage/$token'
@@ -1842,12 +1918,30 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface PublicModulosRouteChildren {
+  PublicModulosSlugRoute: typeof PublicModulosSlugRoute
+}
+
+const PublicModulosRouteChildren: PublicModulosRouteChildren = {
+  PublicModulosSlugRoute: PublicModulosSlugRoute,
+}
+
+const PublicModulosRouteWithChildren = PublicModulosRoute._addFileChildren(
+  PublicModulosRouteChildren,
+)
+
 interface PublicRouteChildren {
+  PublicModulosRoute: typeof PublicModulosRouteWithChildren
+  PublicMontarRoute: typeof PublicMontarRoute
+  PublicPrecosRoute: typeof PublicPrecosRoute
   PublicManageTokenRoute: typeof PublicManageTokenRoute
   PublicNpsRespondSurveyIdRoute: typeof PublicNpsRespondSurveyIdRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
+  PublicModulosRoute: PublicModulosRouteWithChildren,
+  PublicMontarRoute: PublicMontarRoute,
+  PublicPrecosRoute: PublicPrecosRoute,
   PublicManageTokenRoute: PublicManageTokenRoute,
   PublicNpsRespondSurveyIdRoute: PublicNpsRespondSurveyIdRoute,
 }
@@ -1942,13 +2036,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
